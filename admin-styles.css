@@ -868,3 +868,35 @@ label {
 ::-webkit-scrollbar-thumb:hover {
     background: #ff6b6b;
 }
+
+/* Password Strength Indicator */
+.password-strength {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    display: none;
+}
+
+.password-strength.weak {
+    background: #ffebee;
+    color: #d32f2f;
+    border: 1px solid #ffcdd2;
+    display: block;
+}
+
+.password-strength.medium {
+    background: #fff3e0;
+    color: #f57c00;
+    border: 1px solid #ffcc02;
+    display: block;
+}
+
+.password-strength.strong {
+    background: #e8f5e8;
+    color: #2e7d32;
+    border: 1px solid #81c784;
+    display: block;
+}

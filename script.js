@@ -275,16 +275,49 @@ function changeLanguage(lang) {
     }
 }
 
+// Security: Rate limiting for contact form
+let contactFormSubmissions = 0;
+let contactFormLocked = false;
+
 // Contact Form
 const contactForm = document.getElementById('contactForm');
 contactForm.addEventListener('submit', (e) => {
     e.preventDefault();
+    
+    // Check rate limit
+    if (contactFormLocked) {
+        alert('Veuillez attendre avant de soumettre un autre message.');
+        return;
+    }
     
     const formData = new FormData(contactForm);
     const name = contactForm.querySelector('input[type="text"]').value;
     const email = contactForm.querySelector('input[type="email"]').value;
     const subject = contactForm.querySelectorAll('input[type="text"]')[1].value;
     const message = contactForm.querySelector('textarea').value;
+    
+    // Basic validation
+    if (!name || !email || !subject || !message) {
+        alert('Veuillez remplir tous les champs.');
+        return;
+    }
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        alert('Adresse email invalide.');
+        return;
+    }
+    
+    // Rate limiting
+    contactFormSubmissions++;
+    if (contactFormSubmissions >= 3) {
+        contactFormLocked = true;
+        setTimeout(() => {
+            contactFormLocked = false;
+            contactFormSubmissions = 0;
+        }, 300000); // 5 minutes
+    }
     
     // Send to WhatsApp
     const whatsappMessage = `Nouveau formulaire de contact:\n\nNom: ${name}\nEmail: ${email}\nSujet: ${subject}\nMessage: ${message}`;

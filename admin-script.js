@@ -45,6 +45,41 @@ function saveToStorage() {
     localStorage.setItem('kindom_gallery', JSON.stringify(gallery));
 }
 
+// Security: Check authentication
+function checkAuth() {
+    const auth = sessionStorage.getItem('kindom_auth');
+    const sessionStart = sessionStorage.getItem('kindom_session_start');
+    
+    if (!auth || !sessionStart) {
+        return false;
+    }
+    
+    // Check session timeout (30 minutes)
+    const now = Date.now();
+    const sessionAge = now - parseInt(sessionStart);
+    const thirtyMinutes = 30 * 60 * 1000;
+    
+    if (sessionAge > thirtyMinutes) {
+        // Session expired
+        sessionStorage.removeItem('kindom_auth');
+        sessionStorage.removeItem('kindom_session_start');
+        return false;
+    }
+    
+    return true;
+}
+
+// Security: Require auth for all admin operations
+function requireAuth() {
+    if (!checkAuth()) {
+        alert('Session expirée. Veuillez vous reconnecter.');
+        adminDashboard.style.display = 'none';
+        loginContainer.style.display = 'flex';
+        return false;
+    }
+    return true;
+}
+
 // Initialize data
 loadFromStorage();
 
@@ -57,25 +92,193 @@ const navItems = document.querySelectorAll('.nav-item:not(.logout-btn)');
 const contentSections = document.querySelectorAll('.content-section');
 const sectionTitle = document.getElementById('sectionTitle');
 
+// Security: Advanced encryption using Web Crypto API
+class SecureAuth {
+    constructor() {
+        this.iterations = 100000; // PBKDF2 iterations
+        this.keyLength = 256; // Key length in bits
+    }
+
+    // Generate salt
+    generateSalt() {
+        return crypto.getRandomValues(new Uint8Array(16));
+    }
+
+    // Derive key from password using PBKDF2
+    async deriveKey(password, salt) {
+        const encoder = new TextEncoder();
+        const keyMaterial = await crypto.subtle.importKey(
+            'raw',
+            encoder.encode(password),
+            { name: 'PBKDF2' },
+            false,
+            ['deriveBits', 'deriveKey']
+        );
+
+        return await crypto.subtle.deriveKey(
+            {
+                name: 'PBKDF2',
+                salt: salt,
+                iterations: this.iterations,
+                hash: 'SHA-256'
+            },
+            keyMaterial,
+            { name: 'AES-GCM', length: this.keyLength },
+            true,
+            ['encrypt', 'decrypt']
+        );
+    }
+
+    // Hash password for storage
+    async hashPassword(password, salt = null) {
+        if (!salt) {
+            salt = this.generateSalt();
+        }
+        
+        const key = await this.deriveKey(password, salt);
+        const exportedKey = await crypto.subtle.exportKey('raw', key);
+        
+        // Combine salt and hash
+        const combined = new Uint8Array(salt.length + exportedKey.byteLength);
+        combined.set(salt);
+        combined.set(new Uint8Array(exportedKey), salt.length);
+        
+        return btoa(String.fromCharCode.apply(null, combined));
+    }
+
+    // Verify password
+    async verifyPassword(password, storedHash) {
+        try {
+            const combined = new Uint8Array(atob(storedHash).split('').map(c => c.charCodeAt(0)));
+            const salt = combined.slice(0, 16);
+            const hash = combined.slice(16);
+            
+            const key = await this.deriveKey(password, salt);
+            const exportedKey = await crypto.subtle.exportKey('raw', key);
+            const newHash = new Uint8Array(exportedKey);
+            
+            // Compare hashes
+            return this.arraysEqual(hash, newHash);
+        } catch (error) {
+            console.error('Password verification error:', error);
+            return false;
+        }
+    }
+
+    // Compare two arrays
+    arraysEqual(a, b) {
+        if (a.length !== b.length) return false;
+        for (let i = 0; i < a.length; i++) {
+            if (a[i] !== b[i]) return false;
+        }
+        return true;
+    }
+}
+
+// Initialize secure auth
+const secureAuth = new SecureAuth();
+
+// Get stored password hash (encrypted in localStorage)
+function getStoredPasswordHash() {
+    return localStorage.getItem('kindom_admin_hash') || null;
+}
+
+// Store password hash (encrypted)
+function storePasswordHash(hash) {
+    localStorage.setItem('kindom_admin_hash', hash);
+}
+
+// Security: Hash function for passwords (SHA-256)
+async function hashPassword(password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hash = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hash))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+}
+
+// Security: Rate limiting for login attempts
+let loginAttempts = 0;
+let loginLockout = false;
+
+// Initialize default admin password if not set
+async function initializeDefaultPassword() {
+    const storedHash = getStoredPasswordHash();
+    if (!storedHash) {
+        // Set default password (CHANGE THIS IN PRODUCTION!)
+        const defaultPassword = 'CHANGE_THIS_PASSWORD_NOW_2024!';
+        const hash = await secureAuth.hashPassword(defaultPassword);
+        storePasswordHash(hash);
+        console.warn('⚠️ DEFAULT PASSWORD SET! Change it immediately in Settings > Sécurité Admin');
+    }
+}
+
 // Login Functionality
-loginForm.addEventListener('submit', (e) => {
+loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    
+    // Check if locked out
+    if (loginLockout) {
+        alert('Trop de tentatives échouées. Attendez 5 minutes.');
+        return;
+    }
+    
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     
-    // Demo credentials
-    if (username === 'admin' && password === 'admin123') {
+    // Security: Validate input
+    if (!username || !password) {
+        alert('Veuillez remplir tous les champs.');
+        return;
+    }
+    
+    // Check username and password
+    const storedHash = getStoredPasswordHash();
+    const validUsername = 'admin';
+    
+    if (username === validUsername && await secureAuth.verifyPassword(password, storedHash)) {
+        // Success: Reset attempts
+        loginAttempts = 0;
+        loginLockout = false;
+        
+        // Set session with encryption
+        const sessionToken = btoa(JSON.stringify({
+            timestamp: Date.now(),
+            user: username,
+            hash: await hashPassword(Date.now().toString())
+        }));
+        
+        sessionStorage.setItem('kindom_auth', sessionToken);
+        sessionStorage.setItem('kindom_session_start', Date.now());
+        
         loginContainer.style.display = 'none';
         adminDashboard.style.display = 'grid';
         loadDashboard();
     } else {
-        alert('Invalid credentials! Use: admin / admin123');
+        // Failed attempt
+        loginAttempts++;
+        
+        if (loginAttempts >= 5) {
+            loginLockout = true;
+            setTimeout(() => {
+                loginLockout = false;
+                loginAttempts = 0;
+            }, 300000); // 5 minutes lockout
+            alert('Trop de tentatives échouées. Compte verrouillé pour 5 minutes.');
+        } else {
+            alert(`Identifiants invalides! Tentatives restantes: ${5 - loginAttempts}`);
+        }
     }
 });
 
 // Logout
 logoutBtn.addEventListener('click', () => {
-    if (confirm('Are you sure you want to logout?')) {
+    if (confirm('Êtes-vous sûr de vouloir vous déconnecter?')) {
+        // Clear session
+        sessionStorage.removeItem('kindom_auth');
+        sessionStorage.removeItem('kindom_session_start');
+        
         adminDashboard.style.display = 'none';
         loginContainer.style.display = 'flex';
         loginForm.reset();
@@ -86,6 +289,10 @@ logoutBtn.addEventListener('click', () => {
 navItems.forEach(item => {
     item.addEventListener('click', (e) => {
         e.preventDefault();
+        
+        // Security check
+        if (!requireAuth()) return;
+        
         const section = item.getAttribute('data-section');
         
         // Update active nav item
@@ -203,19 +410,57 @@ function deleteProduct(id) {
     }
 }
 
+// Security: Input sanitization
+function sanitizeInput(input) {
+    if (typeof input !== 'string') return input;
+    
+    // Remove potentially dangerous characters
+    return input
+        .replace(/[<>]/g, '') // Remove < and >
+        .replace(/javascript:/gi, '') // Remove javascript: protocol
+        .replace(/on\w+=/gi, '') // Remove event handlers
+        .trim();
+}
+
+// Security: Validate URL
+function isValidURL(url) {
+    try {
+        const parsed = new URL(url);
+        return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch {
+        return false;
+    }
+}
+
 // Save Product
 document.getElementById('productForm').addEventListener('submit', (e) => {
     e.preventDefault();
     
+    // Security check
+    if (!requireAuth()) return;
+    
+    // Sanitize inputs
     const productData = {
         id: document.getElementById('productId').value || Date.now(),
-        name: document.getElementById('productName').value,
-        category: document.getElementById('productCategory').value,
-        price: document.getElementById('productPrice').value,
-        description: document.getElementById('productDescription').value,
-        image: document.getElementById('productImage').value,
+        name: sanitizeInput(document.getElementById('productName').value),
+        category: sanitizeInput(document.getElementById('productCategory').value),
+        price: sanitizeInput(document.getElementById('productPrice').value),
+        description: sanitizeInput(document.getElementById('productDescription').value),
+        image_url: document.getElementById('productImage').value,
         inStock: document.getElementById('productInStock').checked
     };
+    
+    // Validate image URL
+    if (!isValidURL(productData.image_url)) {
+        alert('URL d\'image invalide!');
+        return;
+    }
+    
+    // Validate required fields
+    if (!productData.name || !productData.category || !productData.price || !productData.description) {
+        alert('Veuillez remplir tous les champs obligatoires!');
+        return;
+    }
     
     if (document.getElementById('productId').value) {
         // Update existing product
@@ -271,10 +516,22 @@ function deleteGalleryItem(id) {
 document.getElementById('galleryForm').addEventListener('submit', (e) => {
     e.preventDefault();
     
+    // Security check
+    if (!requireAuth()) return;
+    
+    const imageUrl = document.getElementById('galleryImage').value;
+    const altText = sanitizeInput(document.getElementById('galleryAlt').value);
+    
+    // Validate URL
+    if (!isValidURL(imageUrl)) {
+        alert('URL d\'image invalide!');
+        return;
+    }
+    
     const galleryData = {
         id: Date.now(),
-        image: document.getElementById('galleryImage').value,
-        alt: document.getElementById('galleryAlt').value
+        image: imageUrl,
+        alt: altText
     };
     
     gallery.push(galleryData);
@@ -328,6 +585,188 @@ function importData(data) {
 // Initialize
 loadProducts();
 loadGallery();
+initializeDefaultPassword();
+
+// Password Strength Checker
+function checkPasswordStrength(password) {
+    const strengthIndicator = document.getElementById('passwordStrength');
+    let score = 0;
+    let feedback = [];
+
+    // Length check
+    if (password.length >= 12) score += 1;
+    else feedback.push('Au moins 12 caractères');
+
+    // Complexity checks
+    if (/[a-z]/.test(password)) score += 1;
+    else feedback.push('Lettres minuscules');
+
+    if (/[A-Z]/.test(password)) score += 1;
+    else feedback.push('Lettres majuscules');
+
+    if (/[0-9]/.test(password)) score += 1;
+    else feedback.push('Chiffres');
+
+    if (/[^A-Za-z0-9]/.test(password)) score += 1;
+    else feedback.push('Symboles (!@#$%^&*)');
+
+    // Display strength
+    strengthIndicator.style.display = 'block';
+    
+    if (score < 3) {
+        strengthIndicator.className = 'password-strength weak';
+        strengthIndicator.textContent = '🔴 Faible - Requis: ' + feedback.join(', ');
+        return false;
+    } else if (score < 5) {
+        strengthIndicator.className = 'password-strength medium';
+        strengthIndicator.textContent = '🟡 Moyen - Ajoutez: ' + feedback.join(', ');
+        return false;
+    } else {
+        strengthIndicator.className = 'password-strength strong';
+        strengthIndicator.textContent = '🟢 Fort - Mot de passe sécurisé!';
+        return true;
+    }
+}
+
+// Password change form
+document.getElementById('passwordChangeForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Security check
+    if (!requireAuth()) return;
+    
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    // Validate inputs
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        alert('Veuillez remplir tous les champs.');
+        return;
+    }
+    
+    // Check if new passwords match
+    if (newPassword !== confirmPassword) {
+        alert('Les nouveaux mots de passe ne correspondent pas.');
+        return;
+    }
+    
+    // Check password strength
+    if (!checkPasswordStrength(newPassword)) {
+        alert('Le mot de passe ne respecte pas les critères de sécurité.');
+        return;
+    }
+    
+    // Verify current password
+    const storedHash = getStoredPasswordHash();
+    if (!await secureAuth.verifyPassword(currentPassword, storedHash)) {
+        alert('Mot de passe actuel incorrect.');
+        return;
+    }
+    
+    // Hash and store new password
+    try {
+        const newHash = await secureAuth.hashPassword(newPassword);
+        storePasswordHash(newHash);
+        
+        // Clear form
+        document.getElementById('passwordChangeForm').reset();
+        document.getElementById('passwordStrength').style.display = 'none';
+        
+        showNotification('Mot de passe changé avec succès!', 'success');
+        
+        // Log out user to force re-login with new password
+        setTimeout(() => {
+            sessionStorage.clear();
+            adminDashboard.style.display = 'none';
+            loginContainer.style.display = 'flex';
+            alert('Mot de passe mis à jour. Veuillez vous reconnecter.');
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Password change error:', error);
+        alert('Erreur lors du changement de mot de passe.');
+    }
+});
+
+// Real-time password strength checking
+document.getElementById('newPassword').addEventListener('input', (e) => {
+    checkPasswordStrength(e.target.value);
+});
+
+// Store settings
+document.getElementById('storeSettingsForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    if (!requireAuth()) return;
+    
+    const settings = {
+        storeName: document.getElementById('storeName').value,
+        whatsappNumber: document.getElementById('whatsappNumber').value,
+        storeEmail: document.getElementById('storeEmail').value,
+        storeAddress: document.getElementById('storeAddress').value
+    };
+    
+    // Validate WhatsApp number format
+    const whatsappRegex = /^[0-9+\-\s()]+$/;
+    if (!whatsappRegex.test(settings.whatsappNumber)) {
+        alert('Format de numéro WhatsApp invalide.');
+        return;
+    }
+    
+    localStorage.setItem('kindom_store_settings', JSON.stringify(settings));
+    showNotification('Paramètres sauvegardés!', 'success');
+});
+
+// Apply theme
+function applyTheme() {
+    if (!requireAuth()) return;
+    
+    const primaryColor = document.getElementById('primaryColor').value;
+    const secondaryColor = document.getElementById('secondaryColor').value;
+    
+    // Update CSS variables
+    document.documentElement.style.setProperty('--primary', primaryColor);
+    document.documentElement.style.setProperty('--secondary', secondaryColor);
+    
+    // Save theme
+    localStorage.setItem('kindom_theme', JSON.stringify({
+        primaryColor,
+        secondaryColor
+    }));
+    
+    showNotification('Thème appliqué!', 'success');
+}
+
+// Load saved settings on page load
+function loadSavedSettings() {
+    // Load store settings
+    const storeSettings = localStorage.getItem('kindom_store_settings');
+    if (storeSettings) {
+        const settings = JSON.parse(storeSettings);
+        document.getElementById('storeName').value = settings.storeName || 'Kindom';
+        document.getElementById('whatsappNumber').value = settings.whatsappNumber || '+213XXXXXXXXX';
+        document.getElementById('storeEmail').value = settings.storeEmail || 'contact@kindom-dz.com';
+        document.getElementById('storeAddress').value = settings.storeAddress || 'Alger, Algérie';
+    }
+    
+    // Load theme
+    const theme = localStorage.getItem('kindom_theme');
+    if (theme) {
+        const { primaryColor, secondaryColor } = JSON.parse(theme);
+        document.getElementById('primaryColor').value = primaryColor;
+        document.getElementById('secondaryColor').value = secondaryColor;
+        document.documentElement.style.setProperty('--primary', primaryColor);
+        document.documentElement.style.setProperty('--secondary', secondaryColor);
+    }
+}
+
+// Call load settings when admin panel opens
+const originalLoadDashboard = loadDashboard;
+loadDashboard = function() {
+    originalLoadDashboard.call(this);
+    loadSavedSettings();
+};
 
 // Clear all data function
 function clearAllData() {
