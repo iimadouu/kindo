@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kindom - Votre destination premium pour la nourriture et les accessoires pour animaux de qualité">
+    <meta name="keywords" content="nourriture pour animaux, nourriture pour chats, nourriture pour chiens, nourriture pour oiseaux, nourriture pour poissons, accessoires pour animaux">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Kindom - Nourriture et Accessoires Premium pour Animaux">
+    <meta property="og:description" content="Nourriture et accessoires de qualité pour tous vos animaux bien-aimés">
+    <meta property="og:type" content="website">
+    <title>Kindom - Nourriture et Accessoires Premium pour Animaux</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-content">
+            <div class="paw-print">
+                <i class="fas fa-paw"></i>
+            </div>
+            <p class="loading-text" data-en="Loading..." data-fr="Chargement..." data-ar="جار التحميل...">Chargement...</p>
+        </div>
+    </div>
+
+    <!-- Language Switcher -->
+    <div class="language-switcher">
+        <button class="lang-btn active" data-lang="fr">FR</button>
+        <button class="lang-btn" data-lang="ar">AR</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <i class="fas fa-crown"></i>
+                    <span data-en="Kindom" data-fr="Kindom" data-ar="كيندوم">Kindom</span>
+                </div>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#home" class="nav-link" data-en="Home" data-fr="Accueil" data-ar="الرئيسية">Accueil</a></li>
+                    <li class="dropdown">
+                        <a href="#products" class="nav-link" data-en="Products" data-fr="Produits" data-ar="المنتجات">Produits</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#cats" data-en="Cats" data-fr="Chats" data-ar="القطط"><i class="fas fa-cat"></i> Chats</a></li>
+                            <li><a href="#dogs" data-en="Dogs" data-fr="Chiens" data-ar="الكلاب"><i class="fas fa-dog"></i> Chiens</a></li>
+                            <li><a href="#birds" data-en="Birds" data-fr="Oiseaux" data-ar="الطيور"><i class="fas fa-dove"></i> Oiseaux</a></li>
+                            <li><a href="#fish" data-en="Fish" data-fr="Poissons" data-ar="الأسماك"><i class="fas fa-fish"></i> Poissons</a></li>
+                            <li><a href="#other" data-en="Other" data-fr="Autre" data-ar="أخرى"><i class="fas fa-box"></i> Autre</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#gallery" class="nav-link" data-en="Gallery" data-fr="Galerie" data-ar="المعرض">Galerie</a></li>
+                    <li><a href="#contact" class="nav-link" data-en="Contact" data-fr="Contact" data-ar="اتصل بنا">Contact</a></li>
+                </ul>
+                <div class="nav-icons">
+                    <button class="search-btn"><i class="fas fa-search"></i></button>
+                    <button class="cart-btn"><i class="fas fa-shopping-cart"></i><span class="cart-count">0</span></button>
+                    <button class="menu-toggle" id="menuToggle">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-background">
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title" data-en="Welcome to Kindom" data-fr="Bienvenue chez Kindom" data-ar="مرحباً بك في كيندوم">
+                    Bienvenue chez Kindom
+                </h1>
+                <p class="hero-subtitle" data-en="Premium Pet Food & Accessories for Your Beloved Companions" data-fr="Nourriture et Accessoires Premium pour Vos Compagnons Bien-Aimés" data-ar="طعام وإكسسوارات فاخرة لرفاقك الأعزاء">
+                    Nourriture et Accessoires Premium pour Vos Compagnons Bien-Aimés
+                </p>
+                <div class="hero-buttons">
+                    <a href="#products" class="btn btn-primary" data-en="Shop Now" data-fr="Acheter Maintenant" data-ar="تسوق الآن">Acheter Maintenant</a>
+                    <a href="#contact" class="btn btn-secondary" data-en="Contact Us" data-fr="Nous Contacter" data-ar="اتصل بنا">Nous Contacter</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="hero-pet-icons">
+                    <div class="pet-icon"><i class="fas fa-cat"></i></div>
+                    <div class="pet-icon"><i class="fas fa-dog"></i></div>
+                    <div class="pet-icon"><i class="fas fa-dove"></i></div>
+                    <div class="pet-icon"><i class="fas fa-fish"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="mouse"></div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products" id="products">
+        <div class="container">
+            <h2 class="section-title" data-en="Our Products" data-fr="Nos Produits" data-ar="منتجاتنا">Nos Produits</h2>
+            <p class="section-subtitle" data-en="Quality food and accessories for all your pets" data-fr="Nourriture et accessoires de qualité pour tous vos animaux" data-ar="طعام وإكسسوارات عالية الجودة لجميع حيواناتك الأليفة">Nourriture et accessoires de qualité pour tous vos animaux</p>
+            
+            <!-- Category Tabs -->
+            <div class="category-tabs">
+                <button class="tab-btn active" data-category="cats" data-en="Cats" data-fr="Chats" data-ar="القطط"><i class="fas fa-cat"></i> Chats</button>
+                <button class="tab-btn" data-category="dogs" data-en="Dogs" data-fr="Chiens" data-ar="الكلاب"><i class="fas fa-dog"></i> Chiens</button>
+                <button class="tab-btn" data-category="birds" data-en="Birds" data-fr="Oiseaux" data-ar="الطيور"><i class="fas fa-dove"></i> Oiseaux</button>
+                <button class="tab-btn" data-category="fish" data-en="Fish" data-fr="Poissons" data-ar="الأسماك"><i class="fas fa-fish"></i> Poissons</button>
+                <button class="tab-btn" data-category="other" data-en="Other" data-fr="Autre" data-ar="أخرى"><i class="fas fa-box"></i> Autre</button>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be dynamically loaded -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery" id="gallery">
+        <div class="container">
+            <h2 class="section-title" data-en="Gallery" data-fr="Galerie" data-ar="المعرض">Galerie</h2>
+            <p class="section-subtitle" data-en="Happy moments with our pet family" data-fr="Moments heureux avec notre famille d'animaux" data-ar="لحظات سعيدة مع عائلة حيواناتنا الأليفة">Moments heureux avec notre famille d'animaux</p>
+            
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- Gallery items will be dynamically loaded -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2 class="section-title" data-en="Contact Us" data-fr="Contactez-Nous" data-ar="اتصل بنا">Contactez-Nous</h2>
+            <p class="section-subtitle" data-en="Get in touch with us for any inquiries" data-fr="Contactez-nous pour toute demande" data-ar="اتصل بنا لأي استفسارات">Contactez-nous pour toute demande</p>
+            
+            <div class="contact-wrapper">
+                <div class="contact-info">
+                    <div class="info-card">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h3 data-en="Visit Us" data-fr="Visitez-Nous" data-ar="زوروا">Visitez-Nous</h3>
+                        <p data-en="123 Pet Street, Animal City" data-fr="123 Rue des Animaux, Ville Animale" data-ar="123 شارع الحيوانات الأليفة، مدينة الحيوانات">123 Rue des Animaux, Ville Animale</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-phone"></i>
+                        <h3 data-en="Call Us" data-fr="Appelez-Nous" data-ar="اتصل بنا">Appelez-Nous</h3>
+                        <p>+1 234 567 8900</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-envelope"></i>
+                        <h3 data-en="Email Us" data-fr="Envoyez-Nous un Email" data-ar="راسلنا">Envoyez-Nous un Email</h3>
+                        <p>info@kindom.com</p>
+                    </div>
+                    <div class="info-card whatsapp-card">
+                        <i class="fab fa-whatsapp"></i>
+                        <h3 data-en="WhatsApp Us" data-fr="WhatsApp" data-ar="واتساب">WhatsApp</h3>
+                        <a href="https://wa.me/1234567890" class="whatsapp-btn" data-en="Chat Now" data-fr="Discuter Maintenant" data-ar="دردش الآن">Discuter Maintenant</a>
+                    </div>
+                </div>
+                <form class="contact-form" id="contactForm">
+                    <input type="text" placeholder="Votre Nom" data-placeholder-en="Your Name" data-placeholder-fr="Votre Nom" data-placeholder-ar="اسمك" required>
+                    <input type="email" placeholder="Votre Email" data-placeholder-en="Your Email" data-placeholder-fr="Votre Email" data-placeholder-ar="بريدك الإلكتروني" required>
+                    <input type="text" placeholder="Sujet" data-placeholder-en="Subject" data-placeholder-fr="Sujet" data-placeholder-ar="الموضوع" required>
+                    <textarea rows="5" placeholder="Votre Message" data-placeholder-en="Your Message" data-placeholder-fr="Votre Message" data-placeholder-ar="رسالتك" required></textarea>
+                    <button type="submit" class="btn btn-primary" data-en="Send Message" data-fr="Envoyer le Message" data-ar="إرسال الرسالة">Envoyer le Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fas fa-crown"></i> Kindom</h3>
+                    <p data-en="Your trusted partner for premium pet food and accessories" data-fr="Votre partenaire de confiance pour la nourriture et les accessoires pour animaux de qualité" data-ar="شريكك الموثوق لطعام وإكسسوارات الحيوانات الأليفة الفاخرة">Votre partenaire de confiance pour la nourriture et les accessoires pour animaux de qualité</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4 data-en="Quick Links" data-fr="Liens Rapides" data-ar="روابط سريعة">Liens Rapides</h4>
+                    <ul>
+                        <li><a href="#home" data-en="Home" data-fr="Accueil" data-ar="الرئيسية">Accueil</a></li>
+                        <li><a href="#products" data-en="Products" data-fr="Produits" data-ar="المنتجات">Produits</a></li>
+                        <li><a href="#gallery" data-en="Gallery" data-fr="Galerie" data-ar="المعرض">Galerie</a></li>
+                        <li><a href="#contact" data-en="Contact" data-fr="Contact" data-ar="اتصل بنا">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 data-en="Categories" data-fr="Catégories" data-ar="الفئات">Catégories</h4>
+                    <ul>
+                        <li><a href="#cats" data-en="Cats" data-fr="Chats" data-ar="القطط">Chats</a></li>
+                        <li><a href="#dogs" data-en="Dogs" data-fr="Chiens" data-ar="الكلاب">Chiens</a></li>
+                        <li><a href="#birds" data-en="Birds" data-fr="Oiseaux" data-ar="الطيور">Oiseaux</a></li>
+                        <li><a href="#fish" data-en="Fish" data-fr="Poissons" data-ar="الأسماك">Poissons</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Kindom. <span data-en="All rights reserved" data-fr="Tous droits réservés" data-ar="جميع الحقوق محفوظة">Tous droits réservés</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/1234567890" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Product Modal -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
