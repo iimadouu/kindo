@@ -315,11 +315,17 @@ function changeLanguage(lang) {
         }
     }
 
-    // Re-render products with new language
-    const activeTab = document.querySelector('.tab-btn.active');
-    if (activeTab) {
-        const category = activeTab.getAttribute('data-category');
+    // Re-render products and accessories with new language
+    const activeProductTab = document.querySelector('.tab-btn.active');
+    if (activeProductTab) {
+        const category = activeProductTab.getAttribute('data-category');
         renderProducts(category);
+    }
+    
+    const activeAccessoryTab = document.querySelector('.tab-btn-acc.active');
+    if (activeAccessoryTab) {
+        const category = activeAccessoryTab.getAttribute('data-category');
+        renderAccessories(category);
     }
 }
 
@@ -416,6 +422,7 @@ document.querySelectorAll('.product-card, .gallery-item, .info-card').forEach(el
 
 // Initialize
 renderProducts('cats');
+renderAccessories('cats');
 renderGallery();
 
 // Parallax Effect
