@@ -1,0 +1,75 @@
+╔════════════════════════════════════════════════════════════╗
+║                    KINDOM ADMIN PANEL                      ║
+║                    LOGIN CREDENTIALS                       ║
+╚════════════════════════════════════════════════════════════╝
+
+📍 ADMIN PANEL URL:
+   → /admin.html
+   → https://kindom.pages.dev/admin.html (after deployment)
+
+🔐 DEFAULT LOGIN CREDENTIALS:
+   Username: admin
+   Password: admin123
+
+⚠️  IMPORTANT SECURITY NOTICE:
+   → Change password IMMEDIATELY after first login
+   → Go to: Settings > Sécurité Admin
+   → Use strong password (12+ chars, mixed case, numbers, symbols)
+
+🛡️  SECURITY FEATURES:
+   ✓ PBKDF2 encryption (100,000 iterations)
+   ✓ Rate limiting (5 failed attempts = 5 min lockout)
+   ✓ Session timeout (30 minutes inactivity)
+   ✓ Input sanitization
+   ✓ XSS prevention
+
+📊 ADMIN PANEL FEATURES:
+   ✓ Product Management (Add/Edit/Delete)
+   ✓ Product Type Selection (Food/Accessory)
+   ✓ Gallery Management
+   ✓ Store Settings (WhatsApp, Email, Address)
+   ✓ Password Change
+   ✓ Theme Customization
+   ✓ Clear Sample Data
+
+💡 FIRST TIME SETUP:
+   1. Login with admin/admin123
+   2. Change password in Settings
+   3. Update store info (WhatsApp, email, address)
+   4. Clear sample data
+   5. Add your real products with photos
+   6. Test on website frontend
+
+📱 IMPORTANT NUMBERS TO UPDATE:
+   → WhatsApp: Replace 1234567890 in:
+      • index.html (search for "wa.me")
+      • Admin Settings panel
+   
+   → Phone: Update contact section
+   → Email: Update in admin settings
+
+🗄️  DATA STORAGE:
+   ✓ Products: localStorage (kindom_products)
+   ✓ Gallery: localStorage (kindom_gallery)
+   ✓ Settings: localStorage (kindom_store_settings)
+   ✓ Password: localStorage (kindom_admin_hash)
+   
+   ⚠️  Browser-based storage:
+       • Same device/browser only
+       • Clear cache = data lost
+       • Consider cloud database for production
+
+🚀 DEPLOYMENT STATUS:
+   ✓ Code ready for Cloudflare Pages
+   ✓ GitHub repo: https://github.com/iimadouu/kindo
+   ⚠️  Repo is PUBLIC (consider making PRIVATE)
+
+═══════════════════════════════════════════════════════════
+
+For detailed documentation, see:
+• FIXES_COMPLETED.md - All issues resolved
+• DATA_MANAGEMENT_GUIDE.md - Data handling
+• SECURITY.md - Security features
+• DEPLOYMENT.md - Deployment instructions
+
+═══════════════════════════════════════════════════════════

@@ -151,7 +151,6 @@
                 </ul>
                 <div class="nav-icons">
                     <button class="search-btn"><i class="fas fa-search"></i></button>
-                    <button class="cart-btn"><i class="fas fa-shopping-cart"></i><span class="cart-count">0</span></button>
                     <button class="menu-toggle" id="menuToggle">
                         <span></span>
                         <span></span>
@@ -199,21 +198,42 @@
     <!-- Products Section -->
     <section class="products" id="products">
         <div class="container">
-            <h2 class="section-title" data-en="Our Products" data-fr="Nos Produits" data-ar="منتجاتنا">Nos Produits</h2>
-            <p class="section-subtitle" data-en="Quality food and accessories for all your pets" data-fr="Nourriture et accessoires de qualité pour tous vos animaux" data-ar="طعام وإكسسوارات عالية الجودة لجميع حيواناتك الأليفة">Nourriture et accessoires de qualité pour tous vos animaux</p>
+            <h2 class="section-title" data-en="Our Products - Food" data-fr="Nos Produits - Nourriture" data-ar="منتجاتنا - طعام">Nos Produits - Nourriture</h2>
+            <p class="section-subtitle" data-en="Quality food for all your pets" data-fr="Nourriture de qualité pour tous vos animaux" data-ar="طعام عالي الجودة لجميع حيواناتك الأليفة">Nourriture de qualité pour tous vos animaux</p>
             
             <!-- Category Tabs -->
             <div class="category-tabs">
-                <button class="tab-btn active" data-category="cats" data-en="Cats" data-fr="Chats" data-ar="القطط"><i class="fas fa-cat"></i> Chats</button>
-                <button class="tab-btn" data-category="dogs" data-en="Dogs" data-fr="Chiens" data-ar="الكلاب"><i class="fas fa-dog"></i> Chiens</button>
-                <button class="tab-btn" data-category="birds" data-en="Birds" data-fr="Oiseaux" data-ar="الطيور"><i class="fas fa-dove"></i> Oiseaux</button>
-                <button class="tab-btn" data-category="fish" data-en="Fish" data-fr="Poissons" data-ar="الأسماك"><i class="fas fa-fish"></i> Poissons</button>
-                <button class="tab-btn" data-category="other" data-en="Other" data-fr="Autre" data-ar="أخرى"><i class="fas fa-box"></i> Autre</button>
+                <button class="tab-btn active" data-category="cats" data-type="food" data-en="Cats" data-fr="Chats" data-ar="القطط"><i class="fas fa-cat"></i> Chats</button>
+                <button class="tab-btn" data-category="dogs" data-type="food" data-en="Dogs" data-fr="Chiens" data-ar="الكلاب"><i class="fas fa-dog"></i> Chiens</button>
+                <button class="tab-btn" data-category="birds" data-type="food" data-en="Birds" data-fr="Oiseaux" data-ar="الطيور"><i class="fas fa-dove"></i> Oiseaux</button>
+                <button class="tab-btn" data-category="fish" data-type="food" data-en="Fish" data-fr="Poissons" data-ar="الأسماك"><i class="fas fa-fish"></i> Poissons</button>
             </div>
 
             <!-- Products Grid -->
             <div class="products-grid" id="productsGrid">
                 <!-- Products will be dynamically loaded -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Accessories Section -->
+    <section class="products accessories-section" id="accessories">
+        <div class="container">
+            <h2 class="section-title" data-en="Accessories" data-fr="Accessoires" data-ar="إكسسوارات">Accessoires</h2>
+            <p class="section-subtitle" data-en="Quality accessories for all your pets" data-fr="Accessoires de qualité pour tous vos animaux" data-ar="إكسسوارات عالية الجودة لجميع حيواناتك الأليفة">Accessoires de qualité pour tous vos animaux</p>
+            
+            <!-- Category Tabs for Accessories -->
+            <div class="category-tabs">
+                <button class="tab-btn-acc active" data-category="cats" data-type="accessory" data-en="Cats" data-fr="Chats" data-ar="القطط"><i class="fas fa-cat"></i> Chats</button>
+                <button class="tab-btn-acc" data-category="dogs" data-type="accessory" data-en="Dogs" data-fr="Chiens" data-ar="الكلاب"><i class="fas fa-dog"></i> Chiens</button>
+                <button class="tab-btn-acc" data-category="birds" data-type="accessory" data-en="Birds" data-fr="Oiseaux" data-ar="الطيور"><i class="fas fa-dove"></i> Oiseaux</button>
+                <button class="tab-btn-acc" data-category="fish" data-type="accessory" data-en="Fish" data-fr="Poissons" data-ar="الأسماك"><i class="fas fa-fish"></i> Poissons</button>
+                <button class="tab-btn-acc" data-category="other" data-type="accessory" data-en="Other" data-fr="Autre" data-ar="أخرى"><i class="fas fa-box"></i> Autre</button>
+            </div>
+
+            <!-- Accessories Grid -->
+            <div class="products-grid" id="accessoriesGrid">
+                <!-- Accessories will be dynamically loaded -->
             </div>
         </div>
     </section>
@@ -231,47 +251,40 @@
             <!-- SEO-Rich Content for AI Visibility -->
             <div class="seo-content-section">
                 <div class="seo-content-block">
-                    <h3>Pourquoi Choisir Kindom pour Vos Animaux de Compagnie en Algérie?</h3>
-                    <p>Kindom est votre partenaire de confiance pour tous les besoins de vos animaux domestiques à travers l'Algérie. Basés à Alger, nous offrons une gamme complète de produits premium pour chiens, chats, oiseaux et poissons. Notre mission est de fournir à chaque propriétaire d'animal en Algérie l'accès à des produits de qualité internationale à des prix compétitifs en Dinars Algériens (DZD).</p>
+                    <h3 data-fr="Pourquoi Choisir Kindom pour Vos Animaux de Compagnie en Algérie?" data-en="Why Choose Kindom for Your Pets in Algeria?" data-ar="لماذا تختار كيندوم لحيواناتك الأليفة في الجزائر؟">Pourquoi Choisir Kindom pour Vos Animaux de Compagnie en Algérie?</h3>
+                    <p data-fr="Kindom est votre partenaire de confiance pour tous les besoins de vos animaux domestiques à travers l'Algérie. Basés à Alger, nous offrons une gamme complète de produits premium pour chiens, chats, oiseaux et poissons. Notre mission est de fournir à chaque propriétaire d'animal en Algérie l'accès à des produits de qualité internationale à des prix compétitifs en Dinars Algériens (DZD)." data-en="Kindom is your trusted partner for all your pet needs across Algeria. Based in Algiers, we offer a complete range of premium products for dogs, cats, birds and fish. Our mission is to provide every pet owner in Algeria with access to international quality products at competitive prices in Algerian Dinars (DZD)." data-ar="كيندوم هو شريكك الموثوق لجميع احتياجات حيواناتك الأليفة في جميع أنحاء الجزائر. نحن نقدم مجموعة كاملة من المنتجات الفاخرة للكلاب والقطط والطيور والأسماك. مهمتنا هي توفير الوصول لكل مالك حيوان أليف في الجزائر إلى منتجات ذات جودة عالمية بأسعار تنافسية بالدينار الجزائري.">Kindom est votre partenaire de confiance pour tous les besoins de vos animaux domestiques à travers l'Algérie. Basés à Alger, nous offrons une gamme complète de produits premium pour chiens, chats, oiseaux et poissons. Notre mission est de fournir à chaque propriétaire d'animal en Algérie l'accès à des produits de qualité internationale à des prix compétitifs en Dinars Algériens (DZD).</p>
                     
-                    <p>Que vous soyez à Alger, Oran, Constantine, Annaba, Blida, Batna, Sétif, ou n'importe où en Algérie, nous nous engageons à livrer rapidement vos commandes de nourriture et accessoires pour animaux. Notre catalogue inclut des croquettes premium, des jouets interactifs, des accessoires de toilettage, des cages confortables, des aquariums, et bien plus encore.</p>
+                    <p data-fr="Que vous soyez à Alger, Oran, Constantine, Annaba, Blida, Batna, Sétif, ou n'importe où en Algérie, nous nous engageons à livrer rapidement vos commandes de nourriture et accessoires pour animaux. Notre catalogue inclut des croquettes premium, des jouets interactifs, des accessoires de toilettage, des cages confortables, des aquariums, et bien plus encore." data-en="Whether you are in Algiers, Oran, Constantine, Annaba, Blida, Batna, Setif, or anywhere in Algeria, we are committed to quickly delivering your pet food and accessories orders. Our catalog includes premium kibble, interactive toys, grooming accessories, comfortable cages, aquariums, and much more." data-ar="سواء كنت في الجزائر العاصمة، وهران، قسنطينة، عنابة، البليدة، باتنة، سطيف، أو في أي مكان في الجزائر، نحن ملتزمون بتوصيل طلباتك من طعام وإكسسوارات الحيوانات الأليفة بسرعة. يشمل كتالوجنا طعام الحيوانات الفاخر، ألعاب تفاعلية، إكسسوارات التنظيف، أقفاص مريحة، أحواض أسماك، والمزيد.">Que vous soyez à Alger, Oran, Constantine, Annaba, Blida, Batna, Sétif, ou n'importe où en Algérie, nous nous engageons à livrer rapidement vos commandes de nourriture et accessoires pour animaux. Notre catalogue inclut des croquettes premium, des jouets interactifs, des accessoires de toilettage, des cages confortables, des aquariums, et bien plus encore.</p>
                 </div>
 
                 <div class="seo-content-block">
-                    <h3>Notre Gamme de Produits pour Animaux</h3>
+                    <h3 data-fr="Notre Gamme de Produits pour Animaux" data-en="Our Range of Pet Products" data-ar="مجموعتنا من منتجات الحيوانات الأليفة">Notre Gamme de Produits pour Animaux</h3>
                     
-                    <h4>🐕 Nourriture et Accessoires pour Chiens</h4>
-                    <p>Découvrez notre sélection de croquettes premium pour chiens de toutes tailles et races. Nous proposons des formules adaptées aux chiots, adultes et seniors, ainsi que des aliments spécialisés pour chiens sensibles ou allergiques. Nos accessoires incluent des laisses robustes, des colliers élégants, des jouets à mâcher durables, des paniers confortables, et des produits de toilettage professionnels. Tous nos produits canins sont sélectionnés pour leur qualité et leur sécurité.</p>
+                    <h4 data-fr="🐕 Nourriture et Accessoires pour Chiens" data-en="🐕 Dog Food and Accessories" data-ar="🐕 طعام وإكسسوارات الكلاب">🐕 Nourriture et Accessoires pour Chiens</h4>
+                    <p data-fr="Découvrez notre sélection de croquettes premium pour chiens de toutes tailles et races. Nous proposons des formules adaptées aux chiots, adultes et seniors, ainsi que des aliments spécialisés pour chiens sensibles ou allergiques. Nos accessoires incluent des laisses robustes, des colliers élégants, des jouets à mâcher durables, des paniers confortables, et des produits de toilettage professionnels. Tous nos produits canins sont sélectionnés pour leur qualité et leur sécurité." data-en="Discover our selection of premium kibble for dogs of all sizes and breeds. We offer formulas suitable for puppies, adults and seniors, as well as specialized foods for sensitive or allergic dogs. Our accessories include sturdy leashes, elegant collars, durable chew toys, comfortable beds, and professional grooming products. All our canine products are selected for their quality and safety." data-ar="اكتشف مجموعتنا من طعام الكلاب الفاخر لجميع الأحجام والسلالات. نقدم تركيبات مناسبة للجراء والبالغين وكبار السن، بالإضافة إلى أطعمة متخصصة للكلاب الحساسة أو المصابة بالحساسية. تشمل إكسسواراتنا أطواقًا قوية، وياقات أنيقة، وألعاب مضغ متينة، وأسرّة مريحة، ومنتجات تنظيف احترافية.">Découvrez notre sélection de croquettes premium pour chiens de toutes tailles et races. Nous proposons des formules adaptées aux chiots, adultes et seniors, ainsi que des aliments spécialisés pour chiens sensibles ou allergiques. Nos accessoires incluent des laisses robustes, des colliers élégants, des jouets à mâcher durables, des paniers confortables, et des produits de toilettage professionnels. Tous nos produits canins sont sélectionnés pour leur qualité et leur sécurité.</p>
                     
-                    <h4>🐈 Nourriture et Accessoires pour Chats</h4>
-                    <p>Offrez à votre félin une alimentation équilibrée avec nos croquettes et pâtées haut de gamme. Notre gamme féline comprend également des arbres à chat, des griffoirs, des jouets stimulants, des litières de qualité, et des accessoires de toilettage. Que votre chat soit d'intérieur ou d'extérieur, jeune ou âgé, nous avons les produits adaptés à ses besoins spécifiques.</p>
+                    <h4 data-fr="🐈 Nourriture et Accessoires pour Chats" data-en="🐈 Cat Food and Accessories" data-ar="🐈 طعام وإكسسوارات القطط">🐈 Nourriture et Accessoires pour Chats</h4>
+                    <p data-fr="Offrez à votre félin une alimentation équilibrée avec nos croquettes et pâtées haut de gamme. Notre gamme féline comprend également des arbres à chat, des griffoirs, des jouets stimulants, des litières de qualité, et des accessoires de toilettage. Que votre chat soit d'intérieur ou d'extérieur, jeune ou âgé, nous avons les produits adaptés à ses besoins spécifiques." data-en="Give your feline a balanced diet with our high-end kibble and pâté. Our feline range also includes cat trees, scratching posts, stimulating toys, quality litter, and grooming accessories. Whether your cat is indoor or outdoor, young or old, we have products suited to its specific needs." data-ar="قدم لقطك نظامًا غذائيًا متوازنًا مع طعام القطط عالي الجودة. تشمل مجموعتنا للقطط أيضًا أشجار القطط، ومخدشات، وألعابًا محفزة، ورمل قطط عالي الجودة، وإكسسوارات العناية. سواء كان قطك داخليًا أو خارجيًا، صغيرًا أو كبيرًا، لدينا المنتجات المناسبة لاحتياجاته الخاصة.">Offrez à votre félin une alimentation équilibrée avec nos croquettes et pâtées haut de gamme. Notre gamme féline comprend également des arbres à chat, des griffoirs, des jouets stimulants, des litières de qualité, et des accessoires de toilettage. Que votre chat soit d'intérieur ou d'extérieur, jeune ou âgé, nous avons les produits adaptés à ses besoins spécifiques.</p>
                     
-                    <h4>🐦 Graines et Accessoires pour Oiseaux</h4>
-                    <p>Nous proposons des mélanges de graines nutritifs pour canaris, perruches, perroquets et autres oiseaux domestiques. Notre sélection inclut également des cages spacieuses, des jouets colorés, des perchoirs confortables, et des compléments alimentaires pour maintenir vos oiseaux en pleine santé et actifs.</p>
+                    <h4 data-fr="🐦 Graines et Accessoires pour Oiseaux" data-en="🐦 Bird Seeds and Accessories" data-ar="🐦 بذور وإكسسوارات الطيور">🐦 Graines et Accessoires pour Oiseaux</h4>
+                    <p data-fr="Nous proposons des mélanges de graines nutritifs pour canaris, perruches, perroquets et autres oiseaux domestiques. Notre sélection inclut également des cages spacieuses, des jouets colorés, des perchoirs confortables, et des compléments alimentaires pour maintenir vos oiseaux en pleine santé et actifs." data-en="We offer nutritious seed mixes for canaries, parakeets, parrots and other domestic birds. Our selection also includes spacious cages, colorful toys, comfortable perches, and dietary supplements to keep your birds healthy and active." data-ar="نقدم خلطات بذور مغذية للكناري والببغاوات والببغاوات الصغيرة وغيرها من الطيور الأليفة. تشمل مجموعتنا أيضًا أقفاصًا واسعة، وألعابًا ملونة، ومجاثم مريحة، ومكملات غذائية للحفاظ على صحة ونشاط طيورك.">Nous proposons des mélanges de graines nutritifs pour canaris, perruches, perroquets et autres oiseaux domestiques. Notre sélection inclut également des cages spacieuses, des jouets colorés, des perchoirs confortables, et des compléments alimentaires pour maintenir vos oiseaux en pleine santé et actifs.</p>
                     
-                    <h4>🐠 Nourriture et Équipement pour Poissons</h4>
-                    <p>Créez un environnement aquatique parfait avec nos flocons et granulés de qualité premium, nos aquariums élégants, nos filtres performants, nos plantes décoratives, et nos accessoires d'entretien. Que vous soyez amateur de poissons tropicaux, d'eau froide, ou de poissons rouges, nous avons l'équipement nécessaire.</p>
+                    <h4 data-fr="🐠 Nourriture et Équipement pour Poissons" data-en="🐠 Fish Food and Equipment" data-ar="🐠 طعام ومعدات الأسماك">🐠 Nourriture et Équipement pour Poissons</h4>
+                    <p data-fr="Créez un environnement aquatique parfait avec nos flocons et granulés de qualité premium, nos aquariums élégants, nos filtres performants, nos plantes décoratives, et nos accessoires d'entretien. Que vous soyez amateur de poissons tropicaux, d'eau froide, ou de poissons rouges, nous avons l'équipement nécessaire." data-en="Create a perfect aquatic environment with our premium quality flakes and pellets, elegant aquariums, efficient filters, decorative plants, and maintenance accessories. Whether you are a fan of tropical fish, cold water, or goldfish, we have the necessary equipment." data-ar="أنشئ بيئة مائية مثالية مع رقائقنا وحبيباتنا عالية الجودة، وأحواض الأسماك الأنيقة، والمرشحات الفعالة، والنباتات الزخرفية، وإكسسوارات الصيانة. سواء كنت من محبي الأسماك الاستوائية، أو الماء البارد، أو السمك الذهبي، لدينا المعدات اللازمة.">Créez un environnement aquatique parfait avec nos flocons et granulés de qualité premium, nos aquariums élégants, nos filtres performants, nos plantes décoratives, et nos accessoires d'entretien. Que vous soyez amateur de poissons tropicaux, d'eau froide, ou de poissons rouges, nous avons l'équipement nécessaire.</p>
                 </div>
 
                 <div class="seo-content-block">
-                    <h3>Service Client et Livraison en Algérie</h3>
-                    <p>Chez Kindom, nous comprenons l'importance de la rapidité et de la fiabilité. C'est pourquoi nous offrons une livraison efficace dans toute l'Algérie. Commandez facilement via WhatsApp et recevez vos produits directement chez vous. Notre équipe est disponible pour répondre à toutes vos questions sur nos produits, vous conseiller sur le meilleur choix pour votre animal, et assurer un service après-vente de qualité.</p>
+                    <h3 data-fr="Service Client et Livraison en Algérie" data-en="Customer Service and Delivery in Algeria" data-ar="خدمة العملاء والتوصيل في الجزائر">Service Client et Livraison en Algérie</h3>
+                    <p data-fr="Chez Kindom, nous comprenons l'importance de la rapidité et de la fiabilité. C'est pourquoi nous offrons une livraison efficace dans toute l'Algérie. Commandez facilement via WhatsApp et recevez vos produits directement chez vous. Notre équipe est disponible pour répondre à toutes vos questions sur nos produits, vous conseiller sur le meilleur choix pour votre animal, et assurer un service après-vente de qualité." data-en="At Kindom, we understand the importance of speed and reliability. That's why we offer efficient delivery throughout Algeria. Order easily via WhatsApp and receive your products directly at home. Our team is available to answer all your questions about our products, advise you on the best choice for your pet, and provide quality after-sales service." data-ar="في كيندوم، نفهم أهمية السرعة والموثوقية. لهذا السبب نقدم توصيلًا فعالًا في جميع أنحاء الجزائر. اطلب بسهولة عبر واتساب واستلم منتجاتك مباشرة في المنزل. فريقنا متاح للإجابة على جميع أسئلتك حول منتجاتنا، ونصحك بأفضل اختيار لحيوانك الأليف، وتقديم خدمة ما بعد البيع عالية الجودة.">Chez Kindom, nous comprenons l'importance de la rapidité et de la fiabilité. C'est pourquoi nous offrons une livraison efficace dans toute l'Algérie. Commandez facilement via WhatsApp et recevez vos produits directement chez vous. Notre équipe est disponible pour répondre à toutes vos questions sur nos produits, vous conseiller sur le meilleur choix pour votre animal, et assurer un service après-vente de qualité.</p>
                     
-                    <p>Nous acceptons plusieurs modes de paiement en Dinars Algériens (DZD) pour votre confort: paiement à la livraison, virement bancaire, et paiement mobile. Votre satisfaction et celle de vos animaux sont notre priorité absolue.</p>
+                    <p data-fr="Nous acceptons plusieurs modes de paiement en Dinars Algériens (DZD) pour votre confort: paiement à la livraison, virement bancaire, et paiement mobile. Votre satisfaction et celle de vos animaux sont notre priorité absolue." data-en="We accept multiple payment methods in Algerian Dinars (DZD) for your convenience: cash on delivery, bank transfer, and mobile payment. Your satisfaction and that of your pets are our absolute priority." data-ar="نقبل طرق دفع متعددة بالدينار الجزائري (DZD) لراحتك: الدفع عند الاستلام، والتحويل البنكي، والدفع عبر الهاتف المحمول. رضاك ورضا حيواناتك الأليفة هو أولويتنا المطلقة.">Nous acceptons plusieurs modes de paiement en Dinars Algériens (DZD) pour votre confort: paiement à la livraison, virement bancaire, et paiement mobile. Votre satisfaction et celle de vos animaux sont notre priorité absolue.</p>
                 </div>
 
                 <div class="seo-content-block">
-                    <h3>Conseils d'Experts pour le Bien-être de Vos Animaux</h3>
-                    <p>Au-delà de la vente de produits, Kindom s'engage à éduquer les propriétaires d'animaux sur les meilleures pratiques de soins. Une nutrition appropriée est essentielle pour la santé de votre animal. Les chiens ont besoin d'une alimentation riche en protéines, les chats nécessitent de la taurine, les oiseaux bénéficient de graines variées, et les poissons prospèrent avec une alimentation équilibrée spécifique à leur espèce.</p>
+                    <h3 data-fr="Conseils d'Experts pour le Bien-être de Vos Animaux" data-en="Expert Advice for Your Pets' Well-being" data-ar="نصائح الخبراء لرفاهية حيواناتك الأليفة">Conseils d'Experts pour le Bien-être de Vos Animaux</h3>
+                    <p data-fr="Au-delà de la vente de produits, Kindom s'engage à éduquer les propriétaires d'animaux sur les meilleures pratiques de soins. Une nutrition appropriée est essentielle pour la santé de votre animal. Les chiens ont besoin d'une alimentation riche en protéines, les chats nécessitent de la taurine, les oiseaux bénéficient de graines variées, et les poissons prospèrent avec une alimentation équilibrée spécifique à leur espèce." data-en="Beyond selling products, Kindom is committed to educating pet owners on best care practices. Proper nutrition is essential for your pet's health. Dogs need a protein-rich diet, cats require taurine, birds benefit from varied seeds, and fish thrive on a balanced diet specific to their species." data-ar="بالإضافة إلى بيع المنتجات، تلتزم كيندوم بتثقيف مالكي الحيوانات الأليفة حول أفضل ممارسات الرعاية. التغذية السليمة ضرورية لصحة حيوانك الأليف. تحتاج الكلاب إلى نظام غذائي غني بالبروتين، وتحتاج القطط إلى التورين، وتستفيد الطيور من البذور المتنوعة، وتزدهر الأسماك بنظام غذائي متوازن خاص بنوعها.">Au-delà de la vente de produits, Kindom s'engage à éduquer les propriétaires d'animaux sur les meilleures pratiques de soins. Une nutrition appropriée est essentielle pour la santé de votre animal. Les chiens ont besoin d'une alimentation riche en protéines, les chats nécessitent de la taurine, les oiseaux bénéficient de graines variées, et les poissons prospèrent avec une alimentation équilibrée spécifique à leur espèce.</p>
                     
-                    <p>N'oubliez pas l'importance de l'exercice régulier, des visites vétérinaires, du toilettage, et de l'enrichissement environnemental pour le bonheur de vos compagnons. Kindom est là pour vous accompagner à chaque étape du parcours avec votre animal de compagnie.</p>
-                </div>
-
-                <div class="seo-content-block" lang="ar" dir="rtl">
-                    <h3>لماذا تختار كيندوم لحيواناتك الأليفة في الجزائر؟</h3>
-                    <p>كيندوم هو شريكك الموثوق لجميع احتياجات حيواناتك الأليفة في جميع أنحاء الجزائر. نحن نقدم مجموعة كاملة من المنتجات الفاخرة للكلاب والقطط والطيور والأسماك. مهمتنا هي توفير الوصول لكل مالك حيوان أليف في الجزائر إلى منتجات ذات جودة عالمية بأسعار تنافسية بالدينار الجزائري.</p>
-                    
-                    <p>سواء كنت في الجزائر العاصمة، وهران، قسنطينة، عنابة، البليدة، باتنة، سطيف، أو في أي مكان في الجزائر، نحن ملتزمون بتوصيل طلباتك من طعام وإكسسوارات الحيوانات الأليفة بسرعة. يشمل كتالوجنا طعام الحيوانات الفاخر، ألعاب تفاعلية، إكسسوارات التنظيف، أقفاص مريحة، أحواض أسماك، والمزيد.</p>
+                    <p data-fr="N'oubliez pas l'importance de l'exercice régulier, des visites vétérinaires, du toilettage, et de l'enrichissement environnemental pour le bonheur de vos compagnons. Kindom est là pour vous accompagner à chaque étape du parcours avec votre animal de compagnie." data-en="Don't forget the importance of regular exercise, veterinary visits, grooming, and environmental enrichment for your companions' happiness. Kindom is here to support you every step of the way with your pet." data-ar="لا تنسَ أهمية التمارين المنتظمة، والزيارات البيطرية، والعناية، والإثراء البيئي لسعادة رفاقك. كيندوم هنا لدعمك في كل خطوة من رحلتك مع حيوانك الأليف.">N'oubliez pas l'importance de l'exercice régulier, des visites vétérinaires, du toilettage, et de l'enrichissement environnemental pour le bonheur de vos compagnons. Kindom est là pour vous accompagner à chaque étape du parcours avec votre animal de compagnie.</p>
                 </div>
             </div>
         </div>
@@ -366,6 +379,30 @@
         <div class="modal-content">
             <span class="close-modal">&times;</span>
             <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div class="modal" id="searchModal">
+        <div class="modal-content search-modal-content">
+            <span class="close-modal" id="closeSearch">&times;</span>
+            <div class="search-modal-body">
+                <h2 data-en="Search Products" data-fr="Rechercher des Produits" data-ar="البحث عن المنتجات">Rechercher des Produits</h2>
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Rechercher..." data-placeholder-en="Search..." data-placeholder-fr="Rechercher..." data-placeholder-ar="بحث...">
+                </div>
+                <div class="search-filters">
+                    <button class="filter-chip active" data-filter="all" data-en="All" data-fr="Tout" data-ar="الكل">Tout</button>
+                    <button class="filter-chip" data-filter="cats" data-en="Cats" data-fr="Chats" data-ar="القطط">Chats</button>
+                    <button class="filter-chip" data-filter="dogs" data-en="Dogs" data-fr="Chiens" data-ar="الكلاب">Chiens</button>
+                    <button class="filter-chip" data-filter="birds" data-en="Birds" data-fr="Oiseaux" data-ar="الطيور">Oiseaux</button>
+                    <button class="filter-chip" data-filter="fish" data-en="Fish" data-fr="Poissons" data-ar="الأسماك">Poissons</button>
+                </div>
+                <div class="search-results" id="searchResults">
+                    <!-- Search results will be shown here -->
+                </div>
+            </div>
         </div>
     </div>
 

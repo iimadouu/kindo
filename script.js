@@ -1,29 +1,29 @@
 // Sample Product Data (will be overridden by localStorage if available)
 let productsData = {
     cats: [
-        { id: 1, name: "Nourriture Premium pour Chats", category: "cats", price: "29.99 DH", description: "Nutrition de haute qualité pour votre ami félin", image: "https://images.unsplash.com/photo-1589652717521-10c0d092dea9?w=500", inStock: true },
-        { id: 2, name: "Arbre à Chat", category: "cats", price: "45.99 DH", description: "Griffoir durable avec plusieurs niveaux", image: "https://images.unsplash.com/photo-1545249390-6bdfa286032f?w=500", inStock: true },
-        { id: 3, name: "Jouet Interactif pour Chat", category: "cats", price: "19.99 DH", description: "Divertissez votre chat pendant des heures", image: "https://images.unsplash.com/photo-1529257414772-1960b7bea4eb?w=500", inStock: false },
+        { id: 1, name: "Nourriture Premium pour Chats", category: "cats", price: "2900 DZD", description: "Nutrition de haute qualité pour votre ami félin", image: "https://images.unsplash.com/photo-1589652717521-10c0d092dea9?w=500", inStock: true, type: "food" },
+        { id: 2, name: "Arbre à Chat", category: "cats", price: "4500 DZD", description: "Griffoir durable avec plusieurs niveaux", image: "https://images.unsplash.com/photo-1545249390-6bdfa286032f?w=500", inStock: true, type: "accessory" },
+        { id: 3, name: "Jouet Interactif pour Chat", category: "cats", price: "1900 DZD", description: "Divertissez votre chat pendant des heures", image: "https://images.unsplash.com/photo-1529257414772-1960b7bea4eb?w=500", inStock: false, type: "accessory" },
     ],
     dogs: [
-        { id: 4, name: "Nourriture Premium pour Chiens", category: "dogs", price: "39.99 DH", description: "Repas nutritifs pour chiens en bonne santé", image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=500", inStock: true },
-        { id: 5, name: "Laisse et Collier", category: "dogs", price: "24.99 DH", description: "Ensemble de promenade confortable et élégant", image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=500", inStock: true },
-        { id: 6, name: "Jouets à Mâcher", category: "dogs", price: "34.99 DH", description: "Pack variété de jouets à mâcher durables", image: "https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=500", inStock: true },
+        { id: 4, name: "Nourriture Premium pour Chiens", category: "dogs", price: "3900 DZD", description: "Repas nutritifs pour chiens en bonne santé", image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=500", inStock: true, type: "food" },
+        { id: 5, name: "Laisse et Collier", category: "dogs", price: "2400 DZD", description: "Ensemble de promenade confortable et élégant", image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=500", inStock: true, type: "accessory" },
+        { id: 6, name: "Jouets à Mâcher", category: "dogs", price: "3400 DZD", description: "Pack variété de jouets à mâcher durables", image: "https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=500", inStock: true, type: "accessory" },
     ],
     birds: [
-        { id: 7, name: "Mélange de Graines pour Oiseaux", category: "birds", price: "15.99 DH", description: "Mélange nutritif pour tous les oiseaux", image: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=500", inStock: true },
-        { id: 8, name: "Cage pour Oiseaux", category: "birds", price: "89.99 DH", description: "Maison spacieuse et confortable pour oiseaux", image: "https://images.unsplash.com/photo-1444464666168-49d633b86797?w=500", inStock: true },
-        { id: 9, name: "Ensemble de Jouets pour Oiseaux", category: "birds", price: "22.99 DH", description: "Jouets amusants pour oiseaux actifs", image: "https://images.unsplash.com/photo-1578828876330-5ac4ab90fdeb?w=500", inStock: true },
+        { id: 7, name: "Mélange de Graines pour Oiseaux", category: "birds", price: "1500 DZD", description: "Mélange nutritif pour tous les oiseaux", image: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=500", inStock: true, type: "food" },
+        { id: 8, name: "Cage pour Oiseaux", category: "birds", price: "8900 DZD", description: "Maison spacieuse et confortable pour oiseaux", image: "https://images.unsplash.com/photo-1444464666168-49d633b86797?w=500", inStock: true, type: "accessory" },
+        { id: 9, name: "Ensemble de Jouets pour Oiseaux", category: "birds", price: "2200 DZD", description: "Jouets amusants pour oiseaux actifs", image: "https://images.unsplash.com/photo-1578828876330-5ac4ab90fdeb?w=500", inStock: true, type: "accessory" },
     ],
     fish: [
-        { id: 10, name: "Flocons pour Poissons", category: "fish", price: "12.99 DH", description: "Nutrition premium pour poissons tropicaux", image: "https://images.unsplash.com/photo-1535591273668-578e31182c4f?w=500", inStock: true },
-        { id: 11, name: "Filtre d'Aquarium", category: "fish", price: "49.99 DH", description: "Gardez l'eau de votre aquarium cristalline", image: "https://images.unsplash.com/photo-1520990269076-e7e0821a0a89?w=500", inStock: true },
-        { id: 12, name: "Plantes Décoratives", category: "fish", price: "18.99 DH", description: "Belles décorations d'aquarium", image: "https://images.unsplash.com/photo-1524704796725-9fc3044a58b1?w=500", inStock: false },
+        { id: 10, name: "Flocons pour Poissons", category: "fish", price: "1200 DZD", description: "Nutrition premium pour poissons tropicaux", image: "https://images.unsplash.com/photo-1535591273668-578e31182c4f?w=500", inStock: true, type: "food" },
+        { id: 11, name: "Filtre d'Aquarium", category: "fish", price: "4900 DZD", description: "Gardez l'eau de votre aquarium cristalline", image: "https://images.unsplash.com/photo-1520990269076-e7e0821a0a89?w=500", inStock: true, type: "accessory" },
+        { id: 12, name: "Plantes Décoratives", category: "fish", price: "1800 DZD", description: "Belles décorations d'aquarium", image: "https://images.unsplash.com/photo-1524704796725-9fc3044a58b1?w=500", inStock: false, type: "accessory" },
     ],
     other: [
-        { id: 13, name: "Kit de Toilettage", category: "other", price: "32.99 DH", description: "Ensemble complet d'outils de toilettage", image: "https://images.unsplash.com/photo-1581888227599-779811939961?w=500", inStock: true },
-        { id: 14, name: "Cage de Transport", category: "other", price: "54.99 DH", description: "Transport sûr et confortable pour animaux", image: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=500", inStock: true },
-        { id: 15, name: "Lit pour Animaux", category: "other", price: "44.99 DH", description: "Espace de couchage confortable pour votre animal", image: "https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?w=500", inStock: true },
+        { id: 13, name: "Kit de Toilettage", category: "other", price: "3200 DZD", description: "Ensemble complet d'outils de toilettage", image: "https://images.unsplash.com/photo-1581888227599-779811939961?w=500", inStock: true, type: "accessory" },
+        { id: 14, name: "Cage de Transport", category: "other", price: "5400 DZD", description: "Transport sûr et confortable pour animaux", image: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=500", inStock: true, type: "accessory" },
+        { id: 15, name: "Lit pour Animaux", category: "other", price: "4400 DZD", description: "Espace de couchage confortable pour votre animal", image: "https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?w=500", inStock: true, type: "accessory" },
     ]
 };
 
@@ -125,9 +125,9 @@ document.querySelectorAll('.nav-link').forEach(link => {
     });
 });
 
-// Render Products
+// Render Products (Food only)
 function renderProducts(category) {
-    const products = productsData[category];
+    const products = productsData[category].filter(p => p.type === 'food');
     const trans = translations[currentLang];
     
     productsGrid.innerHTML = products.map(product => `
@@ -152,6 +152,43 @@ function renderProducts(category) {
 
     // Add click event to product cards
     document.querySelectorAll('.product-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+            if (!e.target.closest('.whatsapp-order-btn')) {
+                const productId = card.getAttribute('data-id');
+                showProductModal(productId);
+            }
+        });
+    });
+}
+
+// Render Accessories
+function renderAccessories(category) {
+    const accessories = productsData[category].filter(p => p.type === 'accessory');
+    const trans = translations[currentLang];
+    const accessoriesGrid = document.getElementById('accessoriesGrid');
+    
+    accessoriesGrid.innerHTML = accessories.map(product => `
+        <div class="product-card" data-id="${product.id}">
+            <span class="stock-badge ${product.inStock ? 'in-stock' : 'out-of-stock'}">
+                ${product.inStock ? trans.inStock : trans.outOfStock}
+            </span>
+            <img src="${product.image}" alt="${product.name}" class="product-image">
+            <div class="product-info">
+                <span class="product-category">${category}</span>
+                <h3 class="product-name">${product.name}</h3>
+                <p class="product-description">${product.description}</p>
+                <div class="product-footer">
+                    <span class="product-price">${product.price}</span>
+                    <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}')">
+                        <i class="fab fa-whatsapp"></i> ${trans.orderWhatsApp}
+                    </button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    // Add click event to accessory cards
+    document.querySelectorAll('#accessoriesGrid .product-card').forEach(card => {
         card.addEventListener('click', (e) => {
             if (!e.target.closest('.whatsapp-order-btn')) {
                 const productId = card.getAttribute('data-id');
@@ -196,13 +233,24 @@ productModal.addEventListener('click', (e) => {
     }
 });
 
-// Category Tabs
+// Category Tabs for Food
 categoryTabs.forEach(tab => {
     tab.addEventListener('click', () => {
         categoryTabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
         const category = tab.getAttribute('data-category');
         renderProducts(category);
+    });
+});
+
+// Category Tabs for Accessories
+const accessoryTabs = document.querySelectorAll('.tab-btn-acc');
+accessoryTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        accessoryTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const category = tab.getAttribute('data-category');
+        renderAccessories(category);
     });
 });
 
@@ -395,12 +443,100 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// Search functionality placeholder
-document.querySelector('.search-btn').addEventListener('click', () => {
-    const searchTerm = prompt('Rechercher des produits:');
-    if (searchTerm) {
-        alert(`Recherche de: ${searchTerm}\n\nLa fonctionnalité de recherche sera implémentée dans le panneau d'administration.`);
+// Search Modal Functionality
+const searchModal = document.getElementById('searchModal');
+const searchBtn = document.querySelector('.search-btn');
+const closeSearch = document.getElementById('closeSearch');
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+const filterChips = document.querySelectorAll('.filter-chip');
+
+let currentSearchFilter = 'all';
+
+// Open search modal
+searchBtn.addEventListener('click', () => {
+    searchModal.classList.add('active');
+    searchInput.focus();
+});
+
+// Close search modal
+closeSearch.addEventListener('click', () => {
+    searchModal.classList.remove('active');
+    searchInput.value = '';
+    searchResults.innerHTML = '';
+});
+
+// Close on outside click
+searchModal.addEventListener('click', (e) => {
+    if (e.target === searchModal) {
+        searchModal.classList.remove('active');
+        searchInput.value = '';
+        searchResults.innerHTML = '';
     }
 });
+
+// Filter chips
+filterChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+        filterChips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        currentSearchFilter = chip.getAttribute('data-filter');
+        performSearch(searchInput.value);
+    });
+});
+
+// Search input handler
+searchInput.addEventListener('input', (e) => {
+    performSearch(e.target.value);
+});
+
+// Perform search
+function performSearch(query) {
+    const allProducts = Object.values(productsData).flat();
+    let filteredProducts = allProducts;
+    
+    // Apply category filter
+    if (currentSearchFilter !== 'all') {
+        filteredProducts = filteredProducts.filter(p => p.category === currentSearchFilter);
+    }
+    
+    // Apply search query
+    if (query.trim()) {
+        const searchTerm = query.toLowerCase();
+        filteredProducts = filteredProducts.filter(p => 
+            p.name.toLowerCase().includes(searchTerm) ||
+            p.description.toLowerCase().includes(searchTerm) ||
+            p.category.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    // Display results
+    if (filteredProducts.length === 0) {
+        searchResults.innerHTML = `
+            <div class="no-results">
+                <i class="fas fa-search"></i>
+                <p data-en="No products found" data-fr="Aucun produit trouvé" data-ar="لم يتم العثور على منتجات">Aucun produit trouvé</p>
+            </div>
+        `;
+    } else {
+        const trans = translations[currentLang];
+        searchResults.innerHTML = filteredProducts.map(product => `
+            <div class="search-result-item" onclick="showProductModal(${product.id}); document.getElementById('searchModal').classList.remove('active');">
+                <img src="${product.image}" alt="${product.name}">
+                <div class="search-result-info">
+                    <h4>${product.name}</h4>
+                    <p>${product.description}</p>
+                    <div class="search-result-footer">
+                        <span class="price">${product.price}</span>
+                        <span class="category">${product.category}</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+}
+
+// Initialize accessories on page load
+renderAccessories('cats');
 
 console.log('Kindom Pet Store - Website Loaded Successfully! 🐾');

@@ -1,20 +1,20 @@
 // Sample Data (in real app, this would come from a database)
 let products = [
-    { id: 1, name: "Nourriture Premium pour Chats", category: "cats", price: "29.99 DH", description: "Nutrition de haute qualité pour votre ami félin", image: "https://images.unsplash.com/photo-1589652717521-10c0d092dea9?w=500", inStock: true },
-    { id: 2, name: "Arbre à Chat", category: "cats", price: "45.99 DH", description: "Griffoir durable avec plusieurs niveaux", image: "https://images.unsplash.com/photo-1545249390-6bdfa286032f?w=500", inStock: true },
-    { id: 3, name: "Jouet Interactif pour Chat", category: "cats", price: "19.99 DH", description: "Divertissez votre chat pendant des heures", image: "https://images.unsplash.com/photo-1529257414772-1960b7bea4eb?w=500", inStock: false },
-    { id: 4, name: "Nourriture Premium pour Chiens", category: "dogs", price: "39.99 DH", description: "Repas nutritifs pour chiens en bonne santé", image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=500", inStock: true },
-    { id: 5, name: "Laisse et Collier", category: "dogs", price: "24.99 DH", description: "Ensemble de promenade confortable et élégant", image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=500", inStock: true },
-    { id: 6, name: "Jouets à Mâcher", category: "dogs", price: "34.99 DH", description: "Pack variété de jouets à mâcher durables", image: "https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=500", inStock: true },
-    { id: 7, name: "Mélange de Graines pour Oiseaux", category: "birds", price: "15.99 DH", description: "Mélange nutritif pour tous les oiseaux", image: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=500", inStock: true },
-    { id: 8, name: "Cage pour Oiseaux", category: "birds", price: "89.99 DH", description: "Maison spacieuse et confortable pour oiseaux", image: "https://images.unsplash.com/photo-1444464666168-49d633b86797?w=500", inStock: true },
-    { id: 9, name: "Ensemble de Jouets pour Oiseaux", category: "birds", price: "22.99 DH", description: "Jouets amusants pour oiseaux actifs", image: "https://images.unsplash.com/photo-1578828876330-5ac4ab90fdeb?w=500", inStock: true },
-    { id: 10, name: "Flocons pour Poissons", category: "fish", price: "12.99 DH", description: "Nutrition premium pour poissons tropicaux", image: "https://images.unsplash.com/photo-1535591273668-578e31182c4f?w=500", inStock: true },
-    { id: 11, name: "Filtre d'Aquarium", category: "fish", price: "49.99 DH", description: "Gardez l'eau de votre aquarium cristalline", image: "https://images.unsplash.com/photo-1520990269076-e7e0821a0a89?w=500", inStock: true },
-    { id: 12, name: "Plantes Décoratives", category: "fish", price: "18.99 DH", description: "Belles décorations d'aquarium", image: "https://images.unsplash.com/photo-1524704796725-9fc3044a58b1?w=500", inStock: false },
-    { id: 13, name: "Kit de Toilettage", category: "other", price: "32.99 DH", description: "Ensemble complet d'outils de toilettage", image: "https://images.unsplash.com/photo-1581888227599-779811939961?w=500", inStock: true },
-    { id: 14, name: "Cage de Transport", category: "other", price: "54.99 DH", description: "Transport sûr et confortable pour animaux", image: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=500", inStock: true },
-    { id: 15, name: "Lit pour Animaux", category: "other", price: "44.99 DH", description: "Espace de couchage confortable pour votre animal", image: "https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?w=500", inStock: true },
+    { id: 1, name: "Nourriture Premium pour Chats", category: "cats", type: "food", price: "2900 DZD", description: "Nutrition de haute qualité pour votre ami félin", image: "https://images.unsplash.com/photo-1589652717521-10c0d092dea9?w=500", inStock: true },
+    { id: 2, name: "Arbre à Chat", category: "cats", type: "accessory", price: "4500 DZD", description: "Griffoir durable avec plusieurs niveaux", image: "https://images.unsplash.com/photo-1545249390-6bdfa286032f?w=500", inStock: true },
+    { id: 3, name: "Jouet Interactif pour Chat", category: "cats", type: "accessory", price: "1900 DZD", description: "Divertissez votre chat pendant des heures", image: "https://images.unsplash.com/photo-1529257414772-1960b7bea4eb?w=500", inStock: false },
+    { id: 4, name: "Nourriture Premium pour Chiens", category: "dogs", type: "food", price: "3900 DZD", description: "Repas nutritifs pour chiens en bonne santé", image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=500", inStock: true },
+    { id: 5, name: "Laisse et Collier", category: "dogs", type: "accessory", price: "2400 DZD", description: "Ensemble de promenade confortable et élégant", image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=500", inStock: true },
+    { id: 6, name: "Jouets à Mâcher", category: "dogs", type: "accessory", price: "3400 DZD", description: "Pack variété de jouets à mâcher durables", image: "https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=500", inStock: true },
+    { id: 7, name: "Mélange de Graines pour Oiseaux", category: "birds", type: "food", price: "1500 DZD", description: "Mélange nutritif pour tous les oiseaux", image: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=500", inStock: true },
+    { id: 8, name: "Cage pour Oiseaux", category: "birds", type: "accessory", price: "8900 DZD", description: "Maison spacieuse et confortable pour oiseaux", image: "https://images.unsplash.com/photo-1444464666168-49d633b86797?w=500", inStock: true },
+    { id: 9, name: "Ensemble de Jouets pour Oiseaux", category: "birds", type: "accessory", price: "2200 DZD", description: "Jouets amusants pour oiseaux actifs", image: "https://images.unsplash.com/photo-1578828876330-5ac4ab90fdeb?w=500", inStock: true },
+    { id: 10, name: "Flocons pour Poissons", category: "fish", type: "food", price: "1200 DZD", description: "Nutrition premium pour poissons tropicaux", image: "https://images.unsplash.com/photo-1535591273668-578e31182c4f?w=500", inStock: true },
+    { id: 11, name: "Filtre d'Aquarium", category: "fish", type: "accessory", price: "4900 DZD", description: "Gardez l'eau de votre aquarium cristalline", image: "https://images.unsplash.com/photo-1520990269076-e7e0821a0a89?w=500", inStock: true },
+    { id: 12, name: "Plantes Décoratives", category: "fish", type: "accessory", price: "1800 DZD", description: "Belles décorations d'aquarium", image: "https://images.unsplash.com/photo-1524704796725-9fc3044a58b1?w=500", inStock: false },
+    { id: 13, name: "Kit de Toilettage", category: "other", type: "accessory", price: "3200 DZD", description: "Ensemble complet d'outils de toilettage", image: "https://images.unsplash.com/photo-1581888227599-779811939961?w=500", inStock: true },
+    { id: 14, name: "Cage de Transport", category: "other", type: "accessory", price: "5400 DZD", description: "Transport sûr et confortable pour animaux", image: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=500", inStock: true },
+    { id: 15, name: "Lit pour Animaux", category: "other", type: "accessory", price: "4400 DZD", description: "Espace de couchage confortable pour votre animal", image: "https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?w=500", inStock: true },
 ];
 
 let gallery = [
@@ -206,11 +206,11 @@ let loginLockout = false;
 async function initializeDefaultPassword() {
     const storedHash = getStoredPasswordHash();
     if (!storedHash) {
-        // Set default password (CHANGE THIS IN PRODUCTION!)
-        const defaultPassword = 'CHANGE_THIS_PASSWORD_NOW_2024!';
+        // Set default password: admin123
+        const defaultPassword = 'admin123';
         const hash = await secureAuth.hashPassword(defaultPassword);
         storePasswordHash(hash);
-        console.warn('⚠️ DEFAULT PASSWORD SET! Change it immediately in Settings > Sécurité Admin');
+        console.warn('⚠️ DEFAULT PASSWORD SET: admin123 - Change it immediately in Settings > Sécurité Admin');
     }
 }
 
@@ -342,6 +342,7 @@ function loadProducts(filter = 'all', search = '') {
             <td><img src="${product.image}" alt="${product.name}" class="product-img"></td>
             <td><strong>${product.name}</strong></td>
             <td><span style="text-transform: capitalize;">${product.category}</span></td>
+            <td><span class="badge" style="background: ${product.type === 'food' ? '#34C759' : '#007AFF'}; color: white; padding: 4px 12px; border-radius: 12px;">${product.type === 'food' ? 'Food' : 'Accessory'}</span></td>
             <td><strong>${product.price}</strong></td>
             <td>
                 <span class="stock-status ${product.inStock ? 'in-stock' : 'out-of-stock'}">
@@ -392,6 +393,7 @@ function editProduct(id) {
         document.getElementById('productId').value = product.id;
         document.getElementById('productName').value = product.name;
         document.getElementById('productCategory').value = product.category;
+        document.getElementById('productType').value = product.type || 'food';
         document.getElementById('productPrice').value = product.price;
         document.getElementById('productDescription').value = product.description;
         document.getElementById('productImage').value = product.image;
@@ -444,20 +446,21 @@ document.getElementById('productForm').addEventListener('submit', (e) => {
         id: document.getElementById('productId').value || Date.now(),
         name: sanitizeInput(document.getElementById('productName').value),
         category: sanitizeInput(document.getElementById('productCategory').value),
+        type: sanitizeInput(document.getElementById('productType').value),
         price: sanitizeInput(document.getElementById('productPrice').value),
         description: sanitizeInput(document.getElementById('productDescription').value),
-        image_url: document.getElementById('productImage').value,
+        image: document.getElementById('productImage').value,
         inStock: document.getElementById('productInStock').checked
     };
     
     // Validate image URL
-    if (!isValidURL(productData.image_url)) {
+    if (!isValidURL(productData.image)) {
         alert('URL d\'image invalide!');
         return;
     }
     
     // Validate required fields
-    if (!productData.name || !productData.category || !productData.price || !productData.description) {
+    if (!productData.name || !productData.category || !productData.type || !productData.price || !productData.description) {
         alert('Veuillez remplir tous les champs obligatoires!');
         return;
     }
