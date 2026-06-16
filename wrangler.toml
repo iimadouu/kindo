@@ -1,0 +1,17 @@
+name = "kindom-api"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "kindom-db"
+database_id = "YOUR_DATABASE_ID_HERE"
+
+# Routes (will be configured after deployment)
+# routes = [
+#   { pattern = "kindom.pages.dev/api/*", zone_name = "pages.dev" }
+# ]
+
+[vars]
+ENVIRONMENT = "production"

@@ -1220,3 +1220,74 @@ section {
 html {
     scroll-behavior: smooth;
 }
+
+/* SEO Content Sections */
+.seo-content-section {
+    margin-top: 60px;
+    padding: 40px;
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+}
+
+.seo-content-block {
+    margin-bottom: 40px;
+}
+
+.seo-content-block:last-child {
+    margin-bottom: 0;
+}
+
+.seo-content-block h3 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.seo-content-block h4 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 25px 0 15px;
+}
+
+.seo-content-block p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #555;
+    margin-bottom: 15px;
+    text-align: justify;
+}
+
+.seo-content-block[lang="ar"] {
+    text-align: right;
+}
+
+.seo-content-block[lang="ar"] p {
+    text-align: justify;
+}
+
+/* Hide SEO content on very small screens to improve UX */
+@media (max-width: 480px) {
+    .seo-content-section {
+        padding: 20px;
+    }
+    
+    .seo-content-block h3 {
+        font-size: 22px;
+    }
+    
+    .seo-content-block h4 {
+        font-size: 18px;
+    }
+    
+    .seo-content-block p {
+        font-size: 14px;
+    }
+}
+
