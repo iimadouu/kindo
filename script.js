@@ -98,18 +98,22 @@ const closeModal = document.querySelector('.close-modal');
 
 // Preloader
 window.addEventListener('load', () => {
-    setTimeout(() => {
-        preloader.classList.add('hidden');
-    }, 1500);
+    // Remove preloader immediately when page loads
+    preloader.classList.add('hidden');
 });
 
-// Navbar Scroll Effect
+// Navbar Scroll Effect (throttled for performance)
+let scrollTimeout;
 window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
-    } else {
-        navbar.classList.remove('scrolled');
-    }
+    if (scrollTimeout) return;
+    scrollTimeout = setTimeout(() => {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+        scrollTimeout = null;
+    }, 16); // ~60fps
 });
 
 // Mobile Menu Toggle
@@ -130,33 +134,39 @@ function renderProducts(category) {
     const products = productsData[category].filter(p => p.type === 'food');
     const trans = translations[currentLang];
     
-    productsGrid.innerHTML = products.map(product => `
-        <div class="product-card" data-id="${product.id}">
-            <span class="stock-badge ${product.inStock ? 'in-stock' : 'out-of-stock'}">
-                ${product.inStock ? trans.inStock : trans.outOfStock}
-            </span>
-            <img src="${product.image}" alt="${product.name}" class="product-image">
-            <div class="product-info">
-                <span class="product-category">${category}</span>
-                <h3 class="product-name">${product.name}</h3>
-                <p class="product-description">${product.description}</p>
-                <div class="product-footer">
-                    <span class="product-price">${product.price}</span>
-                    <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}')">
-                        <i class="fab fa-whatsapp"></i> ${trans.orderWhatsApp}
-                    </button>
+    // Show loading state
+    productsGrid.innerHTML = '<div class="loading-spinner">Loading...</div>';
+    
+    // Use requestAnimationFrame for smooth rendering
+    requestAnimationFrame(() => {
+        productsGrid.innerHTML = products.map(product => `
+            <div class="product-card" data-id="${product.id}">
+                <span class="stock-badge ${product.inStock ? 'in-stock' : 'out-of-stock'}">
+                    ${product.inStock ? trans.inStock : trans.outOfStock}
+                </span>
+                <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy">
+                <div class="product-info">
+                    <span class="product-category">${category}</span>
+                    <h3 class="product-name">${product.name}</h3>
+                    <p class="product-description">${product.description}</p>
+                    <div class="product-footer">
+                        <span class="product-price">${product.price}</span>
+                        <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}')">
+                            <i class="fab fa-whatsapp"></i> ${trans.orderWhatsApp}
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `).join('');
 
-    // Add click event to product cards
-    document.querySelectorAll('.product-card').forEach(card => {
-        card.addEventListener('click', (e) => {
-            if (!e.target.closest('.whatsapp-order-btn')) {
-                const productId = card.getAttribute('data-id');
-                showProductModal(productId);
-            }
+        // Add click event to product cards
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (!e.target.closest('.whatsapp-order-btn')) {
+                    const productId = card.getAttribute('data-id');
+                    showProductModal(productId);
+                }
+            });
         });
     });
 }
@@ -167,33 +177,39 @@ function renderAccessories(category) {
     const trans = translations[currentLang];
     const accessoriesGrid = document.getElementById('accessoriesGrid');
     
-    accessoriesGrid.innerHTML = accessories.map(product => `
-        <div class="product-card" data-id="${product.id}">
-            <span class="stock-badge ${product.inStock ? 'in-stock' : 'out-of-stock'}">
-                ${product.inStock ? trans.inStock : trans.outOfStock}
-            </span>
-            <img src="${product.image}" alt="${product.name}" class="product-image">
-            <div class="product-info">
-                <span class="product-category">${category}</span>
-                <h3 class="product-name">${product.name}</h3>
-                <p class="product-description">${product.description}</p>
-                <div class="product-footer">
-                    <span class="product-price">${product.price}</span>
-                    <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}')">
-                        <i class="fab fa-whatsapp"></i> ${trans.orderWhatsApp}
-                    </button>
+    // Show loading state
+    accessoriesGrid.innerHTML = '<div class="loading-spinner">Loading...</div>';
+    
+    // Use requestAnimationFrame for smooth rendering
+    requestAnimationFrame(() => {
+        accessoriesGrid.innerHTML = accessories.map(product => `
+            <div class="product-card" data-id="${product.id}">
+                <span class="stock-badge ${product.inStock ? 'in-stock' : 'out-of-stock'}">
+                    ${product.inStock ? trans.inStock : trans.outOfStock}
+                </span>
+                <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy">
+                <div class="product-info">
+                    <span class="product-category">${category}</span>
+                    <h3 class="product-name">${product.name}</h3>
+                    <p class="product-description">${product.description}</p>
+                    <div class="product-footer">
+                        <span class="product-price">${product.price}</span>
+                        <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}')">
+                            <i class="fab fa-whatsapp"></i> ${trans.orderWhatsApp}
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `).join('');
 
-    // Add click event to accessory cards
-    document.querySelectorAll('#accessoriesGrid .product-card').forEach(card => {
-        card.addEventListener('click', (e) => {
-            if (!e.target.closest('.whatsapp-order-btn')) {
-                const productId = card.getAttribute('data-id');
-                showProductModal(productId);
-            }
+        // Add click event to accessory cards
+        document.querySelectorAll('#accessoriesGrid .product-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (!e.target.closest('.whatsapp-order-btn')) {
+                    const productId = card.getAttribute('data-id');
+                    showProductModal(productId);
+                }
+            });
         });
     });
 }
