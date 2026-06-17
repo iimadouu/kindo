@@ -249,6 +249,33 @@ const secureAuth = new SecureAuth();
 // R2 Configuration
 const WORKER_URL = 'https://kindom-upload-worker.imadedar98.workers.dev';
 
+// Settings API (D1 Database)
+async function loadSettingsFromDB() {
+    try {
+        const response = await fetch(`${WORKER_URL}/settings`);
+        if (response.ok) {
+            return await response.json();
+        }
+    } catch (error) {
+        console.error('Failed to load settings from DB:', error);
+    }
+    return null;
+}
+
+async function saveSettingsToDB(settings) {
+    try {
+        const response = await fetch(`${WORKER_URL}/settings`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(settings)
+        });
+        return response.ok;
+    } catch (error) {
+        console.error('Failed to save settings to DB:', error);
+        return false;
+    }
+}
+
 // Image Upload to R2 via Worker
 async function uploadImageToR2(file, folder = 'products') {
     // Check cache first
@@ -264,7 +291,7 @@ async function uploadImageToR2(file, folder = 'products') {
         formData.append('file', file);
         formData.append('folder', folder);
 
-        const response = await fetch(WORKER_URL, {
+        const response = await fetch(`${WORKER_URL}/upload`, {
             method: 'POST',
             body: formData
         });
@@ -894,25 +921,32 @@ document.getElementById('storeSettingsForm').addEventListener('submit', (e) => {
     if (!requireAuth()) return;
     
     const settings = {
-        storeName: document.getElementById('storeName').value,
-        whatsappNumber: document.getElementById('whatsappNumber').value,
-        storeEmail: document.getElementById('storeEmail').value,
-        storeAddress: document.getElementById('storeAddress').value
+        store_name: document.getElementById('storeName').value,
+        whatsapp_number: document.getElementById('whatsappNumber').value,
+        email: document.getElementById('storeEmail').value,
+        address_fr: document.getElementById('storeAddress').value,
+        primary_color: document.getElementById('primaryColor').value,
+        secondary_color: document.getElementById('secondaryColor').value
     };
     
     // Validate WhatsApp number format
     const whatsappRegex = /^[0-9+\-\s()]+$/;
-    if (!whatsappRegex.test(settings.whatsappNumber)) {
+    if (!whatsappRegex.test(settings.whatsapp_number)) {
         alert('Format de numéro WhatsApp invalide.');
         return;
     }
     
-    localStorage.setItem('kindom_store_settings', JSON.stringify(settings));
-    showNotification('Paramètres sauvegardés!', 'success');
+    // Save to D1 database
+    const success = await saveSettingsToDB(settings);
+    if (success) {
+        showNotification('Paramètres sauvegardés!', 'success');
+    } else {
+        alert('Erreur lors de la sauvegarde des paramètres.');
+    }
 });
 
 // Apply theme
-function applyTheme() {
+async function applyTheme() {
     if (!requireAuth()) return;
     
     const primaryColor = document.getElementById('primaryColor').value;
@@ -922,43 +956,66 @@ function applyTheme() {
     document.documentElement.style.setProperty('--primary', primaryColor);
     document.documentElement.style.setProperty('--secondary', secondaryColor);
     
-    // Save theme
+    // Save theme to D1 database
+    const settings = {
+        primary_color: primaryColor,
+        secondary_color: secondaryColor
+    };
+    const success = await saveSettingsToDB(settings);
+    
+    // Also save to localStorage as fallback
     localStorage.setItem('kindom_theme', JSON.stringify({
         primaryColor,
         secondaryColor
     }));
     
-    showNotification('Thème appliqué!', 'success');
+    if (success) {
+        showNotification('Thème appliqué!', 'success');
+    } else {
+        showNotification('Thème appliqué (local only)', 'warning');
+    }
 }
 
 // Load saved settings on page load
-function loadSavedSettings() {
-    // Load store settings
-    const storeSettings = localStorage.getItem('kindom_store_settings');
-    if (storeSettings) {
-        const settings = JSON.parse(storeSettings);
-        document.getElementById('storeName').value = settings.storeName || 'Kindom';
-        document.getElementById('whatsappNumber').value = settings.whatsappNumber || '+213XXXXXXXXX';
-        document.getElementById('storeEmail').value = settings.storeEmail || 'contact@kindom-dz.com';
-        document.getElementById('storeAddress').value = settings.storeAddress || 'Alger, Algérie';
-    }
-    
-    // Load theme
-    const theme = localStorage.getItem('kindom_theme');
-    if (theme) {
-        const { primaryColor, secondaryColor } = JSON.parse(theme);
-        document.getElementById('primaryColor').value = primaryColor;
-        document.getElementById('secondaryColor').value = secondaryColor;
-        document.documentElement.style.setProperty('--primary', primaryColor);
-        document.documentElement.style.setProperty('--secondary', secondaryColor);
+async function loadSavedSettings() {
+    // Load from D1 database
+    const dbSettings = await loadSettingsFromDB();
+    if (dbSettings) {
+        document.getElementById('storeName').value = dbSettings.store_name || 'Kindom';
+        document.getElementById('whatsappNumber').value = dbSettings.whatsapp_number || '+213XXXXXXXXX';
+        document.getElementById('storeEmail').value = dbSettings.email || 'contact@kindom-dz.com';
+        document.getElementById('storeAddress').value = dbSettings.address_fr || 'Alger, Algérie';
+        document.getElementById('primaryColor').value = dbSettings.primary_color || '#FF6B6B';
+        document.getElementById('secondaryColor').value = dbSettings.secondary_color || '#4ECDC4';
+        document.documentElement.style.setProperty('--primary', dbSettings.primary_color || '#FF6B6B');
+        document.documentElement.style.setProperty('--secondary', dbSettings.secondary_color || '#4ECDC4');
+    } else {
+        // Fallback to localStorage if DB not available
+        const storeSettings = localStorage.getItem('kindom_store_settings');
+        if (storeSettings) {
+            const settings = JSON.parse(storeSettings);
+            document.getElementById('storeName').value = settings.storeName || 'Kindom';
+            document.getElementById('whatsappNumber').value = settings.whatsappNumber || '+213XXXXXXXXX';
+            document.getElementById('storeEmail').value = settings.storeEmail || 'contact@kindom-dz.com';
+            document.getElementById('storeAddress').value = settings.storeAddress || 'Alger, Algérie';
+        }
+        
+        const theme = localStorage.getItem('kindom_theme');
+        if (theme) {
+            const { primaryColor, secondaryColor } = JSON.parse(theme);
+            document.getElementById('primaryColor').value = primaryColor;
+            document.getElementById('secondaryColor').value = secondaryColor;
+            document.documentElement.style.setProperty('--primary', primaryColor);
+            document.documentElement.style.setProperty('--secondary', secondaryColor);
+        }
     }
 }
 
 // Call load settings when admin panel opens
 const originalLoadDashboard = loadDashboard;
-loadDashboard = function() {
+loadDashboard = async function() {
     originalLoadDashboard.call(this);
-    loadSavedSettings();
+    await loadSavedSettings();
 };
 
 // Clear all data function

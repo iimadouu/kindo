@@ -80,7 +80,9 @@ INSERT INTO settings (setting_key, setting_value) VALUES
     ('currency', 'DZD'),
     ('business_hours', '09:00 - 18:00'),
     ('country', 'DZ'),
-    ('language_default', 'fr');
+    ('language_default', 'fr'),
+    ('primary_color', '#FF6B6B'),
+    ('secondary_color', '#4ECDC4');
 
 -- Insert default admin user (password: admin123 - CHANGE THIS!)
 INSERT INTO admin_users (username, password_hash, email) VALUES
