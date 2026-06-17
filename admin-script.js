@@ -179,8 +179,7 @@ class SecureAuth {
 const secureAuth = new SecureAuth();
 
 // R2 Configuration
-// Update this after deploying the worker (see DEPLOY_WORKER.md)
-const WORKER_URL = 'YOUR_WORKER_URL_HERE';
+const WORKER_URL = 'https://kindom-upload-worker.imadedar98.workers.dev';
 
 // Image Upload to R2 via Worker
 async function uploadImageToR2(file, folder = 'products') {
