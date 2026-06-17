@@ -164,8 +164,26 @@ searchInput.addEventListener('input', (e) => {
         return;
     }
     
-    const allProducts = Object.values(productsData).flat();
-    const filtered = allProducts.filter(product => {
+    // Load products from localStorage first, then fall back to sample data
+    const storedProducts = localStorage.getItem('kindom_products');
+    let allProducts;
+    
+    if (storedProducts) {
+        const products = JSON.parse(storedProducts);
+        // Group products by category
+        allProducts = {};
+        products.forEach(p => {
+            if (!allProducts[p.category]) {
+                allProducts[p.category] = [];
+            }
+            allProducts[p.category].push(p);
+        });
+    } else {
+        allProducts = productsData;
+    }
+    
+    const flatProducts = Object.values(allProducts).flat();
+    const filtered = flatProducts.filter(product => {
         const name = product.name.toLowerCase();
         const description = product.description.toLowerCase();
         const category = product.category.toLowerCase();
