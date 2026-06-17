@@ -18,12 +18,12 @@ let products = [
 ];
 
 let gallery = [
-    { id: 1, image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500", alt: "Chat Heureux" },
-    { id: 2, image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=500", alt: "Chien Mignon" },
-    { id: 3, image: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=500", alt: "Oiseau Coloré" },
-    { id: 4, image: "https://images.unsplash.com/photo-1520990269076-e7e0821a0a89?w=500", alt: "Poisson Magnifique" },
-    { id: 5, image: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=500", alt: "Chat Joueur" },
-    { id: 6, image: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=500", alt: "Chien Heureux" },
+    { id: 1, image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500", alt: "Chat Heureux", title: "Happy Cats", description: "Our lovely feline friends enjoying their time.", extraImages: ["https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=500"] },
+    { id: 2, image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=500", alt: "Chien Mignon", title: "Cute Dogs", description: "Man's best friend.", extraImages: [] },
+    { id: 3, image: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=500", alt: "Oiseau Coloré", title: "Colorful Birds", description: "Beautiful exotic birds.", extraImages: [] },
+    { id: 4, image: "https://images.unsplash.com/photo-1520990269076-e7e0821a0a89?w=500", alt: "Poisson Magnifique", title: "Aquarium Life", description: "Peaceful underwater scenes.", extraImages: [] },
+    { id: 5, image: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=500", alt: "Chat Joueur", title: "Playful Kittens", description: "Kittens playing with toys.", extraImages: [] },
+    { id: 6, image: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=500", alt: "Chien Heureux", title: "Happy Puppies", description: "Puppies running in the park.", extraImages: [] },
 ];
 
 // Load data from localStorage or use defaults
@@ -488,6 +488,10 @@ function loadGallery() {
     galleryGrid.innerHTML = gallery.map(item => `
         <div class="gallery-admin-item">
             <img src="${item.image}" alt="${item.alt}">
+            <div class="gallery-item-info" style="padding: 10px; background: #f8f9fa; border-top: 1px solid #eee; text-align: center;">
+                <h4 style="margin: 0; font-size: 14px; color: #333;">${item.title || 'Untitled Album'}</h4>
+                <small style="color: #666;">${(item.extraImages && item.extraImages.length) ? '+' + item.extraImages.length + ' photos' : '1 photo'}</small>
+            </div>
             <button class="gallery-delete-btn" onclick="deleteGalleryItem(${item.id})">
                 <i class="fas fa-trash"></i>
             </button>
@@ -503,6 +507,7 @@ function showAddGalleryModal() {
 function closeGalleryModal() {
     document.getElementById('galleryModal').classList.remove('active');
     document.getElementById('galleryForm').reset();
+    document.getElementById('extraImagesContainer').innerHTML = '<label>Extra Album Images</label>';
 }
 
 function deleteGalleryItem(id) {
@@ -515,6 +520,23 @@ function deleteGalleryItem(id) {
     }
 }
 
+// Dynamic Extra Images
+function addExtraImageField() {
+    const container = document.getElementById('extraImagesContainer');
+    const div = document.createElement('div');
+    div.className = 'extra-image-input-group';
+    div.style.display = 'flex';
+    div.style.gap = '10px';
+    div.style.marginTop = '10px';
+    div.innerHTML = `
+        <input type="url" class="form-input extra-image-url" placeholder="https://..." required>
+        <button type="button" class="btn-danger" style="padding: 10px; border-radius: 8px; border: none; cursor: pointer; color: white;" onclick="this.parentElement.remove()">
+            <i class="fas fa-trash"></i>
+        </button>
+    `;
+    container.appendChild(div);
+}
+
 // Save Gallery Item
 document.getElementById('galleryForm').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -522,19 +544,34 @@ document.getElementById('galleryForm').addEventListener('submit', (e) => {
     // Security check
     if (!requireAuth()) return;
     
+    const title = sanitizeInput(document.getElementById('galleryTitle').value);
+    const description = sanitizeInput(document.getElementById('galleryDescription').value);
     const imageUrl = document.getElementById('galleryImage').value;
     const altText = sanitizeInput(document.getElementById('galleryAlt').value);
     
-    // Validate URL
-    if (!isValidURL(imageUrl)) {
-        alert('URL d\'image invalide!');
+    // Gather extra images
+    const extraImagesInputs = document.querySelectorAll('.extra-image-url');
+    const extraImages = [];
+    let validUrls = true;
+
+    extraImagesInputs.forEach(input => {
+        if (!isValidURL(input.value)) validUrls = false;
+        else extraImages.push(input.value);
+    });
+    
+    // Validate URLs
+    if (!isValidURL(imageUrl) || !validUrls) {
+        alert('Une ou plusieurs URLs d\'image sont invalides!');
         return;
     }
     
     const galleryData = {
         id: Date.now(),
+        title: title,
+        description: description,
         image: imageUrl,
-        alt: altText
+        alt: altText,
+        extraImages: extraImages
     };
     
     gallery.push(galleryData);
@@ -542,7 +579,7 @@ document.getElementById('galleryForm').addEventListener('submit', (e) => {
     loadGallery();
     loadDashboard();
     closeGalleryModal();
-    showNotification('Image ajoutée avec succès!', 'success');
+    showNotification('Album ajouté avec succès!', 'success');
 });
 
 // Notification System

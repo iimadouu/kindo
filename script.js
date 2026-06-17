@@ -29,12 +29,12 @@ let productsData = {
 
 // Gallery Data (will be overridden by localStorage if available)
 let galleryData = [
-    { id: 1, image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500", alt: "Chat Heureux" },
-    { id: 2, image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=500", alt: "Chien Mignon" },
-    { id: 3, image: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=500", alt: "Oiseau Coloré" },
-    { id: 4, image: "https://images.unsplash.com/photo-1520990269076-e7e0821a0a89?w=500", alt: "Poisson Magnifique" },
-    { id: 5, image: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=500", alt: "Chat Joueur" },
-    { id: 6, image: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=500", alt: "Chien Heureux" },
+    { id: 1, image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500", alt: "Chat Heureux", title: "Happy Cats", description: "Our lovely feline friends enjoying their time.", extraImages: ["https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=500"] },
+    { id: 2, image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=500", alt: "Chien Mignon", title: "Cute Dogs", description: "Man's best friend.", extraImages: [] },
+    { id: 3, image: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=500", alt: "Oiseau Coloré", title: "Colorful Birds", description: "Beautiful exotic birds.", extraImages: [] },
+    { id: 4, image: "https://images.unsplash.com/photo-1520990269076-e7e0821a0a89?w=500", alt: "Poisson Magnifique", title: "Aquarium Life", description: "Peaceful underwater scenes.", extraImages: [] },
+    { id: 5, image: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=500", alt: "Chat Joueur", title: "Playful Kittens", description: "Kittens playing with toys.", extraImages: [] },
+    { id: 6, image: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=500", alt: "Chien Heureux", title: "Happy Puppies", description: "Puppies running in the park.", extraImages: [] },
 ];
 
 // Load from localStorage if available
@@ -269,14 +269,109 @@ function orderViaWhatsApp(productName, price) {
 // Render Gallery
 function renderGallery() {
     galleryGrid.innerHTML = galleryData.map(item => `
-        <div class="gallery-item">
+        <div class="gallery-item" onclick="showGalleryModal(${item.id})">
             <img src="${item.image}" alt="${item.alt}">
             <div class="gallery-overlay">
+                ${item.title ? `<h3>${item.title}</h3>` : ''}
                 <i class="fas fa-search-plus"></i>
             </div>
         </div>
     `).join('');
 }
+
+// Gallery Modal & Carousel Logic
+const galleryModal = document.getElementById('galleryModal');
+const closeGalleryModalBtn = document.getElementById('closeGalleryModal');
+const carouselTrack = document.getElementById('carouselTrack');
+const carouselDotsContainer = document.getElementById('carouselDots');
+const galleryModalTitle = document.getElementById('galleryModalTitle');
+const galleryModalDescription = document.getElementById('galleryModalDescription');
+const btnPrev = document.getElementById('carouselPrev');
+const btnNext = document.getElementById('carouselNext');
+
+let currentSlide = 0;
+let currentAlbumImages = [];
+
+function showGalleryModal(id) {
+    const album = galleryData.find(item => item.id === id);
+    if (!album) return;
+
+    // Set text content
+    galleryModalTitle.textContent = album.title || 'Untitled Album';
+    galleryModalDescription.textContent = album.description || '';
+
+    // Gather all images (cover + extras)
+    currentAlbumImages = [album.image];
+    if (album.extraImages && album.extraImages.length > 0) {
+        currentAlbumImages = currentAlbumImages.concat(album.extraImages);
+    }
+
+    currentSlide = 0;
+    renderCarousel();
+    
+    galleryModal.classList.add('active');
+}
+
+function renderCarousel() {
+    // Render slides
+    carouselTrack.innerHTML = currentAlbumImages.map(url => `
+        <div class="carousel-slide">
+            <img src="${url}" alt="Album Image">
+        </div>
+    `).join('');
+
+    // Render dots
+    if (currentAlbumImages.length > 1) {
+        carouselDotsContainer.innerHTML = currentAlbumImages.map((_, index) => `
+            <div class="carousel-dot ${index === currentSlide ? 'active' : ''}" onclick="goToSlide(${index})"></div>
+        `).join('');
+        btnPrev.style.display = 'flex';
+        btnNext.style.display = 'flex';
+        carouselDotsContainer.style.display = 'flex';
+    } else {
+        carouselDotsContainer.innerHTML = '';
+        btnPrev.style.display = 'none';
+        btnNext.style.display = 'none';
+        carouselDotsContainer.style.display = 'none';
+    }
+
+    updateCarouselPosition();
+}
+
+function updateCarouselPosition() {
+    carouselTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+    
+    // Update dots
+    const dots = document.querySelectorAll('.carousel-dot');
+    dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentSlide);
+    });
+}
+
+function goToSlide(index) {
+    currentSlide = index;
+    updateCarouselPosition();
+}
+
+btnPrev.addEventListener('click', () => {
+    currentSlide = (currentSlide > 0) ? currentSlide - 1 : currentAlbumImages.length - 1;
+    updateCarouselPosition();
+});
+
+btnNext.addEventListener('click', () => {
+    currentSlide = (currentSlide < currentAlbumImages.length - 1) ? currentSlide + 1 : 0;
+    updateCarouselPosition();
+});
+
+closeGalleryModalBtn.addEventListener('click', () => {
+    galleryModal.classList.remove('active');
+});
+
+galleryModal.addEventListener('click', (e) => {
+    if (e.target === galleryModal) {
+        galleryModal.classList.remove('active');
+    }
+});
 
 // Language Switcher
 langBtns.forEach(btn => {
