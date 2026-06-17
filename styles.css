@@ -306,10 +306,11 @@ body.rtl {
     min-height: 100vh;
     display: flex;
     align-items: center;
+    justify-content: center;
     position: relative;
     overflow: hidden;
     background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-    padding-top: 80px;
+    padding: 100px 0 80px;
 }
 
 .hero-background {
@@ -319,6 +320,7 @@ body.rtl {
     width: 100%;
     height: 100%;
     z-index: 0;
+    pointer-events: none;
 }
 
 .floating-shape {
@@ -362,15 +364,20 @@ body.rtl {
 }
 
 .hero .container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
+    display: flex;
+    flex-direction: row;
     align-items: center;
+    justify-content: space-between;
+    gap: 60px;
     position: relative;
     z-index: 1;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .hero-content {
+    flex: 1;
     animation: slideInLeft 1s ease;
 }
 
@@ -465,8 +472,12 @@ body.rtl {
 }
 
 .hero-image {
+    flex: 1;
     position: relative;
     animation: slideInRight 1s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 @keyframes slideInRight {
@@ -478,6 +489,8 @@ body.rtl {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 30px;
+    max-width: 400px;
+    margin: 0 auto;
 }
 
 .pet-icon {
@@ -1157,7 +1170,7 @@ section {
 
 @media (max-width: 768px) {
     .container {
-        padding: 0 15px;
+        padding: 0 20px;
     }
     
     .navbar {
@@ -1165,19 +1178,19 @@ section {
     }
     
     .nav-wrapper {
-        padding: 12px 0;
+        padding: 15px 0;
     }
 
     .nav-menu {
         position: fixed;
-        top: 60px;
+        top: 65px;
         left: -100%;
-        width: 80%;
+        width: 85%;
         max-width: 350px;
-        height: calc(100vh - 60px);
+        height: calc(100vh - 65px);
         background: var(--white);
         flex-direction: column;
-        padding: 30px;
+        padding: 30px 20px;
         box-shadow: var(--shadow);
         transition: var(--transition);
         gap: 15px;
@@ -1203,61 +1216,67 @@ section {
         margin-top: 10px;
     }
     
+    /* HERO SECTION - MOBILE FIX */
     .hero {
         min-height: auto;
-        padding: 120px 0 60px;
+        padding: 140px 0 60px;
     }
     
     .hero .container {
-        grid-template-columns: 1fr;
+        flex-direction: column;
         gap: 40px;
         text-align: center;
+        padding: 0 20px;
     }
     
     .hero-content {
-        order: 1;
+        width: 100%;
+        max-width: 100%;
     }
     
     .hero-image {
-        order: 2;
+        width: 100%;
+        max-width: 100%;
     }
     
     .hero-title {
-        font-size: 32px;
-        line-height: 1.2;
-        margin-bottom: 15px;
+        font-size: 36px;
+        line-height: 1.3;
+        margin-bottom: 20px;
     }
     
     .hero-subtitle {
         font-size: 16px;
-        margin: 15px 0 25px;
+        margin: 15px auto 30px;
+        max-width: 90%;
     }
     
     .hero-buttons {
         justify-content: center;
-        flex-direction: column;
+        width: 100%;
         gap: 15px;
-        align-items: center;
     }
     
     .btn {
         width: 100%;
-        max-width: 280px;
-        padding: 14px 30px;
+        max-width: 300px;
+        padding: 15px 30px;
         font-size: 15px;
+        margin: 0 auto;
     }
     
     .hero-pet-icons {
         grid-template-columns: repeat(2, 1fr);
         gap: 20px;
-        max-width: 320px;
+        max-width: 350px;
         margin: 0 auto;
     }
     
     .pet-icon {
-        width: 140px;
-        height: 140px;
-        font-size: 50px;
+        width: 150px;
+        height: 150px;
+        font-size: 55px;
+        margin: 0 auto;
     }
     
     .scroll-indicator {
@@ -1378,68 +1397,75 @@ section {
 }
 
 @media (max-width: 480px) {
+    .container {
+        padding: 0 15px;
+    }
+    
     .navbar {
         padding: 0;
     }
     
     .nav-wrapper {
-        padding: 10px 0;
+        padding: 12px 0;
     }
     
     .logo {
-        font-size: 20px;
+        font-size: 22px;
     }
     
     .logo i {
-        font-size: 20px;
+        font-size: 22px;
     }
     
     .nav-menu {
-        top: 55px;
-        height: calc(100vh - 55px);
+        top: 60px;
+        height: calc(100vh - 60px);
+        width: 90%;
     }
     
+    /* HERO - SMALL MOBILE */
     .hero {
-        min-height: auto;
-        padding: 90px 0 40px;
+        padding: 120px 0 50px;
     }
     
     .hero .container {
-        gap: 30px;
+        padding: 0 15px;
+        gap: 35px;
     }
     
     .hero-title {
-        font-size: 24px;
-        margin-bottom: 12px;
+        font-size: 28px;
+        margin-bottom: 15px;
     }
     
     .hero-subtitle {
-        font-size: 14px;
-        margin: 12px 0 20px;
+        font-size: 15px;
+        margin: 15px auto 25px;
         line-height: 1.6;
+        max-width: 95%;
     }
     
     .hero-buttons {
         gap: 12px;
+        flex-direction: column;
     }
     
     .btn {
-        padding: 12px 25px;
+        padding: 14px 25px;
         font-size: 14px;
-        max-width: 260px;
-    }
-    
-    .hero-pet-icons {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
         max-width: 280px;
     }
     
+    .hero-pet-icons {
+        gap: 15px;
+        max-width: 300px;
+    }
+    
     .pet-icon {
-        width: 120px;
-        height: 120px;
-        font-size: 42px;
-        border-radius: 20px;
+        width: 130px;
+        height: 130px;
+        font-size: 48px;
+        border-radius: 22px;
     }
     
     .hero-title {
