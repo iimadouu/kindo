@@ -647,26 +647,16 @@ section {
 }
 
 .products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 30px;
     animation: fadeIn 0.6s ease;
-    justify-items: center;
 }
 
-/* Center products when less than full row */
-@supports (display: grid) {
-    .products-grid {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 30px;
-    }
-    
-    .product-card {
-        flex: 0 0 300px;
-        max-width: 350px;
-    }
+.product-card {
+    flex: 0 0 300px;
+    max-width: 350px;
 }
 
 @keyframes fadeIn {
@@ -1147,16 +1137,20 @@ section {
 /* Responsive Design */
 @media (max-width: 1024px) {
     .hero .container {
-        grid-template-columns: 1fr;
+        flex-direction: column;
         text-align: center;
     }
     
-    .hero-title {
-        font-size: 48px;
+    .hero-content {
+        align-items: center;
     }
     
-    .hero-image {
-        margin-top: 40px;
+    .hero-title {
+        font-size: 44px;
+    }
+    
+    .hero-buttons {
+        justify-content: center;
     }
     
     .hero-pet-icons {
@@ -1216,91 +1210,68 @@ section {
         margin-top: 10px;
     }
     
-    /* HERO SECTION - MOBILE FIX */
+    /* Hero mobile */
     .hero {
         min-height: auto;
-        padding: 140px 0 60px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        padding: 120px 0 60px;
     }
     
     .hero .container {
         flex-direction: column;
         gap: 40px;
         text-align: center;
-        padding: 0 20px;
         align-items: center;
-        justify-content: center;
-        width: 100%;
     }
     
     .hero-content {
         width: 100%;
-        max-width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        text-align: center;
     }
     
     .hero-image {
         width: 100%;
-        max-width: 100%;
         display: flex;
         justify-content: center;
-        align-items: center;
     }
     
     .hero-title {
-        font-size: 36px;
+        font-size: 32px;
         line-height: 1.3;
-        margin-bottom: 20px;
         text-align: center;
-        width: 100%;
     }
     
     .hero-subtitle {
         font-size: 16px;
-        margin: 15px auto 30px;
+        margin-bottom: 30px;
         max-width: 90%;
         text-align: center;
-        width: 100%;
     }
     
     .hero-buttons {
-        display: flex;
         flex-direction: column;
-        justify-content: center;
         align-items: center;
         width: 100%;
         gap: 15px;
     }
     
-    .btn {
+    .hero-buttons .btn {
         width: 100%;
         max-width: 300px;
-        padding: 15px 30px;
-        font-size: 15px;
-        margin: 0 auto;
-        display: block;
         text-align: center;
     }
     
     .hero-pet-icons {
-        grid-template-columns: repeat(2, 1fr);
         gap: 20px;
-        max-width: 350px;
+        max-width: 320px;
         margin: 0 auto;
-        justify-items: center;
     }
     
     .pet-icon {
-        width: 150px;
-        height: 150px;
-        font-size: 55px;
-        margin: 0 auto;
+        width: 120px;
+        height: 120px;
+        font-size: 48px;
     }
     
     .scroll-indicator {
@@ -1308,7 +1279,7 @@ section {
     }
     
     .floating-shape {
-        display: none !important;
+        display: none;
     }
     
     .section-title {
@@ -1320,12 +1291,13 @@ section {
     }
     
     .products-grid {
-        grid-template-columns: 1fr;
+        justify-content: center;
         gap: 20px;
         padding: 20px 0;
     }
     
     .product-card {
+        flex: 0 0 100%;
         max-width: 100%;
     }
     
@@ -1338,8 +1310,6 @@ section {
     .tab-btn, .tab-btn-acc {
         padding: 10px 15px;
         font-size: 13px;
-        flex: 1 1 auto;
-        min-width: 120px;
     }
     
     .gallery-grid {
@@ -1352,16 +1322,12 @@ section {
         gap: 30px;
     }
     
-    .contact-info {
-        grid-template-columns: 1fr;
-    }
-    
     .language-switcher {
-        top: 70px;
+        top: auto;
+        bottom: 80px;
         right: 10px;
         padding: 5px;
         gap: 5px;
-        z-index: 1001;
     }
     
     .lang-btn {
@@ -1386,11 +1352,10 @@ section {
         width: 95%;
         margin: 20px auto;
         max-height: 90vh;
-        overflow-y: auto;
     }
     
     .search-modal-content {
-        max-width: 95% !important;
+        max-width: 95%;
     }
     
     .search-modal-body {
@@ -1417,10 +1382,6 @@ section {
     
     .accessories-section {
         padding: 60px 0;
-    }
-    
-    .floating-shape {
-        display: none;
     }
 }
 
@@ -1451,92 +1412,12 @@ section {
         width: 90%;
     }
     
-    /* HERO - SMALL MOBILE - FORCE CENTER */
     .hero {
-        padding: 120px 0 50px;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
+        padding: 100px 0 40px;
     }
     
     .hero .container {
-        padding: 0 15px;
-        gap: 35px;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        text-align: center !important;
-    }
-    
-    .hero-content {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        text-align: center !important;
-        width: 100%;
-    }
-    
-    .hero-image {
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-        width: 100%;
-    }
-    
-    .hero-title {
-        font-size: 28px;
-        margin-bottom: 15px;
-        text-align: center !important;
-        width: 100%;
-    }
-    
-    .hero-subtitle {
-        font-size: 15px;
-        margin: 15px auto 25px;
-        line-height: 1.6;
-        max-width: 95%;
-        text-align: center !important;
-        width: 100%;
-    }
-    
-    .hero-buttons {
-        gap: 12px;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        width: 100%;
-    }
-    
-    .btn {
-        padding: 14px 25px;
-        font-size: 14px;
-        max-width: 280px;
-        width: 100%;
-        display: block;
-        text-align: center;
-        margin: 0 auto;
-    }
-    
-    .hero-pet-icons {
-        gap: 15px;
-        max-width: 300px;
-        margin: 0 auto;
-        justify-items: center;
-    }
-    
-    .pet-icon {
-        width: 130px;
-        height: 130px;
-        font-size: 48px;
-        border-radius: 22px;
-        margin: 0 auto;
-    }
-    
-    .floating-shape {
-        display: none !important;
+        gap: 30px;
     }
     
     .hero-title {
@@ -1545,18 +1426,29 @@ section {
     
     .hero-subtitle {
         font-size: 14px;
+        margin-bottom: 20px;
+    }
+    
+    .hero-buttons {
+        gap: 12px;
+    }
+    
+    .hero-buttons .btn {
+        padding: 14px 25px;
+        font-size: 14px;
+        max-width: 280px;
     }
     
     .hero-pet-icons {
-        grid-template-columns: repeat(2, 1fr);
         gap: 15px;
-        margin-top: 20px;
+        max-width: 260px;
     }
     
     .pet-icon {
-        width: 80px;
-        height: 80px;
-        font-size: 36px;
+        width: 100px;
+        height: 100px;
+        font-size: 40px;
+        border-radius: 22px;
     }
     
     .section-title {
@@ -1574,16 +1466,11 @@ section {
     .tab-btn, .tab-btn-acc {
         padding: 8px 12px;
         font-size: 12px;
-        min-width: auto;
         flex: 1 1 calc(50% - 8px);
     }
     
     .tab-btn i, .tab-btn-acc i {
         display: none;
-    }
-    
-    .product-card {
-        padding: 15px;
     }
     
     .product-name {
@@ -1622,10 +1509,9 @@ section {
     }
     
     .language-switcher {
-        top: 65px;
+        bottom: 75px;
         right: 8px;
         padding: 4px;
-        z-index: 1001;
     }
     
     .lang-btn {
@@ -1667,7 +1553,7 @@ html {
 
 /* Search Modal */
 .search-modal-content {
-    max-width: 900px !important;
+    max-width: 900px;
 }
 
 .search-modal-body {
