@@ -151,7 +151,7 @@
                     <li><a href="#contact" class="nav-link" data-en="Contact" data-fr="Contact" data-ar="اتصل بنا">Contact</a></li>
                 </ul>
                 <div class="nav-icons">
-                    <button class="search-btn"><i class="fas fa-search"></i></button>
+                    <button class="search-btn" id="searchBtn"><i class="fas fa-search"></i></button>
                     <button class="menu-toggle" id="menuToggle">
                         <span></span>
                         <span></span>
@@ -161,6 +161,19 @@
             </div>
         </div>
     </nav>
+
+    <!-- Search Overlay -->
+    <div class="search-overlay" id="searchOverlay">
+        <div class="search-container">
+            <div class="search-header">
+                <input type="text" id="searchInput" placeholder="Search products..." autocomplete="off">
+                <button class="search-close" id="searchClose"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="search-results" id="searchResults">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
 
     <!-- Hero Section -->
     <section class="hero" id="home">
@@ -192,6 +205,18 @@
             </div>
         </div>
         <div class="scroll-indicator">
+    </section>
+
+    <!-- Trending Products Section -->
+    <section class="trending-section" id="trending">
+        <div class="container">
+            <h2 class="section-title" data-en="Trending Products" data-fr="Produits Tendances" data-ar="المنتجات الرائجة">Produits Tendances</h2>
+            <p class="section-subtitle" data-en="Most popular products this month" data-fr="Les produits les plus populaires ce mois-ci" data-ar="المنتجات الأكثر شعبية هذا الشهر">Les produits les plus populaires ce mois-ci</p>
+            <div class="products-grid" id="trendingGrid">
+                <!-- Trending products will be dynamically loaded -->
+            </div>
+        </div>
+    </section>
             <div class="mouse"></div>
         </div>
     </section>

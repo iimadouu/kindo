@@ -129,17 +129,213 @@ document.querySelectorAll('.nav-link').forEach(link => {
     });
 });
 
-// Render Products (Food only)
-function renderProducts(category) {
+// Search Overlay
+const searchBtn = document.getElementById('searchBtn');
+const searchOverlay = document.getElementById('searchOverlay');
+const searchClose = document.getElementById('searchClose');
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+
+searchBtn.addEventListener('click', () => {
+    searchOverlay.classList.add('active');
+    searchInput.focus();
+});
+
+searchClose.addEventListener('click', () => {
+    searchOverlay.classList.remove('active');
+    searchInput.value = '';
+    searchResults.innerHTML = '';
+});
+
+searchOverlay.addEventListener('click', (e) => {
+    if (e.target === searchOverlay) {
+        searchOverlay.classList.remove('active');
+        searchInput.value = '';
+        searchResults.innerHTML = '';
+    }
+});
+
+// Real-time search with product tags
+searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase().trim();
+    
+    if (query.length < 2) {
+        searchResults.innerHTML = '';
+        return;
+    }
+    
+    const allProducts = Object.values(productsData).flat();
+    const filtered = allProducts.filter(product => {
+        const name = product.name.toLowerCase();
+        const description = product.description.toLowerCase();
+        const category = product.category.toLowerCase();
+        const type = product.type.toLowerCase();
+        
+        return name.includes(query) || description.includes(query) || category.includes(query) || type.includes(query);
+    });
+    
+    if (filtered.length === 0) {
+        searchResults.innerHTML = '<div class="no-results">No products found</div>';
+        return;
+    }
+    
+    searchResults.innerHTML = filtered.map(product => `
+        <div class="search-result-item" onclick="showProductModal(${product.id}); document.getElementById('searchOverlay').classList.remove('active');">
+            <img src="${product.image}" alt="${product.name}" loading="lazy">
+            <div class="search-result-info">
+                <div class="search-result-name">${product.name}</div>
+                <div class="search-result-meta">
+                    <span class="search-result-tag">${product.type === 'food' ? 'Food' : 'Accessory'}</span>
+                    <span class="search-result-tag">${product.category}</span>
+                    <span class="search-result-price">${product.price}</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+});
+
+// Pagination state
+let currentPage = 1;
+const productsPerPage = 8;
+
+// Trending tracking
+let productViews = JSON.parse(localStorage.getItem('kindom_product_views')) || {};
+let productOrders = JSON.parse(localStorage.getItem('kindom_product_orders')) || {};
+
+// Track product view
+function trackProductView(productId) {
+    const today = new Date().toISOString().split('T')[0];
+    if (!productViews[productId]) {
+        productViews[productId] = {};
+    }
+    if (!productViews[productId][today]) {
+        productViews[productId][today] = 0;
+    }
+    productViews[productId][today]++;
+    localStorage.setItem('kindom_product_views', JSON.stringify(productViews));
+}
+
+// Track product order (WhatsApp click)
+function trackProductOrder(productId) {
+    const today = new Date().toISOString().split('T')[0];
+    if (!productOrders[productId]) {
+        productOrders[productId] = {};
+    }
+    if (!productOrders[productId][today]) {
+        productOrders[productId][today] = 0;
+    }
+    productOrders[productId][today]++;
+    localStorage.setItem('kindom_product_orders', JSON.stringify(productOrders));
+}
+
+// Calculate trending score (last 30 days)
+function getTrendingScore(productId) {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    
+    let viewScore = 0;
+    let orderScore = 0;
+    
+    // Calculate views with decay
+    if (productViews[productId]) {
+        Object.entries(productViews[productId]).forEach(([date, count]) => {
+            const viewDate = new Date(date);
+            if (viewDate >= thirtyDaysAgo) {
+                const daysDiff = Math.floor((new Date() - viewDate) / (1000 * 60 * 60 * 24));
+                const decay = Math.max(0.1, 1 - (daysDiff / 30));
+                viewScore += count * decay;
+            }
+        });
+    }
+    
+    // Calculate orders with higher weight
+    if (productOrders[productId]) {
+        Object.entries(productOrders[productId]).forEach(([date, count]) => {
+            const orderDate = new Date(date);
+            if (orderDate >= thirtyDaysAgo) {
+                const daysDiff = Math.floor((new Date() - orderDate) / (1000 * 60 * 60 * 24));
+                const decay = Math.max(0.1, 1 - (daysDiff / 30));
+                orderScore += count * 5 * decay; // Orders weighted 5x more
+            }
+        });
+    }
+    
+    return viewScore + orderScore;
+}
+
+// Get trending products
+function getTrendingProducts(limit = 6) {
+    const allProducts = Object.values(productsData).flat();
+    const trending = allProducts.map(product => ({
+        ...product,
+        trendingScore: getTrendingScore(product.id)
+    })).sort((a, b) => b.trendingScore - a.trendingScore);
+    
+    return trending.slice(0, limit);
+}
+
+// Render trending products
+function renderTrendingProducts() {
+    const trendingGrid = document.getElementById('trendingGrid');
+    if (!trendingGrid) return;
+    
+    const trendingProducts = getTrendingProducts(6);
+    const trans = translations[currentLang];
+    
+    if (trendingProducts.length === 0) {
+        trendingGrid.innerHTML = '<p style="text-align: center; color: #666;">No trending products yet</p>';
+        return;
+    }
+    
+    trendingGrid.innerHTML = trendingProducts.map(product => `
+        <div class="product-card" data-id="${product.id}">
+            <span class="trending-badge"><i class="fas fa-fire"></i> Trending</span>
+            <span class="stock-badge ${product.inStock ? 'in-stock' : 'out-of-stock'}">
+                ${product.inStock ? trans.inStock : trans.outOfStock}
+            </span>
+            <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy">
+            <div class="product-info">
+                <span class="product-category">${product.category} - ${product.type === 'food' ? 'Food' : 'Accessory'}</span>
+                <h3 class="product-name">${product.name}</h3>
+                <p class="product-description">${product.description}</p>
+                <div class="product-footer">
+                    <span class="product-price">${product.price}</span>
+                    <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}')">
+                        <i class="fab fa-whatsapp"></i> ${trans.orderWhatsApp}
+                    </button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+    
+    // Add click event to trending product cards
+    document.querySelectorAll('#trendingGrid .product-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+            if (!e.target.closest('.whatsapp-order-btn')) {
+                const productId = card.getAttribute('data-id');
+                showProductModal(productId);
+            }
+        });
+    });
+}
+
+// Render Products (Food only) with pagination
+function renderProducts(category, page = 1) {
     const products = productsData[category].filter(p => p.type === 'food');
     const trans = translations[currentLang];
+    
+    // Calculate pagination
+    const startIndex = (page - 1) * productsPerPage;
+    const endIndex = startIndex + productsPerPage;
+    const paginatedProducts = products.slice(startIndex, endIndex);
+    const totalPages = Math.ceil(products.length / productsPerPage);
     
     // Show loading state
     productsGrid.innerHTML = '<div class="loading-spinner">Loading...</div>';
     
     // Use requestAnimationFrame for smooth rendering
     requestAnimationFrame(() => {
-        productsGrid.innerHTML = products.map(product => `
+        let html = paginatedProducts.map(product => `
             <div class="product-card" data-id="${product.id}">
                 <span class="stock-badge ${product.inStock ? 'in-stock' : 'out-of-stock'}">
                     ${product.inStock ? trans.inStock : trans.outOfStock}
@@ -158,6 +354,23 @@ function renderProducts(category) {
                 </div>
             </div>
         `).join('');
+        
+        // Add pagination controls if more than one page
+        if (totalPages > 1) {
+            html += `
+                <div class="pagination-controls">
+                    <button class="pagination-btn" ${page === 1 ? 'disabled' : ''} onclick="changePage('products', ${page - 1})">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span class="pagination-info">${page} / ${totalPages}</span>
+                    <button class="pagination-btn" ${page === totalPages ? 'disabled' : ''} onclick="changePage('products', ${page + 1})">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            `;
+        }
+        
+        productsGrid.innerHTML = html;
 
         // Add click event to product cards
         document.querySelectorAll('.product-card').forEach(card => {
@@ -171,18 +384,38 @@ function renderProducts(category) {
     });
 }
 
-// Render Accessories
-function renderAccessories(category) {
+// Change page function
+function changePage(section, page) {
+    currentPage = page;
+    const activeTab = document.querySelector('.tab-btn.active');
+    if (activeTab) {
+        const category = activeTab.dataset.category;
+        if (section === 'products') {
+            renderProducts(category, page);
+        } else if (section === 'accessories') {
+            renderAccessories(category, page);
+        }
+    }
+}
+
+// Render Accessories with pagination
+function renderAccessories(category, page = 1) {
     const accessories = productsData[category].filter(p => p.type === 'accessory');
     const trans = translations[currentLang];
     const accessoriesGrid = document.getElementById('accessoriesGrid');
+    
+    // Calculate pagination
+    const startIndex = (page - 1) * productsPerPage;
+    const endIndex = startIndex + productsPerPage;
+    const paginatedAccessories = accessories.slice(startIndex, endIndex);
+    const totalPages = Math.ceil(accessories.length / productsPerPage);
     
     // Show loading state
     accessoriesGrid.innerHTML = '<div class="loading-spinner">Loading...</div>';
     
     // Use requestAnimationFrame for smooth rendering
     requestAnimationFrame(() => {
-        accessoriesGrid.innerHTML = accessories.map(product => `
+        let html = paginatedAccessories.map(product => `
             <div class="product-card" data-id="${product.id}">
                 <span class="stock-badge ${product.inStock ? 'in-stock' : 'out-of-stock'}">
                     ${product.inStock ? trans.inStock : trans.outOfStock}
@@ -201,6 +434,23 @@ function renderAccessories(category) {
                 </div>
             </div>
         `).join('');
+        
+        // Add pagination controls if more than one page
+        if (totalPages > 1) {
+            html += `
+                <div class="pagination-controls">
+                    <button class="pagination-btn" ${page === 1 ? 'disabled' : ''} onclick="changePage('accessories', ${page - 1})">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span class="pagination-info">${page} / ${totalPages}</span>
+                    <button class="pagination-btn" ${page === totalPages ? 'disabled' : ''} onclick="changePage('accessories', ${page + 1})">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            `;
+        }
+        
+        accessoriesGrid.innerHTML = html;
 
         // Add click event to accessory cards
         document.querySelectorAll('#accessoriesGrid .product-card').forEach(card => {
@@ -218,6 +468,9 @@ function renderAccessories(category) {
 function showProductModal(productId) {
     const product = Object.values(productsData).flat().find(p => p.id == productId);
     const trans = translations[currentLang];
+    
+    // Track product view
+    trackProductView(productId);
     
     if (product) {
         modalBody.innerHTML = `
@@ -279,6 +532,13 @@ function orderViaWhatsApp(productName, price) {
     };
     const message = messages[currentLang] || messages.fr;
     const whatsappURL = `https://wa.me/1234567890?text=${encodeURIComponent(message)}`;
+    
+    // Track product order
+    const product = Object.values(productsData).flat().find(p => p.name === productName);
+    if (product) {
+        trackProductOrder(product.id);
+    }
+    
     window.open(whatsappURL, '_blank');
 }
 
@@ -535,6 +795,7 @@ document.querySelectorAll('.product-card, .gallery-item, .info-card').forEach(el
 });
 
 // Initialize
+renderTrendingProducts();
 renderProducts('cats');
 renderAccessories('cats');
 renderGallery();
