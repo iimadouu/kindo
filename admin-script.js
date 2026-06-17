@@ -39,6 +39,74 @@ function loadFromStorage() {
     }
 }
 
+// Activity tracking
+let activities = [];
+
+function loadActivities() {
+    const savedActivities = localStorage.getItem('kindom_activities');
+    if (savedActivities) {
+        activities = JSON.parse(savedActivities);
+    }
+}
+
+function saveActivities() {
+    localStorage.setItem('kindom_activities', JSON.stringify(activities));
+}
+
+function addActivity(type, message) {
+    const activity = {
+        id: Date.now(),
+        type: type, // 'add', 'edit', 'delete', 'order'
+        message: message,
+        timestamp: new Date().toISOString()
+    };
+    activities.unshift(activity); // Add to beginning
+    if (activities.length > 10) {
+        activities = activities.slice(0, 10); // Keep only last 10
+    }
+    saveActivities();
+    loadActivities();
+}
+
+function formatTime(timestamp) {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+    
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} min ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+}
+
+function loadActivitiesDisplay() {
+    const activityList = document.getElementById('activityList');
+    if (!activityList) return;
+    
+    if (activities.length === 0) {
+        activityList.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">No recent activity</p>';
+        return;
+    }
+    
+    const icons = {
+        add: 'fa-plus-circle',
+        edit: 'fa-edit',
+        delete: 'fa-trash',
+        order: 'fa-shopping-cart'
+    };
+    
+    activityList.innerHTML = activities.map(activity => `
+        <div class="activity-item">
+            <i class="fas ${icons[activity.type] || 'fa-circle'}"></i>
+            <span>${activity.message}</span>
+            <span class="activity-time">${formatTime(activity.timestamp)}</span>
+        </div>
+    `).join('');
+}
+
 // Save data to localStorage
 function saveToStorage() {
     localStorage.setItem('kindom_products', JSON.stringify(products));
@@ -362,6 +430,7 @@ function loadDashboard() {
     document.getElementById('totalProducts').textContent = products.length;
     document.getElementById('inStock').textContent = inStockCount;
     document.getElementById('galleryCount').textContent = gallery.length;
+    loadActivitiesDisplay();
 }
 
 // Load Products Table
@@ -448,7 +517,9 @@ function editProduct(id) {
 
 function deleteProduct(id) {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce produit?')) {
+        const product = products.find(p => p.id === id);
         products = products.filter(p => p.id !== id);
+        addActivity('delete', `Product deleted: ${product ? product.name : 'Unknown'}`);
         saveToStorage();
         loadProducts();
         loadDashboard();
@@ -524,10 +595,12 @@ document.getElementById('productForm').addEventListener('submit', async (e) => {
             // Update existing product
             const index = products.findIndex(p => p.id == productData.id);
             products[index] = productData;
+            addActivity('edit', `Product updated: ${productData.name}`);
             showNotification('Produit mis à jour avec succès!', 'success');
         } else {
             // Add new product
             products.push(productData);
+            addActivity('add', `New product added: ${productData.name}`);
             showNotification('Produit ajouté avec succès!', 'success');
         }
         
@@ -701,6 +774,8 @@ function importData(data) {
 }
 
 // Initialize
+loadFromStorage();
+loadActivities();
 loadProducts();
 loadGallery();
 initializeDefaultPassword();
