@@ -654,9 +654,14 @@ function loadGallery() {
                 <h4 style="margin: 0; font-size: 14px; color: #333;">${item.title || 'Untitled Album'}</h4>
                 <small style="color: #666;">${(item.extraImages && item.extraImages.length) ? '+' + item.extraImages.length + ' photos' : '1 photo'}</small>
             </div>
-            <button class="gallery-delete-btn" onclick="deleteGalleryItem(${item.id})">
-                <i class="fas fa-trash"></i>
-            </button>
+            <div class="gallery-item-actions">
+                <button class="gallery-edit-btn" onclick="editGalleryItem(${item.id})">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="gallery-delete-btn" onclick="deleteGalleryItem(${item.id})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
         </div>
     `).join('');
 }
@@ -664,12 +669,43 @@ function loadGallery() {
 // Gallery Modal Functions
 function showAddGalleryModal() {
     document.getElementById('galleryModal').classList.add('active');
+    document.getElementById('galleryModalTitle').textContent = 'Add Gallery Album';
+    document.getElementById('galleryId').value = '';
+    document.getElementById('galleryImage').setAttribute('required', '');
+    document.getElementById('galleryImageHint').textContent = 'Upload cover image (will be stored in Cloudflare R2)';
+    document.getElementById('gallerySubmitBtn').textContent = 'Add Image';
+}
+
+function editGalleryItem(id) {
+    const item = gallery.find(g => g.id === id);
+    if (!item) return;
+
+    document.getElementById('galleryModal').classList.add('active');
+    document.getElementById('galleryModalTitle').textContent = 'Edit Gallery Album';
+    document.getElementById('galleryId').value = item.id;
+    document.getElementById('galleryTitle').value = item.title || '';
+    document.getElementById('galleryDescription').value = item.description || '';
+    document.getElementById('galleryAlt').value = item.alt || '';
+    document.getElementById('galleryCategory').value = item.category || '';
+    document.getElementById('galleryImage').removeAttribute('required');
+    document.getElementById('galleryImageHint').textContent = 'Leave empty to keep current cover image';
+    document.getElementById('gallerySubmitBtn').textContent = 'Update Album';
+
+    // Load extra images
+    const extraImagesContainer = document.getElementById('extraImagesContainer');
+    extraImagesContainer.innerHTML = '<label>Extra Album Images</label>';
+    if (item.extraImages && item.extraImages.length > 0) {
+        item.extraImages.forEach((img, index) => {
+            addExtraImageInput(img);
+        });
+    }
 }
 
 function closeGalleryModal() {
     document.getElementById('galleryModal').classList.remove('active');
     document.getElementById('galleryForm').reset();
     document.getElementById('extraImagesContainer').innerHTML = '<label>Extra Album Images</label>';
+    document.getElementById('galleryId').value = '';
 }
 
 function deleteGalleryItem(id) {
@@ -707,10 +743,7 @@ document.getElementById('galleryForm').addEventListener('submit', async (e) => {
     if (!requireAuth()) return;
     
     const imageFile = document.getElementById('galleryImage').files[0];
-    if (!imageFile) {
-        alert('Veuillez sélectionner une image de couverture!');
-        return;
-    }
+    const galleryId = document.getElementById('galleryId').value;
     
     // Show loading state
     const submitBtn = e.target.querySelector('button[type="submit"]');
@@ -718,8 +751,23 @@ document.getElementById('galleryForm').addEventListener('submit', async (e) => {
     submitBtn.textContent = 'Uploading...';
     
     try {
-        // Upload cover image to R2
-        const imageUrl = await uploadImageToR2(imageFile, 'gallery');
+        let imageUrl;
+        
+        // Handle cover image
+        if (imageFile) {
+            // Upload new cover image to R2
+            imageUrl = await uploadImageToR2(imageFile, 'gallery');
+        } else if (galleryId) {
+            // Editing without changing cover image - keep existing
+            const existingItem = gallery.find(g => g.id == galleryId);
+            imageUrl = existingItem ? existingItem.image : null;
+        } else {
+            // Adding new item without image - error
+            alert('Veuillez sélectionner une image de couverture!');
+            submitBtn.disabled = false;
+            submitBtn.textContent = galleryId ? 'Update Album' : 'Add Image';
+            return;
+        }
         
         // Gather and upload extra images
         const extraImagesInputs = document.querySelectorAll('.extra-image-file');
@@ -736,27 +784,46 @@ document.getElementById('galleryForm').addEventListener('submit', async (e) => {
         const description = sanitizeInput(document.getElementById('galleryDescription').value);
         const altText = sanitizeInput(document.getElementById('galleryAlt').value);
         
-        const galleryData = {
-            id: Date.now(),
-            title: title,
-            description: description,
-            image: imageUrl,
-            alt: altText,
-            extraImages: extraImages
-        };
+        if (galleryId) {
+            // Update existing gallery item
+            const index = gallery.findIndex(g => g.id == galleryId);
+            if (index !== -1) {
+                gallery[index] = {
+                    ...gallery[index],
+                    title: title,
+                    description: description,
+                    image: imageUrl,
+                    alt: altText,
+                    extraImages: extraImages
+                };
+                addActivity('edit', `Gallery album updated: ${title}`);
+                showNotification('Album mis à jour avec succès!', 'success');
+            }
+        } else {
+            // Add new gallery item
+            const galleryData = {
+                id: Date.now(),
+                title: title,
+                description: description,
+                image: imageUrl,
+                alt: altText,
+                extraImages: extraImages
+            };
+            gallery.push(galleryData);
+            addActivity('add', `New gallery album added: ${title}`);
+            showNotification('Album ajouté avec succès!', 'success');
+        }
         
-        gallery.push(galleryData);
         saveToStorage();
         loadGallery();
         loadDashboard();
         closeGalleryModal();
-        showNotification('Album ajouté avec succès!', 'success');
     } catch (error) {
         console.error('Gallery save error:', error);
         alert('Erreur lors de l\'upload des images: ' + error.message);
     } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Add Image';
+        submitBtn.textContent = galleryId ? 'Update Album' : 'Add Image';
     }
 });
 
