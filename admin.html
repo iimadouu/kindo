@@ -324,8 +324,9 @@
                         <textarea id="productDescription" class="form-input" rows="4" required></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Image URL</label>
-                        <input type="url" id="productImage" class="form-input" placeholder="https://..." required>
+                        <label>Product Image</label>
+                        <input type="file" id="productImage" class="form-input" accept="image/*" required>
+                        <small style="color: #666;">Upload image (will be stored in Cloudflare R2)</small>
                     </div>
                     <div class="form-group">
                         <label>
@@ -355,8 +356,9 @@
                         <input type="text" id="galleryTitle" class="form-input" placeholder="My Awesome Album" required>
                     </div>
                     <div class="form-group">
-                        <label>Cover Image URL</label>
-                        <input type="url" id="galleryImage" class="form-input" placeholder="https://..." required>
+                        <label>Cover Image</label>
+                        <input type="file" id="galleryImage" class="form-input" accept="image/*" required>
+                        <small style="color: #666;">Upload cover image (will be stored in Cloudflare R2)</small>
                     </div>
                     <div class="form-group">
                         <label>Alt Text / Short Subject</label>

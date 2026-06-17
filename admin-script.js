@@ -178,6 +178,46 @@ class SecureAuth {
 // Initialize secure auth
 const secureAuth = new SecureAuth();
 
+// R2 Configuration
+// Update this after deploying the worker (see DEPLOY_WORKER.md)
+const WORKER_URL = 'YOUR_WORKER_URL_HERE';
+
+// Image Upload to R2 via Worker
+async function uploadImageToR2(file, folder = 'products') {
+    // Check cache first
+    const cacheKey = `r2_cache_${file.name}_${file.size}`;
+    const cachedUrl = localStorage.getItem(cacheKey);
+    if (cachedUrl) {
+        console.log('Using cached image URL:', cachedUrl);
+        return cachedUrl;
+    }
+
+    try {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('folder', folder);
+
+        const response = await fetch(WORKER_URL, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error(`Upload failed: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        
+        // Cache the URL
+        localStorage.setItem(cacheKey, data.url);
+        
+        return data.url;
+    } catch (error) {
+        console.error('Image upload error:', error);
+        throw error;
+    }
+}
+
 // Get stored password hash (encrypted in localStorage)
 function getStoredPasswordHash() {
     return localStorage.getItem('kindom_admin_hash') || null;
@@ -344,7 +384,7 @@ function loadProducts(filter = 'all', search = '') {
     tableBody.innerHTML = filteredProducts.map(product => `
         <tr>
             <td>${product.id}</td>
-            <td><img src="${product.image}" alt="${product.name}" class="product-img"></td>
+            <td><img src="${product.image}" alt="${product.name}" class="product-img" loading="lazy"></td>
             <td><strong>${product.name}</strong></td>
             <td><span style="text-transform: capitalize;">${product.category}</span></td>
             <td><span class="badge" style="background: ${product.type === 'food' ? '#34C759' : '#007AFF'}; color: white; padding: 4px 12px; border-radius: 12px;">${product.type === 'food' ? 'Food' : 'Accessory'}</span></td>
@@ -440,51 +480,69 @@ function isValidURL(url) {
 }
 
 // Save Product
-document.getElementById('productForm').addEventListener('submit', (e) => {
+document.getElementById('productForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
     // Security check
     if (!requireAuth()) return;
     
-    // Sanitize inputs
-    const productData = {
-        id: document.getElementById('productId').value || Date.now(),
-        name: sanitizeInput(document.getElementById('productName').value),
-        category: sanitizeInput(document.getElementById('productCategory').value),
-        type: sanitizeInput(document.getElementById('productType').value),
-        price: sanitizeInput(document.getElementById('productPrice').value),
-        description: sanitizeInput(document.getElementById('productDescription').value),
-        image: document.getElementById('productImage').value,
-        inStock: document.getElementById('productInStock').checked
-    };
-    
-    // Validate image URL
-    if (!isValidURL(productData.image)) {
-        alert('URL d\'image invalide!');
+    const imageFile = document.getElementById('productImage').files[0];
+    if (!imageFile) {
+        alert('Veuillez sélectionner une image!');
         return;
     }
     
-    // Validate required fields
-    if (!productData.name || !productData.category || !productData.type || !productData.price || !productData.description) {
-        alert('Veuillez remplir tous les champs obligatoires!');
-        return;
-    }
+    // Show loading state
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Uploading...';
     
-    if (document.getElementById('productId').value) {
-        // Update existing product
-        const index = products.findIndex(p => p.id == productData.id);
-        products[index] = productData;
-        showNotification('Produit mis à jour avec succès!', 'success');
-    } else {
-        // Add new product
-        products.push(productData);
-        showNotification('Produit ajouté avec succès!', 'success');
+    try {
+        // Upload image to R2
+        const imageUrl = await uploadImageToR2(imageFile, 'products');
+        
+        // Sanitize inputs
+        const productData = {
+            id: document.getElementById('productId').value || Date.now(),
+            name: sanitizeInput(document.getElementById('productName').value),
+            category: sanitizeInput(document.getElementById('productCategory').value),
+            type: sanitizeInput(document.getElementById('productType').value),
+            price: sanitizeInput(document.getElementById('productPrice').value),
+            description: sanitizeInput(document.getElementById('productDescription').value),
+            image: imageUrl,
+            inStock: document.getElementById('productInStock').checked
+        };
+        
+        // Validate required fields
+        if (!productData.name || !productData.category || !productData.type || !productData.price || !productData.description) {
+            alert('Veuillez remplir tous les champs obligatoires!');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Save Product';
+            return;
+        }
+        
+        if (document.getElementById('productId').value) {
+            // Update existing product
+            const index = products.findIndex(p => p.id == productData.id);
+            products[index] = productData;
+            showNotification('Produit mis à jour avec succès!', 'success');
+        } else {
+            // Add new product
+            products.push(productData);
+            showNotification('Produit ajouté avec succès!', 'success');
+        }
+        
+        saveToStorage();
+        loadProducts();
+        loadDashboard();
+        closeProductModal();
+    } catch (error) {
+        console.error('Product save error:', error);
+        alert('Erreur lors de l\'upload de l\'image: ' + error.message);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Save Product';
     }
-    
-    saveToStorage();
-    loadProducts();
-    loadDashboard();
-    closeProductModal();
 });
 
 // Load Gallery
@@ -492,7 +550,7 @@ function loadGallery() {
     const galleryGrid = document.getElementById('galleryAdminGrid');
     galleryGrid.innerHTML = gallery.map(item => `
         <div class="gallery-admin-item">
-            <img src="${item.image}" alt="${item.alt}">
+            <img src="${item.image}" alt="${item.alt}" loading="lazy">
             <div class="gallery-item-info" style="padding: 10px; background: #f8f9fa; border-top: 1px solid #eee; text-align: center;">
                 <h4 style="margin: 0; font-size: 14px; color: #333;">${item.title || 'Untitled Album'}</h4>
                 <small style="color: #666;">${(item.extraImages && item.extraImages.length) ? '+' + item.extraImages.length + ' photos' : '1 photo'}</small>
@@ -534,7 +592,7 @@ function addExtraImageField() {
     div.style.gap = '10px';
     div.style.marginTop = '10px';
     div.innerHTML = `
-        <input type="url" class="form-input extra-image-url" placeholder="https://..." required>
+        <input type="file" class="form-input extra-image-file" accept="image/*" required>
         <button type="button" class="btn-danger" style="padding: 10px; border-radius: 8px; border: none; cursor: pointer; color: white;" onclick="this.parentElement.remove()">
             <i class="fas fa-trash"></i>
         </button>
@@ -543,48 +601,64 @@ function addExtraImageField() {
 }
 
 // Save Gallery Item
-document.getElementById('galleryForm').addEventListener('submit', (e) => {
+document.getElementById('galleryForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
     // Security check
     if (!requireAuth()) return;
     
-    const title = sanitizeInput(document.getElementById('galleryTitle').value);
-    const description = sanitizeInput(document.getElementById('galleryDescription').value);
-    const imageUrl = document.getElementById('galleryImage').value;
-    const altText = sanitizeInput(document.getElementById('galleryAlt').value);
-    
-    // Gather extra images
-    const extraImagesInputs = document.querySelectorAll('.extra-image-url');
-    const extraImages = [];
-    let validUrls = true;
-
-    extraImagesInputs.forEach(input => {
-        if (!isValidURL(input.value)) validUrls = false;
-        else extraImages.push(input.value);
-    });
-    
-    // Validate URLs
-    if (!isValidURL(imageUrl) || !validUrls) {
-        alert('Une ou plusieurs URLs d\'image sont invalides!');
+    const imageFile = document.getElementById('galleryImage').files[0];
+    if (!imageFile) {
+        alert('Veuillez sélectionner une image de couverture!');
         return;
     }
     
-    const galleryData = {
-        id: Date.now(),
-        title: title,
-        description: description,
-        image: imageUrl,
-        alt: altText,
-        extraImages: extraImages
-    };
+    // Show loading state
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Uploading...';
     
-    gallery.push(galleryData);
-    saveToStorage();
-    loadGallery();
-    loadDashboard();
-    closeGalleryModal();
-    showNotification('Album ajouté avec succès!', 'success');
+    try {
+        // Upload cover image to R2
+        const imageUrl = await uploadImageToR2(imageFile, 'gallery');
+        
+        // Gather and upload extra images
+        const extraImagesInputs = document.querySelectorAll('.extra-image-file');
+        const extraImages = [];
+        
+        for (const input of extraImagesInputs) {
+            if (input.files[0]) {
+                const extraImageUrl = await uploadImageToR2(input.files[0], 'gallery');
+                extraImages.push(extraImageUrl);
+            }
+        }
+        
+        const title = sanitizeInput(document.getElementById('galleryTitle').value);
+        const description = sanitizeInput(document.getElementById('galleryDescription').value);
+        const altText = sanitizeInput(document.getElementById('galleryAlt').value);
+        
+        const galleryData = {
+            id: Date.now(),
+            title: title,
+            description: description,
+            image: imageUrl,
+            alt: altText,
+            extraImages: extraImages
+        };
+        
+        gallery.push(galleryData);
+        saveToStorage();
+        loadGallery();
+        loadDashboard();
+        closeGalleryModal();
+        showNotification('Album ajouté avec succès!', 'success');
+    } catch (error) {
+        console.error('Gallery save error:', error);
+        alert('Erreur lors de l\'upload des images: ' + error.message);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Add Image';
+    }
 });
 
 // Notification System
