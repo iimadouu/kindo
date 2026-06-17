@@ -506,7 +506,7 @@ document.getElementById('productForm').addEventListener('submit', async (e) => {
             name: sanitizeInput(document.getElementById('productName').value),
             category: sanitizeInput(document.getElementById('productCategory').value),
             type: sanitizeInput(document.getElementById('productType').value),
-            price: sanitizeInput(document.getElementById('productPrice').value),
+            price: sanitizeInput(document.getElementById('productPrice').value) + ' DZD',
             description: sanitizeInput(document.getElementById('productDescription').value),
             image: imageUrl,
             inStock: document.getElementById('productInStock').checked

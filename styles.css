@@ -765,14 +765,17 @@ section {
     background: #25D366;
     color: var(--white);
     border: none;
-    padding: 10px 20px;
+    padding: 8px 16px;
     border-radius: 50px;
     cursor: pointer;
     font-weight: 600;
+    font-size: 13px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     transition: var(--transition);
+    white-space: nowrap;
+    max-width: 100%;
 }
 
 .whatsapp-order-btn:hover {
