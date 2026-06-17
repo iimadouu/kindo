@@ -995,7 +995,7 @@ document.getElementById('newPassword').addEventListener('input', (e) => {
 });
 
 // Store settings
-document.getElementById('storeSettingsForm').addEventListener('submit', (e) => {
+document.getElementById('storeSettingsForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
     if (!requireAuth()) return;
