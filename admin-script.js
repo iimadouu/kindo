@@ -519,6 +519,7 @@ function showAddProductModal() {
     document.getElementById('productModalTitle').textContent = 'Add Product';
     document.getElementById('productForm').reset();
     document.getElementById('productId').value = '';
+    document.getElementById('productImage').setAttribute('required', ''); // Make image required for new products
     document.getElementById('productModal').classList.add('active');
 }
 
@@ -534,10 +535,10 @@ function editProduct(id) {
         document.getElementById('productName').value = product.name;
         document.getElementById('productCategory').value = product.category;
         document.getElementById('productType').value = product.type || 'food';
-        document.getElementById('productPrice').value = product.price;
+        document.getElementById('productPrice').value = product.price.replace(' DZD', ''); // Remove DZD for editing
         document.getElementById('productDescription').value = product.description;
-        document.getElementById('productImage').value = product.image;
         document.getElementById('productInStock').checked = product.inStock;
+        document.getElementById('productImage').removeAttribute('required'); // Make image optional when editing
         document.getElementById('productModal').classList.add('active');
     }
 }
@@ -584,10 +585,7 @@ document.getElementById('productForm').addEventListener('submit', async (e) => {
     if (!requireAuth()) return;
     
     const imageFile = document.getElementById('productImage').files[0];
-    if (!imageFile) {
-        alert('Veuillez sélectionner une image!');
-        return;
-    }
+    const productId = document.getElementById('productId').value;
     
     // Show loading state
     const submitBtn = e.target.querySelector('button[type="submit"]');
@@ -595,12 +593,27 @@ document.getElementById('productForm').addEventListener('submit', async (e) => {
     submitBtn.textContent = 'Uploading...';
     
     try {
-        // Upload image to R2
-        const imageUrl = await uploadImageToR2(imageFile, 'products');
+        let imageUrl;
+        
+        // Handle image upload
+        if (imageFile) {
+            // Upload new image to R2
+            imageUrl = await uploadImageToR2(imageFile, 'products');
+        } else if (productId) {
+            // Editing without changing image - keep existing
+            const existingProduct = products.find(p => p.id == productId);
+            imageUrl = existingProduct ? existingProduct.image : null;
+        } else {
+            // Adding new product without image - error
+            alert('Veuillez sélectionner une image!');
+            submitBtn.disabled = false;
+            submitBtn.textContent = productId ? 'Update Product' : 'Save Product';
+            return;
+        }
         
         // Sanitize inputs
         const productData = {
-            id: document.getElementById('productId').value || Date.now(),
+            id: productId || Date.now(),
             name: sanitizeInput(document.getElementById('productName').value),
             category: sanitizeInput(document.getElementById('productCategory').value),
             type: sanitizeInput(document.getElementById('productType').value),
@@ -640,7 +653,7 @@ document.getElementById('productForm').addEventListener('submit', async (e) => {
         alert('Erreur lors de l\'upload de l\'image: ' + error.message);
     } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Save Product';
+        submitBtn.textContent = productId ? 'Update Product' : 'Save Product';
     }
 });
 
