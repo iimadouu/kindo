@@ -271,8 +271,11 @@ function renderGallery() {
     galleryGrid.innerHTML = galleryData.map(item => `
         <div class="gallery-item" onclick="showGalleryModal(${item.id})">
             <img src="${item.image}" alt="${item.alt}">
-            <div class="gallery-overlay">
+            <div class="gallery-text-overlay">
                 ${item.title ? `<h3>${item.title}</h3>` : ''}
+                ${item.description ? `<p>${item.description}</p>` : ''}
+            </div>
+            <div class="gallery-overlay">
                 <i class="fas fa-search-plus"></i>
             </div>
         </div>
