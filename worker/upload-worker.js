@@ -19,6 +19,16 @@ export default {
 
     // Settings API endpoints
     if (path === '/settings') {
+      if (!env.DB) {
+        return new Response(JSON.stringify({ error: 'D1 database not bound. Set binding = "DB" in wrangler.toml and redeploy.' }), {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+        });
+      }
+
       if (request.method === 'GET') {
         try {
           const result = await env.DB.prepare('SELECT setting_key, setting_value FROM settings').all();
@@ -53,7 +63,7 @@ export default {
             updates.push(
               env.DB.prepare(
                 'INSERT INTO settings (setting_key, setting_value) VALUES (?, ?) ON CONFLICT(setting_key) DO UPDATE SET setting_value = ?, updated_at = CURRENT_TIMESTAMP'
-              ).bind(key, value, value)
+              ).bind(key, String(value), String(value)).run()
             );
           }
 

@@ -256,6 +256,8 @@ async function loadSettingsFromDB() {
         if (response.ok) {
             return await response.json();
         }
+        const error = await response.json().catch(() => ({}));
+        console.error('Failed to load settings from DB:', response.status, error);
     } catch (error) {
         console.error('Failed to load settings from DB:', error);
     }
@@ -269,7 +271,12 @@ async function saveSettingsToDB(settings) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(settings)
         });
-        return response.ok;
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({}));
+            console.error('Failed to save settings to DB:', response.status, error);
+            return false;
+        }
+        return true;
     } catch (error) {
         console.error('Failed to save settings to DB:', error);
         return false;
