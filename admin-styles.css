@@ -148,6 +148,11 @@ body {
     min-height: 100vh;
 }
 
+.mobile-menu-toggle,
+.sidebar-overlay {
+    display: none;
+}
+
 /* Sidebar */
 .sidebar {
     background: linear-gradient(180deg, var(--dark), #1a252f);
