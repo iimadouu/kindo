@@ -741,43 +741,49 @@ section {
     color: #666;
     margin-bottom: 15px;
     display: -webkit-box !important;
-    -webkit-line-clamp: 2 !important;
+    -webkit-line-clamp: 3 !important;
     -webkit-box-orient: vertical !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
-    line-height: 1.6;
-    max-height: 3.2em !important;
+    line-height: 1.5;
+    max-height: 4.5em !important;
     word-wrap: break-word;
     word-break: break-word;
+    min-height: 4.5em;
 }
 
 .product-footer {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
+    gap: 15px;
+    margin-top: 10px;
 }
 
 .product-price {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 800;
     color: var(--primary-color);
+    text-align: center;
 }
 
 .whatsapp-order-btn {
     background: #25D366;
     color: var(--white);
     border: none;
-    padding: 8px 16px;
+    padding: 12px 24px;
     border-radius: 50px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 13px;
+    font-size: 14px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    gap: 8px;
     transition: var(--transition);
     white-space: nowrap;
-    max-width: 100%;
+    width: 100%;
+    max-width: 280px;
 }
 
 .whatsapp-order-btn:hover {

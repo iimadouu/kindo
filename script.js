@@ -1,29 +1,29 @@
 // Sample Product Data (will be overridden by localStorage if available)
 let productsData = {
     cats: [
-        { id: 1, name: "Nourriture Premium pour Chats", category: "cats", price: "2900 DZD", description: "Nutrition de haute qualité pour votre ami félin", image: "https://images.unsplash.com/photo-1589652717521-10c0d092dea9?w=500", inStock: true, type: "food" },
-        { id: 2, name: "Arbre à Chat", category: "cats", price: "4500 DZD", description: "Griffoir durable avec plusieurs niveaux", image: "https://images.unsplash.com/photo-1545249390-6bdfa286032f?w=500", inStock: true, type: "accessory" },
-        { id: 3, name: "Jouet Interactif pour Chat", category: "cats", price: "1900 DZD", description: "Divertissez votre chat pendant des heures", image: "https://images.unsplash.com/photo-1529257414772-1960b7bea4eb?w=500", inStock: false, type: "accessory" },
+        { id: 1, name: "Nourriture Premium pour Chats", category: "cats", price: "2900", description: "Nutrition de haute qualité pour votre ami félin", image: "https://images.unsplash.com/photo-1589652717521-10c0d092dea9?w=500", inStock: true, type: "food" },
+        { id: 2, name: "Arbre à Chat", category: "cats", price: "4500", description: "Griffoir durable avec plusieurs niveaux", image: "https://images.unsplash.com/photo-1545249390-6bdfa286032f?w=500", inStock: true, type: "accessory" },
+        { id: 3, name: "Jouet Interactif pour Chat", category: "cats", price: "1900", description: "Divertissez votre chat pendant des heures", image: "https://images.unsplash.com/photo-1529257414772-1960b7bea4eb?w=500", inStock: false, type: "accessory" },
     ],
     dogs: [
-        { id: 4, name: "Nourriture Premium pour Chiens", category: "dogs", price: "3900 DZD", description: "Repas nutritifs pour chiens en bonne santé", image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=500", inStock: true, type: "food" },
-        { id: 5, name: "Laisse et Collier", category: "dogs", price: "2400 DZD", description: "Ensemble de promenade confortable et élégant", image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=500", inStock: true, type: "accessory" },
-        { id: 6, name: "Jouets à Mâcher", category: "dogs", price: "3400 DZD", description: "Pack variété de jouets à mâcher durables", image: "https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=500", inStock: true, type: "accessory" },
+        { id: 4, name: "Nourriture Premium pour Chiens", category: "dogs", price: "3900", description: "Repas nutritifs pour chiens en bonne santé", image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=500", inStock: true, type: "food" },
+        { id: 5, name: "Laisse et Collier", category: "dogs", price: "2400", description: "Ensemble de promenade confortable et élégant", image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=500", inStock: true, type: "accessory" },
+        { id: 6, name: "Jouets à Mâcher", category: "dogs", price: "3400", description: "Pack variété de jouets à mâcher durables", image: "https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=500", inStock: true, type: "accessory" },
     ],
     birds: [
-        { id: 7, name: "Mélange de Graines pour Oiseaux", category: "birds", price: "1500 DZD", description: "Mélange nutritif pour tous les oiseaux", image: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=500", inStock: true, type: "food" },
-        { id: 8, name: "Cage pour Oiseaux", category: "birds", price: "8900 DZD", description: "Maison spacieuse et confortable pour oiseaux", image: "https://images.unsplash.com/photo-1444464666168-49d633b86797?w=500", inStock: true, type: "accessory" },
-        { id: 9, name: "Ensemble de Jouets pour Oiseaux", category: "birds", price: "2200 DZD", description: "Jouets amusants pour oiseaux actifs", image: "https://images.unsplash.com/photo-1578828876330-5ac4ab90fdeb?w=500", inStock: true, type: "accessory" },
+        { id: 7, name: "Mélange de Graines pour Oiseaux", category: "birds", price: "1500", description: "Mélange nutritif pour tous les oiseaux", image: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=500", inStock: true, type: "food" },
+        { id: 8, name: "Cage pour Oiseaux", category: "birds", price: "8900", description: "Maison spacieuse et confortable pour oiseaux", image: "https://images.unsplash.com/photo-1444464666168-49d633b86797?w=500", inStock: true, type: "accessory" },
+        { id: 9, name: "Ensemble de Jouets pour Oiseaux", category: "birds", price: "2200", description: "Jouets amusants pour oiseaux actifs", image: "https://images.unsplash.com/photo-1578828876330-5ac4ab90fdeb?w=500", inStock: true, type: "accessory" },
     ],
     fish: [
-        { id: 10, name: "Flocons pour Poissons", category: "fish", price: "1200 DZD", description: "Nutrition premium pour poissons tropicaux", image: "https://images.unsplash.com/photo-1535591273668-578e31182c4f?w=500", inStock: true, type: "food" },
-        { id: 11, name: "Filtre d'Aquarium", category: "fish", price: "4900 DZD", description: "Gardez l'eau de votre aquarium cristalline", image: "https://images.unsplash.com/photo-1520990269076-e7e0821a0a89?w=500", inStock: true, type: "accessory" },
-        { id: 12, name: "Plantes Décoratives", category: "fish", price: "1800 DZD", description: "Belles décorations d'aquarium", image: "https://images.unsplash.com/photo-1524704796725-9fc3044a58b1?w=500", inStock: false, type: "accessory" },
+        { id: 10, name: "Flocons pour Poissons", category: "fish", price: "1200", description: "Nutrition premium pour poissons tropicaux", image: "https://images.unsplash.com/photo-1535591273668-578e31182c4f?w=500", inStock: true, type: "food" },
+        { id: 11, name: "Filtre d'Aquarium", category: "fish", price: "4900", description: "Gardez l'eau de votre aquarium cristalline", image: "https://images.unsplash.com/photo-1520990269076-e7e0821a0a89?w=500", inStock: true, type: "accessory" },
+        { id: 12, name: "Plantes Décoratives", category: "fish", price: "1800", description: "Belles décorations d'aquarium", image: "https://images.unsplash.com/photo-1524704796725-9fc3044a58b1?w=500", inStock: false, type: "accessory" },
     ],
     other: [
-        { id: 13, name: "Kit de Toilettage", category: "other", price: "3200 DZD", description: "Ensemble complet d'outils de toilettage", image: "https://images.unsplash.com/photo-1581888227599-779811939961?w=500", inStock: true, type: "accessory" },
-        { id: 14, name: "Cage de Transport", category: "other", price: "5400 DZD", description: "Transport sûr et confortable pour animaux", image: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=500", inStock: true, type: "accessory" },
-        { id: 15, name: "Lit pour Animaux", category: "other", price: "4400 DZD", description: "Espace de couchage confortable pour votre animal", image: "https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?w=500", inStock: true, type: "accessory" },
+        { id: 13, name: "Kit de Toilettage", category: "other", price: "3200", description: "Ensemble complet d'outils de toilettage", image: "https://images.unsplash.com/photo-1581888227599-779811939961?w=500", inStock: true, type: "accessory" },
+        { id: 14, name: "Cage de Transport", category: "other", price: "5400", description: "Transport sûr et confortable pour animaux", image: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=500", inStock: true, type: "accessory" },
+        { id: 15, name: "Lit pour Animaux", category: "other", price: "4400", description: "Espace de couchage confortable pour votre animal", image: "https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?w=500", inStock: true, type: "accessory" },
     ]
 };
 
@@ -217,7 +217,7 @@ searchInput.addEventListener('input', (e) => {
                 <div class="search-result-meta">
                     <span class="search-result-tag">${product.type === 'food' ? 'Food' : 'Accessory'}</span>
                     <span class="search-result-tag">${product.category}</span>
-                    <span class="search-result-price">${product.price}</span>
+                    <span class="search-result-price">${product.price} DZD</span>
                 </div>
             </div>
         </div>
@@ -329,8 +329,8 @@ function renderTrendingProducts() {
                 <h3 class="product-name">${product.name}</h3>
                 <p class="product-description">${product.description}</p>
                 <div class="product-footer">
-                    <span class="product-price">${product.price}</span>
-                    <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}')">
+                    <span class="product-price">${product.price} DZD</span>
+                    <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}', ${product.id})">
                         <i class="fab fa-whatsapp"></i> ${trans.orderWhatsApp}
                     </button>
                 </div>
@@ -376,8 +376,8 @@ function renderProducts(category, page = 1) {
                     <h3 class="product-name">${product.name}</h3>
                     <p class="product-description">${product.description}</p>
                     <div class="product-footer">
-                        <span class="product-price">${product.price}</span>
-                        <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}')">
+                        <span class="product-price">${product.price} DZD</span>
+                        <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}', ${product.id})">
                             <i class="fab fa-whatsapp"></i> ${trans.orderWhatsApp}
                         </button>
                     </div>
@@ -456,8 +456,8 @@ function renderAccessories(category, page = 1) {
                     <h3 class="product-name">${product.name}</h3>
                     <p class="product-description">${product.description}</p>
                     <div class="product-footer">
-                        <span class="product-price">${product.price}</span>
-                        <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}')">
+                        <span class="product-price">${product.price} DZD</span>
+                        <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}', ${product.id})">
                             <i class="fab fa-whatsapp"></i> ${trans.orderWhatsApp}
                         </button>
                     </div>
@@ -510,8 +510,8 @@ function showProductModal(productId) {
                 <h2 style="font-size: 32px; margin: 15px 0;">${product.name}</h2>
                 <p style="font-size: 18px; color: #666; margin-bottom: 20px;">${product.description}</p>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
-                    <span style="font-size: 36px; font-weight: 800; color: var(--primary-color);">${product.price}</span>
-                    <button class="whatsapp-order-btn" style="font-size: 18px; padding: 15px 30px;" onclick="orderViaWhatsApp('${product.name}', '${product.price}')">
+                    <span style="font-size: 36px; font-weight: 800; color: var(--primary-color);">${product.price} DZD</span>
+                    <button class="whatsapp-order-btn" style="font-size: 18px; padding: 15px 30px;" onclick="orderViaWhatsApp('${product.name}', '${product.price}', ${product.id})">
                         <i class="fab fa-whatsapp"></i> ${trans.orderWhatsApp}
                     </button>
                 </div>
@@ -554,19 +554,18 @@ accessoryTabs.forEach(tab => {
 });
 
 // WhatsApp Order Function
-function orderViaWhatsApp(productName, price) {
+function orderViaWhatsApp(productName, price, productId) {
     const messages = {
-        fr: `Bonjour! Je suis intéressé(e) par la commande de: ${productName} - ${price}`,
-        ar: `مرحباً! أنا مهتم بطلب: ${productName} - ${price}`,
-        en: `Hello! I'm interested in ordering: ${productName} - ${price}`
+        fr: `Bonjour! Je suis intéressé(e) par la commande de: ${productName} - ${price} DZD`,
+        ar: `مرحباً! أنا مهتم بطلب: ${productName} - ${price} DZD`,
+        en: `Hello! I'm interested in ordering: ${productName} - ${price} DZD`
     };
     const message = messages[currentLang] || messages.fr;
     const whatsappURL = `https://wa.me/1234567890?text=${encodeURIComponent(message)}`;
     
     // Track product order
-    const product = Object.values(productsData).flat().find(p => p.name === productName);
-    if (product) {
-        trackProductOrder(product.id);
+    if (productId) {
+        trackProductOrder(productId);
     }
     
     window.open(whatsappURL, '_blank');
