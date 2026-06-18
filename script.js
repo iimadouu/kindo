@@ -27,6 +27,39 @@ let productsData = {
     ]
 };
 
+const WORKER_URL = 'https://kindom-upload-worker.imadedar98.workers.dev';
+
+// Load products from D1 database
+async function loadProductsFromDB() {
+    try {
+        const response = await fetch(`${WORKER_URL}/products`);
+        if (response.ok) {
+            const dbProducts = await response.json();
+            // Convert DB format to productsData format
+            const grouped = {};
+            dbProducts.forEach(p => {
+                if (!grouped[p.category]) {
+                    grouped[p.category] = [];
+                }
+                grouped[p.category].push({
+                    id: p.id,
+                    name: p.name,
+                    category: p.category,
+                    price: p.price,
+                    description: p.description,
+                    image: p.image_url,
+                    inStock: p.in_stock === 1,
+                    type: p.type
+                });
+            });
+            return grouped;
+        }
+    } catch (error) {
+        console.error('Failed to load products from DB:', error);
+    }
+    return null;
+}
+
 // Gallery Data (will be overridden by localStorage if available)
 let galleryData = [
     { id: 1, image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500", alt: "Chat Heureux", title: "Happy Cats", description: "Our lovely feline friends enjoying their time.", extraImages: ["https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=500"] },
@@ -824,10 +857,20 @@ document.querySelectorAll('.product-card, .gallery-item, .info-card').forEach(el
 });
 
 // Initialize
-renderTrendingProducts();
-renderProducts('cats');
-renderAccessories('cats');
-renderGallery();
+async function initializeApp() {
+    // Try to load products from D1 first
+    const dbProducts = await loadProductsFromDB();
+    if (dbProducts) {
+        productsData = dbProducts;
+    }
+    
+    renderTrendingProducts();
+    renderProducts('cats');
+    renderAccessories('cats');
+    renderGallery();
+}
+
+initializeApp();
 
 // Parallax Effect
 window.addEventListener('scroll', () => {

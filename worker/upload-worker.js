@@ -91,6 +91,142 @@ export default {
       }
     }
 
+    // Products API endpoints
+    if (path === '/products') {
+      if (!env.DB) {
+        return new Response(JSON.stringify({ error: 'D1 database not bound' }), {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+        });
+      }
+
+      if (request.method === 'GET') {
+        try {
+          const result = await env.DB.prepare('SELECT * FROM products ORDER BY created_at DESC').all();
+          return new Response(JSON.stringify(result.results), {
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        } catch (error) {
+          console.error('Products fetch error:', error);
+          return new Response(JSON.stringify({ error: error.message }), {
+            status: 500,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        }
+      }
+
+      if (request.method === 'POST') {
+        try {
+          const body = await request.json();
+          const result = await env.DB.prepare(
+            'INSERT INTO products (name, name_ar, name_en, category, price, description, description_ar, description_en, image_url, in_stock, featured, keywords, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+          ).bind(
+            body.name,
+            body.name_ar || null,
+            body.name_en || null,
+            body.category,
+            body.price,
+            body.description,
+            body.description_ar || null,
+            body.description_en || null,
+            body.image_url,
+            body.in_stock ? 1 : 0,
+            body.featured ? 1 : 0,
+            body.keywords || null,
+            body.type
+          ).run();
+
+          return new Response(JSON.stringify({ success: true, id: result.meta.last_row_id }), {
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        } catch (error) {
+          console.error('Product create error:', error);
+          return new Response(JSON.stringify({ error: error.message }), {
+            status: 500,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        }
+      }
+
+      if (request.method === 'PUT') {
+        try {
+          const body = await request.json();
+          await env.DB.prepare(
+            'UPDATE products SET name = ?, name_ar = ?, name_en = ?, category = ?, price = ?, description = ?, description_ar = ?, description_en = ?, image_url = ?, in_stock = ?, featured = ?, keywords = ?, type = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?'
+          ).bind(
+            body.name,
+            body.name_ar || null,
+            body.name_en || null,
+            body.category,
+            body.price,
+            body.description,
+            body.description_ar || null,
+            body.description_en || null,
+            body.image_url,
+            body.in_stock ? 1 : 0,
+            body.featured ? 1 : 0,
+            body.keywords || null,
+            body.type,
+            body.id
+          ).run();
+
+          return new Response(JSON.stringify({ success: true }), {
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        } catch (error) {
+          console.error('Product update error:', error);
+          return new Response(JSON.stringify({ error: error.message }), {
+            status: 500,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        }
+      }
+
+      if (request.method === 'DELETE') {
+        try {
+          const body = await request.json();
+          await env.DB.prepare('DELETE FROM products WHERE id = ?').bind(body.id).run();
+
+          return new Response(JSON.stringify({ success: true }), {
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        } catch (error) {
+          console.error('Product delete error:', error);
+          return new Response(JSON.stringify({ error: error.message }), {
+            status: 500,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        }
+      }
+    }
+
     // Image upload endpoint
     if (path === '/upload') {
       if (request.method !== 'POST') {

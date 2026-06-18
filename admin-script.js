@@ -113,6 +113,60 @@ function saveToStorage() {
     localStorage.setItem('kindom_gallery', JSON.stringify(gallery));
 }
 
+// Products API (D1 Database)
+async function loadProductsFromDB() {
+    try {
+        const response = await fetch(`${WORKER_URL}/products`);
+        if (response.ok) {
+            return await response.json();
+        } else {
+            console.error('Products API returned error:', response.status);
+        }
+    } catch (error) {
+        console.error('Failed to load products from DB:', error);
+    }
+    return null;
+}
+
+async function saveProductToDB(product) {
+    try {
+        const method = product.id ? 'PUT' : 'POST';
+        const response = await fetch(`${WORKER_URL}/products`, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(product)
+        });
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({}));
+            console.error('Failed to save product to DB:', response.status, error);
+            return false;
+        }
+        return true;
+    } catch (error) {
+        console.error('Failed to save product to DB:', error);
+        return false;
+    }
+}
+
+async function deleteProductFromDB(id) {
+    try {
+        const response = await fetch(`${WORKER_URL}/products`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+        });
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({}));
+            console.error('Failed to delete product from DB:', response.status, error);
+            return false;
+        }
+        return true;
+    } catch (error) {
+        console.error('Failed to delete product from DB:', error);
+        return false;
+    }
+}
+
 // Security: Check authentication
 function checkAuth() {
     const auth = sessionStorage.getItem('kindom_auth');
@@ -525,8 +579,26 @@ function loadDashboard() {
 }
 
 // Load Products Table
-function loadProducts(filter = 'all', search = '') {
+async function loadProducts(filter = 'all', search = '') {
     const tableBody = document.getElementById('productsTableBody');
+    
+    // Try to load from D1 first
+    const dbProducts = await loadProductsFromDB();
+    if (dbProducts && dbProducts.length > 0) {
+        // Convert DB format to local format
+        products = dbProducts.map(p => ({
+            id: p.id,
+            name: p.name,
+            category: p.category,
+            type: p.type,
+            price: p.price,
+            description: p.description,
+            image: p.image_url,
+            inStock: p.in_stock === 1
+        }));
+        saveToStorage(); // Update localStorage as backup
+    }
+    
     let filteredProducts = products;
     
     if (filter !== 'all') {
@@ -607,15 +679,25 @@ function editProduct(id) {
     }
 }
 
-function deleteProduct(id) {
+async function deleteProduct(id) {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce produit?')) {
         const product = products.find(p => p.id === id);
+        
+        // Try to delete from D1 first
+        const dbSuccess = await deleteProductFromDB(id);
+        
+        // Always update local array
         products = products.filter(p => p.id !== id);
         addActivity('delete', `Product deleted: ${product ? product.name : 'Unknown'}`);
-        saveToStorage();
+        saveToStorage(); // Keep localStorage as backup
         loadProducts();
         loadDashboard();
-        showNotification('Produit supprimé avec succès!', 'success');
+        
+        if (dbSuccess) {
+            showNotification('Produit supprimé avec succès!', 'success');
+        } else {
+            showNotification('Produit supprimé (local only)', 'warning');
+        }
     }
 }
 
@@ -683,8 +765,10 @@ document.getElementById('productForm').addEventListener('submit', async (e) => {
             type: sanitizeInput(document.getElementById('productType').value),
             price: sanitizeInput(document.getElementById('productPrice').value) + ' DZD',
             description: sanitizeInput(document.getElementById('productDescription').value),
-            image: imageUrl,
-            inStock: document.getElementById('productInStock').checked
+            image_url: imageUrl,
+            in_stock: document.getElementById('productInStock').checked,
+            featured: false,
+            keywords: null
         };
         
         // Validate required fields
@@ -695,20 +779,35 @@ document.getElementById('productForm').addEventListener('submit', async (e) => {
             return;
         }
         
+        // Try to save to D1
+        const dbSuccess = await saveProductToDB(productData);
+        
+        // Always update local array as backup
+        const localProductData = {
+            id: productData.id,
+            name: productData.name,
+            category: productData.category,
+            type: productData.type,
+            price: productData.price,
+            description: productData.description,
+            image: productData.image_url,
+            inStock: productData.in_stock
+        };
+        
         if (document.getElementById('productId').value) {
             // Update existing product
             const index = products.findIndex(p => p.id == productData.id);
-            products[index] = productData;
+            products[index] = localProductData;
             addActivity('edit', `Product updated: ${productData.name}`);
-            showNotification('Produit mis à jour avec succès!', 'success');
+            showNotification(dbSuccess ? 'Produit mis à jour avec succès!' : 'Produit mis à jour (local only)', dbSuccess ? 'success' : 'warning');
         } else {
             // Add new product
-            products.push(productData);
+            products.push(localProductData);
             addActivity('add', `New product added: ${productData.name}`);
-            showNotification('Produit ajouté avec succès!', 'success');
+            showNotification(dbSuccess ? 'Produit ajouté avec succès!' : 'Produit ajouté (local only)', dbSuccess ? 'success' : 'warning');
         }
         
-        saveToStorage();
+        saveToStorage(); // Keep localStorage as backup
         loadProducts();
         loadDashboard();
         closeProductModal();
