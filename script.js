@@ -60,6 +60,26 @@ async function loadProductsFromDB() {
     return null;
 }
 
+// Filter products by category (for footer links)
+function filterByCategory(category) {
+    // Scroll to products section
+    const productsSection = document.getElementById('products');
+    if (productsSection) {
+        productsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // Wait a bit for scroll, then filter
+    setTimeout(() => {
+        // Click the corresponding tab
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        tabButtons.forEach(btn => {
+            if (btn.getAttribute('data-category') === category) {
+                btn.click();
+            }
+        });
+    }, 300);
+}
+
 // Gallery Data (will be overridden by localStorage if available)
 let galleryData = [
     { id: 1, image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500", alt: "Chat Heureux", title: "Happy Cats", description: "Our lovely feline friends enjoying their time.", extraImages: ["https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=500"] },
@@ -594,7 +614,7 @@ function orderViaWhatsApp(productName, price, productId) {
         en: `Hello! I'm interested in ordering: ${productName} - ${price} DZD`
     };
     const message = messages[currentLang] || messages.fr;
-    const whatsappURL = `https://wa.me/1234567890?text=${encodeURIComponent(message)}`;
+    const whatsappURL = `https://wa.me/0657496125?text=${encodeURIComponent(message)}`;
     
     // Track product order
     if (productId) {
@@ -811,7 +831,7 @@ contactForm.addEventListener('submit', (e) => {
     
     // Send to WhatsApp
     const whatsappMessage = `Nouveau formulaire de contact:\n\nNom: ${name}\nEmail: ${email}\nSujet: ${subject}\nMessage: ${message}`;
-    const whatsappURL = `https://wa.me/1234567890?text=${encodeURIComponent(whatsappMessage)}`;
+    const whatsappURL = `https://wa.me/0657496125?text=${encodeURIComponent(whatsappMessage)}`;
     
     window.open(whatsappURL, '_blank');
     contactForm.reset();

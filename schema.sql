@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS products (
     in_stock BOOLEAN DEFAULT 1,
     featured BOOLEAN DEFAULT 0,
     keywords TEXT,
+    type TEXT DEFAULT 'food',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
