@@ -34,7 +34,10 @@ export default {
           const result = await env.DB.prepare('SELECT setting_key, setting_value FROM settings').all();
           const settings = {};
           result.results.forEach(row => {
-            settings[row.setting_key] = row.setting_value;
+            // Exclude password hash from public settings response
+            if (row.setting_key !== 'admin_password_hash') {
+              settings[row.setting_key] = row.setting_value;
+            }
           });
           return new Response(JSON.stringify(settings), {
             headers: {
