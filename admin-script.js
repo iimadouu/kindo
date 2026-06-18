@@ -312,14 +312,52 @@ async function uploadImageToR2(file, folder = 'products') {
     }
 }
 
-// Get stored password hash (encrypted in localStorage)
+// Admin credentials — password hash is stored in Cloudflare D1 (settings table)
+const ADMIN_USERNAME = 'admin';
+const DEFAULT_ADMIN_PASSWORD = 'admin123';
+const PASSWORD_HASH_KEY = 'admin_password_hash';
+
+// Get stored password hash (local cache)
 function getStoredPasswordHash() {
     return localStorage.getItem('kindom_admin_hash') || null;
 }
 
-// Store password hash (encrypted)
+// Store password hash locally
 function storePasswordHash(hash) {
     localStorage.setItem('kindom_admin_hash', hash);
+}
+
+// Get active password hash — D1 is source of truth, localStorage is cache
+async function getPasswordHash() {
+    const dbSettings = await loadSettingsFromDB();
+    if (dbSettings?.[PASSWORD_HASH_KEY]) {
+        storePasswordHash(dbSettings[PASSWORD_HASH_KEY]);
+        return dbSettings[PASSWORD_HASH_KEY];
+    }
+    return getStoredPasswordHash();
+}
+
+// Verify admin password (used by login and password change)
+async function verifyAdminPassword(password) {
+    const hash = await getPasswordHash();
+
+    if (hash && await secureAuth.verifyPassword(password, hash)) {
+        return true;
+    }
+
+    // Default password works until a hash is saved in D1
+    const dbSettings = await loadSettingsFromDB();
+    if (!dbSettings?.[PASSWORD_HASH_KEY] && password === DEFAULT_ADMIN_PASSWORD) {
+        return true;
+    }
+
+    return false;
+}
+
+// Save password hash to localStorage + Cloudflare D1
+async function saveAdminPasswordHash(hash) {
+    storePasswordHash(hash);
+    return saveSettingsToDB({ [PASSWORD_HASH_KEY]: hash });
 }
 
 // Security: Hash function for passwords (SHA-256)
@@ -336,14 +374,12 @@ async function hashPassword(password) {
 let loginAttempts = 0;
 let loginLockout = false;
 
-// Initialize default admin password if not set
-async function initializeDefaultPassword() {
-    const storedHash = getStoredPasswordHash();
-    if (!storedHash) {
-        // Set default password: admin123
-        const defaultPassword = 'admin123';
-        const hash = await secureAuth.hashPassword(defaultPassword);
-        storePasswordHash(hash);
+// Initialize default admin password if not set in D1 or localStorage
+async function initializeAdminPassword() {
+    const hash = await getPasswordHash();
+    if (!hash) {
+        const defaultHash = await secureAuth.hashPassword(DEFAULT_ADMIN_PASSWORD);
+        await saveAdminPasswordHash(defaultHash);
         console.warn('⚠️ DEFAULT PASSWORD SET: admin123 - Change it immediately in Settings > Sécurité Admin');
     }
 }
@@ -368,15 +404,7 @@ loginForm.addEventListener('submit', async (e) => {
     }
     
     // Check username and password
-    const storedHash = getStoredPasswordHash();
-    const validUsername = 'admin';
-    const defaultPassword = 'admin123';
-    
-    // Allow default credentials as fallback (for production reliability)
-    const isDefaultCredentials = username === validUsername && password === defaultPassword;
-    const isStoredCredentials = username === validUsername && storedHash && await secureAuth.verifyPassword(password, storedHash);
-    
-    if (isDefaultCredentials || isStoredCredentials) {
+    if (username === ADMIN_USERNAME && await verifyAdminPassword(password)) {
         // Success: Reset attempts
         loginAttempts = 0;
         loginLockout = false;
@@ -913,7 +941,7 @@ loadFromStorage();
 loadActivities();
 loadProducts();
 loadGallery();
-initializeDefaultPassword();
+initializeAdminPassword();
 
 // Password Strength Checker
 function checkPasswordStrength(password) {
@@ -985,17 +1013,21 @@ document.getElementById('passwordChangeForm').addEventListener('submit', async (
         return;
     }
     
-    // Verify current password
-    const storedHash = getStoredPasswordHash();
-    if (!await secureAuth.verifyPassword(currentPassword, storedHash)) {
+    // Verify current password (same logic as login)
+    if (!(await verifyAdminPassword(currentPassword))) {
         alert('Mot de passe actuel incorrect.');
         return;
     }
     
-    // Hash and store new password
+    // Hash and store new password in localStorage + Cloudflare D1
     try {
         const newHash = await secureAuth.hashPassword(newPassword);
-        storePasswordHash(newHash);
+        const saved = await saveAdminPasswordHash(newHash);
+        
+        if (!saved) {
+            alert('Mot de passe mis à jour localement, mais la sauvegarde Cloudflare a échoué. Réessayez.');
+            return;
+        }
         
         // Clear form
         document.getElementById('passwordChangeForm').reset();
