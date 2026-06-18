@@ -608,28 +608,51 @@ tbody td {
     object-fit: cover;
 }
 
-.gallery-delete-btn {
+.gallery-item-actions {
     position: absolute;
     top: 10px;
     right: 10px;
+    display: flex;
+    gap: 10px;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.gallery-admin-item:hover .gallery-item-actions {
+    opacity: 1;
+}
+
+.gallery-edit-btn,
+.gallery-delete-btn {
     width: 40px;
     height: 40px;
-    background: var(--danger);
     color: var(--white);
     border: none;
     border-radius: 50%;
     cursor: pointer;
     font-size: 18px;
-    opacity: 0;
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.gallery-admin-item:hover .gallery-delete-btn {
-    opacity: 1;
+.gallery-edit-btn {
+    background: linear-gradient(135deg, #007AFF, #4da3ff);
+}
+
+.gallery-edit-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 20px rgba(0, 122, 255, 0.4);
+}
+
+.gallery-delete-btn {
+    background: var(--danger);
 }
 
 .gallery-delete-btn:hover {
     transform: scale(1.1);
+    box-shadow: 0 5px 20px rgba(255, 59, 48, 0.4);
 }
 
 /* Orders */

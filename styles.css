@@ -540,6 +540,7 @@ body.rtl {
     border: 3px solid var(--primary-color);
     border-radius: 20px;
     position: relative;
+    left: 50%;
 }
 
 .mouse::before {

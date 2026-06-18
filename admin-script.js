@@ -728,7 +728,6 @@ function editGalleryItem(id) {
     document.getElementById('galleryTitle').value = item.title || '';
     document.getElementById('galleryDescription').value = item.description || '';
     document.getElementById('galleryAlt').value = item.alt || '';
-    document.getElementById('galleryCategory').value = item.category || '';
     document.getElementById('galleryImage').removeAttribute('required');
     document.getElementById('galleryImageHint').textContent = 'Leave empty to keep current cover image';
     document.getElementById('gallerySubmitBtn').textContent = 'Update Album';
