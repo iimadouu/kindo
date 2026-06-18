@@ -1,30 +1,10 @@
-// Sample Product Data (will be overridden by localStorage if available)
+// Sample Product Data (will be overridden by D1/localStorage if available)
 let productsData = {
-    cats: [
-        { id: 1, name: "Nourriture Premium pour Chats", category: "cats", price: "2900", description: "Nutrition de haute qualité pour votre ami félin", image: "https://images.unsplash.com/photo-1589652717521-10c0d092dea9?w=500", inStock: true, type: "food" },
-        { id: 2, name: "Arbre à Chat", category: "cats", price: "4500", description: "Griffoir durable avec plusieurs niveaux", image: "https://images.unsplash.com/photo-1545249390-6bdfa286032f?w=500", inStock: true, type: "accessory" },
-        { id: 3, name: "Jouet Interactif pour Chat", category: "cats", price: "1900", description: "Divertissez votre chat pendant des heures", image: "https://images.unsplash.com/photo-1529257414772-1960b7bea4eb?w=500", inStock: false, type: "accessory" },
-    ],
-    dogs: [
-        { id: 4, name: "Nourriture Premium pour Chiens", category: "dogs", price: "3900", description: "Repas nutritifs pour chiens en bonne santé", image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=500", inStock: true, type: "food" },
-        { id: 5, name: "Laisse et Collier", category: "dogs", price: "2400", description: "Ensemble de promenade confortable et élégant", image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=500", inStock: true, type: "accessory" },
-        { id: 6, name: "Jouets à Mâcher", category: "dogs", price: "3400", description: "Pack variété de jouets à mâcher durables", image: "https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=500", inStock: true, type: "accessory" },
-    ],
-    birds: [
-        { id: 7, name: "Mélange de Graines pour Oiseaux", category: "birds", price: "1500", description: "Mélange nutritif pour tous les oiseaux", image: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=500", inStock: true, type: "food" },
-        { id: 8, name: "Cage pour Oiseaux", category: "birds", price: "8900", description: "Maison spacieuse et confortable pour oiseaux", image: "https://images.unsplash.com/photo-1444464666168-49d633b86797?w=500", inStock: true, type: "accessory" },
-        { id: 9, name: "Ensemble de Jouets pour Oiseaux", category: "birds", price: "2200", description: "Jouets amusants pour oiseaux actifs", image: "https://images.unsplash.com/photo-1578828876330-5ac4ab90fdeb?w=500", inStock: true, type: "accessory" },
-    ],
-    fish: [
-        { id: 10, name: "Flocons pour Poissons", category: "fish", price: "1200", description: "Nutrition premium pour poissons tropicaux", image: "https://images.unsplash.com/photo-1535591273668-578e31182c4f?w=500", inStock: true, type: "food" },
-        { id: 11, name: "Filtre d'Aquarium", category: "fish", price: "4900", description: "Gardez l'eau de votre aquarium cristalline", image: "https://images.unsplash.com/photo-1520990269076-e7e0821a0a89?w=500", inStock: true, type: "accessory" },
-        { id: 12, name: "Plantes Décoratives", category: "fish", price: "1800", description: "Belles décorations d'aquarium", image: "https://images.unsplash.com/photo-1524704796725-9fc3044a58b1?w=500", inStock: false, type: "accessory" },
-    ],
-    other: [
-        { id: 13, name: "Kit de Toilettage", category: "other", price: "3200", description: "Ensemble complet d'outils de toilettage", image: "https://images.unsplash.com/photo-1581888227599-779811939961?w=500", inStock: true, type: "accessory" },
-        { id: 14, name: "Cage de Transport", category: "other", price: "5400", description: "Transport sûr et confortable pour animaux", image: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=500", inStock: true, type: "accessory" },
-        { id: 15, name: "Lit pour Animaux", category: "other", price: "4400", description: "Espace de couchage confortable pour votre animal", image: "https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?w=500", inStock: true, type: "accessory" },
-    ]
+    cats: [],
+    dogs: [],
+    birds: [],
+    fish: [],
+    other: []
 };
 
 const WORKER_URL = 'https://kindom-upload-worker.imadedar98.workers.dev';
@@ -81,14 +61,7 @@ function filterByCategory(category) {
 }
 
 // Gallery Data (will be overridden by localStorage if available)
-let galleryData = [
-    { id: 1, image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500", alt: "Chat Heureux", title: "Happy Cats", description: "Our lovely feline friends enjoying their time.", extraImages: ["https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=500"] },
-    { id: 2, image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=500", alt: "Chien Mignon", title: "Cute Dogs", description: "Man's best friend.", extraImages: [] },
-    { id: 3, image: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=500", alt: "Oiseau Coloré", title: "Colorful Birds", description: "Beautiful exotic birds.", extraImages: [] },
-    { id: 4, image: "https://images.unsplash.com/photo-1520990269076-e7e0821a0a89?w=500", alt: "Poisson Magnifique", title: "Aquarium Life", description: "Peaceful underwater scenes.", extraImages: [] },
-    { id: 5, image: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=500", alt: "Chat Joueur", title: "Playful Kittens", description: "Kittens playing with toys.", extraImages: [] },
-    { id: 6, image: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=500", alt: "Chien Heureux", title: "Happy Puppies", description: "Puppies running in the park.", extraImages: [] },
-];
+let galleryData = [];
 
 // Load from localStorage if available
 function loadDataFromStorage() {

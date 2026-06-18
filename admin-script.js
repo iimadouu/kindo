@@ -1,30 +1,7 @@
 // Sample Data (in real app, this would come from a database)
-let products = [
-    { id: 1, name: "Nourriture Premium pour Chats", category: "cats", type: "food", price: "2900 DZD", description: "Nutrition de haute qualité pour votre ami félin", image: "https://images.unsplash.com/photo-1589652717521-10c0d092dea9?w=500", inStock: true },
-    { id: 2, name: "Arbre à Chat", category: "cats", type: "accessory", price: "4500 DZD", description: "Griffoir durable avec plusieurs niveaux", image: "https://images.unsplash.com/photo-1545249390-6bdfa286032f?w=500", inStock: true },
-    { id: 3, name: "Jouet Interactif pour Chat", category: "cats", type: "accessory", price: "1900 DZD", description: "Divertissez votre chat pendant des heures", image: "https://images.unsplash.com/photo-1529257414772-1960b7bea4eb?w=500", inStock: false },
-    { id: 4, name: "Nourriture Premium pour Chiens", category: "dogs", type: "food", price: "3900 DZD", description: "Repas nutritifs pour chiens en bonne santé", image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=500", inStock: true },
-    { id: 5, name: "Laisse et Collier", category: "dogs", type: "accessory", price: "2400 DZD", description: "Ensemble de promenade confortable et élégant", image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=500", inStock: true },
-    { id: 6, name: "Jouets à Mâcher", category: "dogs", type: "accessory", price: "3400 DZD", description: "Pack variété de jouets à mâcher durables", image: "https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=500", inStock: true },
-    { id: 7, name: "Mélange de Graines pour Oiseaux", category: "birds", type: "food", price: "1500 DZD", description: "Mélange nutritif pour tous les oiseaux", image: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=500", inStock: true },
-    { id: 8, name: "Cage pour Oiseaux", category: "birds", type: "accessory", price: "8900 DZD", description: "Maison spacieuse et confortable pour oiseaux", image: "https://images.unsplash.com/photo-1444464666168-49d633b86797?w=500", inStock: true },
-    { id: 9, name: "Ensemble de Jouets pour Oiseaux", category: "birds", type: "accessory", price: "2200 DZD", description: "Jouets amusants pour oiseaux actifs", image: "https://images.unsplash.com/photo-1578828876330-5ac4ab90fdeb?w=500", inStock: true },
-    { id: 10, name: "Flocons pour Poissons", category: "fish", type: "food", price: "1200 DZD", description: "Nutrition premium pour poissons tropicaux", image: "https://images.unsplash.com/photo-1535591273668-578e31182c4f?w=500", inStock: true },
-    { id: 11, name: "Filtre d'Aquarium", category: "fish", type: "accessory", price: "4900 DZD", description: "Gardez l'eau de votre aquarium cristalline", image: "https://images.unsplash.com/photo-1520990269076-e7e0821a0a89?w=500", inStock: true },
-    { id: 12, name: "Plantes Décoratives", category: "fish", type: "accessory", price: "1800 DZD", description: "Belles décorations d'aquarium", image: "https://images.unsplash.com/photo-1524704796725-9fc3044a58b1?w=500", inStock: false },
-    { id: 13, name: "Kit de Toilettage", category: "other", type: "accessory", price: "3200 DZD", description: "Ensemble complet d'outils de toilettage", image: "https://images.unsplash.com/photo-1581888227599-779811939961?w=500", inStock: true },
-    { id: 14, name: "Cage de Transport", category: "other", type: "accessory", price: "5400 DZD", description: "Transport sûr et confortable pour animaux", image: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=500", inStock: true },
-    { id: 15, name: "Lit pour Animaux", category: "other", type: "accessory", price: "4400 DZD", description: "Espace de couchage confortable pour votre animal", image: "https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?w=500", inStock: true },
-];
+let products = [];
 
-let gallery = [
-    { id: 1, image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500", alt: "Chat Heureux", title: "Happy Cats", description: "Our lovely feline friends enjoying their time.", extraImages: ["https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=500"] },
-    { id: 2, image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=500", alt: "Chien Mignon", title: "Cute Dogs", description: "Man's best friend.", extraImages: [] },
-    { id: 3, image: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=500", alt: "Oiseau Coloré", title: "Colorful Birds", description: "Beautiful exotic birds.", extraImages: [] },
-    { id: 4, image: "https://images.unsplash.com/photo-1520990269076-e7e0821a0a89?w=500", alt: "Poisson Magnifique", title: "Aquarium Life", description: "Peaceful underwater scenes.", extraImages: [] },
-    { id: 5, image: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=500", alt: "Chat Joueur", title: "Playful Kittens", description: "Kittens playing with toys.", extraImages: [] },
-    { id: 6, image: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=500", alt: "Chien Heureux", title: "Happy Puppies", description: "Puppies running in the park.", extraImages: [] },
-];
+let gallery = [];
 
 // Load data from localStorage or use defaults
 function loadFromStorage() {
@@ -671,7 +648,7 @@ function editProduct(id) {
         document.getElementById('productName').value = product.name;
         document.getElementById('productCategory').value = product.category;
         document.getElementById('productType').value = product.type || 'food';
-        document.getElementById('productPrice').value = product.price.replace(' DZD', ''); // Remove DZD for editing
+        document.getElementById('productPrice').value = product.price;
         document.getElementById('productDescription').value = product.description;
         document.getElementById('productInStock').checked = product.inStock;
         document.getElementById('productImage').removeAttribute('required'); // Make image optional when editing
@@ -763,7 +740,7 @@ document.getElementById('productForm').addEventListener('submit', async (e) => {
             name: sanitizeInput(document.getElementById('productName').value),
             category: sanitizeInput(document.getElementById('productCategory').value),
             type: sanitizeInput(document.getElementById('productType').value),
-            price: sanitizeInput(document.getElementById('productPrice').value) + ' DZD',
+            price: sanitizeInput(document.getElementById('productPrice').value),
             description: sanitizeInput(document.getElementById('productDescription').value),
             image_url: imageUrl,
             in_stock: document.getElementById('productInStock').checked,
