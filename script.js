@@ -102,6 +102,18 @@ window.addEventListener('load', () => {
     preloader.classList.add('hidden');
 });
 
+// Fallback: Hide preloader after 3 seconds even if load event doesn't fire
+setTimeout(() => {
+    preloader.classList.add('hidden');
+}, 3000);
+
+// Also hide on DOMContentLoaded as backup
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        preloader.classList.add('hidden');
+    }, 100);
+});
+
 // Navbar Scroll Effect (throttled for performance)
 let scrollTimeout;
 window.addEventListener('scroll', () => {
