@@ -1,22 +1,3 @@
-// Sample Product Data (fallback if DB fails)
-const sampleProductsData = {
-    cats: [
-        { id: 1, name: 'Premium Cat Food', category: 'cats', price: '2500', description: 'High-quality nutrition for your cat', image: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400', inStock: true, type: 'food' },
-        { id: 2, name: 'Cat Tower', category: 'cats', price: '8000', description: 'Multi-level cat climbing tower', image: 'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=400', inStock: true, type: 'accessory' }
-    ],
-    dogs: [
-        { id: 3, name: 'Dog Food Premium', category: 'dogs', price: '3000', description: 'Nutritious dog food for all breeds', image: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400', inStock: true, type: 'food' },
-        { id: 4, name: 'Dog Leash', category: 'dogs', price: '1500', description: 'Durable and comfortable dog leash', image: 'https://images.unsplash.com/photo-1601758124086-c8a0a9e8836a?w=400', inStock: true, type: 'accessory' }
-    ],
-    birds: [
-        { id: 5, name: 'Bird Seed Mix', category: 'birds', price: '800', description: 'Premium seed mix for pet birds', image: 'https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=400', inStock: true, type: 'food' }
-    ],
-    fish: [
-        { id: 6, name: 'Fish Food Flakes', category: 'fish', price: '600', description: 'Nutritious flakes for aquarium fish', image: 'https://images.unsplash.com/photo-1527834583-4e2526f4609b?w=400', inStock: true, type: 'food' }
-    ],
-    other: []
-};
-
 let productsData = {
     cats: [],
     dogs: [],
@@ -54,10 +35,6 @@ async function loadProductsFromDB() {
                 });
             });
             console.log('DB products grouped:', grouped);
-            
-            // Save to localStorage as fallback
-            localStorage.setItem('kindom_products', JSON.stringify(Object.values(grouped).flat()));
-            
             return grouped;
         } else {
             console.error('DB response not OK:', response.status);
@@ -65,25 +42,7 @@ async function loadProductsFromDB() {
     } catch (error) {
         console.error('Failed to load products from DB:', error);
     }
-    
-    // Fallback to localStorage or sample data
-    console.log('Using fallback data source');
-    const savedProducts = localStorage.getItem('kindom_products');
-    if (savedProducts) {
-        console.log('Loading products from localStorage');
-        const allProducts = JSON.parse(savedProducts);
-        const grouped = {
-            cats: allProducts.filter(p => p.category === 'cats'),
-            dogs: allProducts.filter(p => p.category === 'dogs'),
-            birds: allProducts.filter(p => p.category === 'birds'),
-            fish: allProducts.filter(p => p.category === 'fish'),
-            other: allProducts.filter(p => p.category === 'other')
-        };
-        return grouped;
-    }
-    
-    console.log('Using sample products data');
-    return sampleProductsData;
+    return null;
 }
 
 // Load gallery from D1 database
@@ -131,22 +90,9 @@ function filterByCategory(category) {
 // Gallery Data (will be overridden by localStorage if available)
 let galleryData = [];
 
-// Load from localStorage if available
+// Load from localStorage if available (gallery only)
 function loadDataFromStorage() {
-    const savedProducts = localStorage.getItem('kindom_products');
     const savedGallery = localStorage.getItem('kindom_gallery');
-    
-    if (savedProducts) {
-        const allProducts = JSON.parse(savedProducts);
-        // Reorganize products by category
-        productsData = {
-            cats: allProducts.filter(p => p.category === 'cats'),
-            dogs: allProducts.filter(p => p.category === 'dogs'),
-            birds: allProducts.filter(p => p.category === 'birds'),
-            fish: allProducts.filter(p => p.category === 'fish'),
-            other: allProducts.filter(p => p.category === 'other')
-        };
-    }
     
     if (savedGallery) {
         galleryData = JSON.parse(savedGallery);
@@ -250,9 +196,9 @@ searchBtn.addEventListener('click', () => {
     searchOverlay.classList.add('active');
     searchInput.focus();
     
-    // Show loading message if no products are available
+    // Show error message if no products are available
     if (flatProducts.length === 0) {
-        searchResults.innerHTML = '<div class="no-results">Loading products...</div>';
+        searchResults.innerHTML = '<div class="no-results">No products available. Database connection may be down.</div>';
     }
 });
 
@@ -287,8 +233,8 @@ searchInput.addEventListener('input', (e) => {
     console.log('Flat products count:', flatProducts.length);
     
     if (flatProducts.length === 0) {
-        console.log('No products available in productsData - might still be loading');
-        searchResults.innerHTML = '<div class="no-results">Loading products...</div>';
+        console.log('No products available in productsData');
+        searchResults.innerHTML = '<div class="no-results">No products available. Database connection may be down.</div>';
         return;
     }
     
@@ -926,7 +872,7 @@ document.querySelectorAll('.product-card, .gallery-item, .info-card').forEach(el
 // Initialize
 async function initializeApp() {
     console.log('Initializing app...');
-    // Try to load products from D1 first (with fallbacks)
+    // Load products from D1 database only
     const dbProducts = await loadProductsFromDB();
     console.log('Products loaded:', dbProducts);
     if (dbProducts) {
@@ -935,8 +881,8 @@ async function initializeApp() {
         const flatProducts = Object.values(productsData).flat();
         console.log('Total products loaded:', flatProducts.length);
     } else {
-        console.log('No products available, using sample data');
-        productsData = sampleProductsData;
+        console.error('Failed to load products from database');
+        alert('Failed to load products. Please check your connection or contact support.');
     }
 
     // Try to load gallery from D1 first
