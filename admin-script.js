@@ -448,18 +448,27 @@ async function getPasswordHash() {
 
 // Verify admin password (used by login and password change)
 async function verifyAdminPassword(password) {
+    console.log('verifyAdminPassword called');
     const hash = await getPasswordHash();
+    console.log('Hash from storage:', hash ? 'exists' : 'none');
 
     if (hash && await secureAuth.verifyPassword(password, hash)) {
+        console.log('Password verified via hash');
         return true;
     }
 
     // Default password works until a hash is saved in D1
     const dbSettings = await loadSettingsFromDB();
+    console.log('DB settings:', dbSettings);
+    console.log('Password hash key exists:', !!dbSettings?.[PASSWORD_HASH_KEY]);
+    console.log('Using default password:', password === DEFAULT_ADMIN_PASSWORD);
+
     if (!dbSettings?.[PASSWORD_HASH_KEY] && password === DEFAULT_ADMIN_PASSWORD) {
+        console.log('Password verified via default');
         return true;
     }
 
+    console.log('Password verification failed');
     return false;
 }
 
@@ -496,45 +505,54 @@ async function initializeAdminPassword() {
 // Login Functionality
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     // Check if locked out
     if (loginLockout) {
         alert('Trop de tentatives échouées. Attendez 5 minutes.');
         return;
     }
-    
+
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    
+
+    console.log('Login attempt:', { username, passwordLength: password?.length });
+
     // Security: Validate input
     if (!username || !password) {
         alert('Veuillez remplir tous les champs.');
         return;
     }
-    
+
     // Check username and password
-    if (username === ADMIN_USERNAME && await verifyAdminPassword(password)) {
+    console.log('Checking credentials...');
+    const passwordValid = await verifyAdminPassword(password);
+    console.log('Password valid:', passwordValid);
+
+    if (username === ADMIN_USERNAME && passwordValid) {
         // Success: Reset attempts
         loginAttempts = 0;
         loginLockout = false;
-        
+
+        console.log('Login successful, setting session...');
+
         // Set session with encryption
         const sessionToken = btoa(JSON.stringify({
             timestamp: Date.now(),
             user: username,
             hash: await hashPassword(Date.now().toString())
         }));
-        
+
         sessionStorage.setItem('kindom_auth', sessionToken);
         sessionStorage.setItem('kindom_session_start', Date.now());
-        
+
         loginContainer.style.display = 'none';
         adminDashboard.style.display = 'grid';
         loadDashboard();
     } else {
         // Failed attempt
+        console.log('Login failed');
         loginAttempts++;
-        
+
         if (loginAttempts >= 5) {
             loginLockout = true;
             setTimeout(() => {
