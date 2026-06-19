@@ -11,10 +11,13 @@ const WORKER_URL = 'https://kindom-upload-worker.imadedar98.workers.dev';
 
 // Load products from D1 database
 async function loadProductsFromDB() {
+    console.log('Loading products from DB...');
     try {
         const response = await fetch(`${WORKER_URL}/products`);
+        console.log('DB response status:', response.status);
         if (response.ok) {
             const dbProducts = await response.json();
+            console.log('DB products raw data:', dbProducts);
             // Convert DB format to productsData format
             const grouped = {};
             dbProducts.forEach(p => {
@@ -32,7 +35,10 @@ async function loadProductsFromDB() {
                     type: p.type
                 });
             });
+            console.log('DB products grouped:', grouped);
             return grouped;
+        } else {
+            console.error('DB response not OK:', response.status);
         }
     } catch (error) {
         console.error('Failed to load products from DB:', error);
@@ -197,6 +203,8 @@ const searchInput = document.getElementById('searchInput');
 const searchResults = document.getElementById('searchResults');
 
 searchBtn.addEventListener('click', () => {
+    console.log('Search button clicked');
+    console.log('Current productsData:', productsData);
     searchOverlay.classList.add('active');
     searchInput.focus();
 });
@@ -218,14 +226,18 @@ searchOverlay.addEventListener('click', (e) => {
 // Real-time search with product tags
 searchInput.addEventListener('input', (e) => {
     const query = e.target.value.toLowerCase().trim();
+    console.log('Search input event fired. Query:', query);
+    console.log('productsData:', productsData);
 
     if (query.length < 2) {
         searchResults.innerHTML = '';
+        console.log('Query too short, clearing results');
         return;
     }
 
     // Use productsData which is loaded from DB
     const flatProducts = Object.values(productsData).flat();
+    console.log('Flat products count:', flatProducts.length);
     const filtered = flatProducts.filter(product => {
         const name = product.name.toLowerCase();
         const description = product.description.toLowerCase();
@@ -237,9 +249,11 @@ searchInput.addEventListener('input', (e) => {
     
     if (filtered.length === 0) {
         searchResults.innerHTML = '<div class="no-results">No products found</div>';
+        console.log('No products found for query:', query);
         return;
     }
-    
+
+    console.log('Found', filtered.length, 'products for query:', query);
     searchResults.innerHTML = filtered.map(product => `
         <div class="search-result-item" onclick="showProductModal(${product.id}); document.getElementById('searchOverlay').classList.remove('active');">
             <img src="${product.image}" alt="${product.name}" loading="lazy">
@@ -259,17 +273,23 @@ searchInput.addEventListener('input', (e) => {
 const searchModalInput = document.getElementById('searchModalInput');
 const searchModalResults = document.getElementById('searchModalResults');
 
+console.log('Search modal elements:', { searchModalInput, searchModalResults });
+
 if (searchModalInput) {
     searchModalInput.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase().trim();
+        console.log('Search modal input event fired. Query:', query);
+        console.log('productsData:', productsData);
 
         if (query.length < 2) {
             searchModalResults.innerHTML = '';
+            console.log('Query too short, clearing results');
             return;
         }
 
         // Use productsData which is loaded from DB
         const flatProducts = Object.values(productsData).flat();
+        console.log('Flat products count:', flatProducts.length);
         const filtered = flatProducts.filter(product => {
             const name = product.name.toLowerCase();
             const description = product.description.toLowerCase();
@@ -281,9 +301,11 @@ if (searchModalInput) {
 
         if (filtered.length === 0) {
             searchModalResults.innerHTML = '<div class="no-results">No products found</div>';
+            console.log('No products found for query:', query);
             return;
         }
 
+        console.log('Found', filtered.length, 'products for query:', query);
         searchModalResults.innerHTML = filtered.map(product => `
             <div class="search-result-item" onclick="showProductModal(${product.id}); document.getElementById('searchModal').classList.remove('active');">
                 <img src="${product.image}" alt="${product.name}" loading="lazy">
@@ -918,10 +940,15 @@ document.querySelectorAll('.product-card, .gallery-item, .info-card').forEach(el
 
 // Initialize
 async function initializeApp() {
+    console.log('Initializing app...');
     // Try to load products from D1 first
     const dbProducts = await loadProductsFromDB();
+    console.log('DB products loaded:', dbProducts);
     if (dbProducts) {
         productsData = dbProducts;
+        console.log('productsData set from DB:', productsData);
+    } else {
+        console.log('No DB products, using empty productsData');
     }
 
     // Try to load gallery from D1 first
@@ -942,6 +969,8 @@ async function initializeApp() {
         renderAccessories('cats');
         renderGallery();
     }
+
+    console.log('App initialization complete. Final productsData:', productsData);
 }
 
 // Search functionality
