@@ -1744,77 +1744,83 @@ section {
        MOBILE PRODUCT CARD SETTINGS
        Edit these values to change card size
        ======================================== */
-    
+
     .product-card {
-        /* Card width - edit this value (e.g., 300px, 280px, 320px) */
-        width: 300px;
+        /* Card width - edit this value (e.g., 300px, 280px, 320px, 350px) */
+        width: 350px;
         /* Make it responsive - will scale down on smaller screens */
         max-width: calc(50% - 10px);
         flex: 0 0 auto;
         /* Fixed aspect ratio for consistent card shape */
         aspect-ratio: 1;
     }
-    
+
     .product-image {
         /* Image takes up top portion of card */
-        height: 55%;
+        height: 45%;
         object-fit: cover;
     }
-    
+
     .product-info {
         /* Compact padding to fit more content */
         padding: 8px 10px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        height: 45%;
+        height: 55%;
     }
-    
+
     .product-category {
         font-size: 9px;
         padding: 3px 8px;
         margin-bottom: 4px;
     }
-    
+
     .stock-badge {
         font-size: 8px;
         padding: 2px 6px;
         top: 5px;
         right: 5px;
     }
-    
+
     .product-name {
-        font-size: 13px;
+        font-size: 12px;
         margin-bottom: 2px;
         line-height: 1.2;
         /* Truncate to 2 lines */
         -webkit-line-clamp: 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 5px;
     }
-    
+
+    .product-name-text {
+        flex: 1;
+        -webkit-line-clamp: 2;
+    }
+
+    .product-price {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--primary-color);
+        white-space: nowrap;
+    }
+
     .product-description {
         font-size: 10px;
-        -webkit-line-clamp: 1;
+        -webkit-line-clamp: 2;
         margin-bottom: 4px;
         line-height: 1.1;
     }
-    
-    .product-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: auto;
-        gap: 5px;
-    }
-    
-    .product-price {
-        font-size: 14px;
-        font-weight: 700;
-    }
-    
+
     .whatsapp-order-btn {
         font-size: 10px;
-        padding: 4px 8px;
+        padding: 6px 10px;
         white-space: nowrap;
+        width: 100%;
+        text-align: center;
+        margin-top: auto;
     }
     
     .category-tabs {

@@ -372,14 +372,14 @@ function renderTrendingProducts() {
             <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy">
             <div class="product-info">
                 <span class="product-category">${product.category} - ${product.type === 'food' ? 'Food' : 'Accessory'}</span>
-                <h3 class="product-name">${product.name}</h3>
-                <p class="product-description">${product.description}</p>
-                <div class="product-footer">
+                <h3 class="product-name">
+                    <span class="product-name-text">${product.name}</span>
                     <span class="product-price">${product.price} DZD</span>
-                    <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}', ${product.id})">
-                        <i class="fab fa-whatsapp"></i> ${trans.orderWhatsApp}
-                    </button>
-                </div>
+                </h3>
+                <p class="product-description">${product.description}</p>
+                <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}', ${product.id})">
+                    <i class="fab fa-whatsapp"></i> ${trans.orderWhatsApp}
+                </button>
             </div>
         </div>
     `).join('');
@@ -419,14 +419,14 @@ function renderProducts(category, page = 1) {
                 <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy">
                 <div class="product-info">
                     <span class="product-category">${category}</span>
-                    <h3 class="product-name">${product.name}</h3>
-                    <p class="product-description">${product.description}</p>
-                    <div class="product-footer">
+                    <h3 class="product-name">
+                        <span class="product-name-text">${product.name}</span>
                         <span class="product-price">${product.price} DZD</span>
-                        <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}', ${product.id})">
-                            <i class="fab fa-whatsapp"></i> ${trans.orderWhatsApp}
-                        </button>
-                    </div>
+                    </h3>
+                    <p class="product-description">${product.description}</p>
+                    <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}', ${product.id})">
+                        <i class="fab fa-whatsapp"></i> ${trans.orderWhatsApp}
+                    </button>
                 </div>
             </div>
         `).join('');
@@ -499,14 +499,14 @@ function renderAccessories(category, page = 1) {
                 <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy">
                 <div class="product-info">
                     <span class="product-category">${category}</span>
-                    <h3 class="product-name">${product.name}</h3>
-                    <p class="product-description">${product.description}</p>
-                    <div class="product-footer">
+                    <h3 class="product-name">
+                        <span class="product-name-text">${product.name}</span>
                         <span class="product-price">${product.price} DZD</span>
-                        <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}', ${product.id})">
-                            <i class="fab fa-whatsapp"></i> ${trans.orderWhatsApp}
-                        </button>
-                    </div>
+                    </h3>
+                    <p class="product-description">${product.description}</p>
+                    <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}', ${product.id})">
+                        <i class="fab fa-whatsapp"></i> ${trans.orderWhatsApp}
+                    </button>
                 </div>
             </div>
         `).join('');
@@ -950,14 +950,14 @@ function handleSearch(query) {
                     <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy">
                     <div class="product-info">
                         <span class="product-category">${product.category}</span>
-                        <h3 class="product-name">${product.name}</h3>
-                        <p class="product-description">${product.description}</p>
-                        <div class="product-footer">
+                        <h3 class="product-name">
+                            <span class="product-name-text">${product.name}</span>
                             <span class="product-price">${product.price} DZD</span>
-                            <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}', ${product.id})">
-                                <i class="fab fa-whatsapp"></i> ${trans.orderWhatsApp}
-                            </button>
-                        </div>
+                        </h3>
+                        <p class="product-description">${product.description}</p>
+                        <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}', ${product.id})">
+                            <i class="fab fa-whatsapp"></i> ${trans.orderWhatsApp}
+                        </button>
                     </div>
                 </div>
             `).join('');
