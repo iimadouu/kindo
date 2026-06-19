@@ -227,6 +227,122 @@ export default {
       }
     }
 
+    // Gallery API
+    if (path === '/gallery') {
+      if (request.method === 'GET') {
+        try {
+          const result = await env.DB.prepare('SELECT * FROM gallery ORDER BY created_at DESC').all();
+          return new Response(JSON.stringify(result.results), {
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        } catch (error) {
+          console.error('Gallery fetch error:', error);
+          return new Response(JSON.stringify({ error: error.message }), {
+            status: 500,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        }
+      }
+
+      if (request.method === 'POST') {
+        try {
+          const body = await request.json();
+          await env.DB.prepare(
+            'INSERT INTO gallery (image_url, title, title_ar, title_en, description, description_ar, description_en, extra_images) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+          ).bind(
+            body.image_url,
+            body.title || null,
+            body.title_ar || null,
+            body.title_en || null,
+            body.description || null,
+            body.description_ar || null,
+            body.description_en || null,
+            body.extra_images ? JSON.stringify(body.extra_images) : null
+          ).run();
+
+          return new Response(JSON.stringify({ success: true }), {
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        } catch (error) {
+          console.error('Gallery create error:', error);
+          return new Response(JSON.stringify({ error: error.message }), {
+            status: 500,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        }
+      }
+
+      if (request.method === 'PUT') {
+        try {
+          const body = await request.json();
+          await env.DB.prepare(
+            'UPDATE gallery SET image_url = ?, title = ?, title_ar = ?, title_en = ?, description = ?, description_ar = ?, description_en = ?, extra_images = ? WHERE id = ?'
+          ).bind(
+            body.image_url,
+            body.title || null,
+            body.title_ar || null,
+            body.title_en || null,
+            body.description || null,
+            body.description_ar || null,
+            body.description_en || null,
+            body.extra_images ? JSON.stringify(body.extra_images) : null,
+            body.id
+          ).run();
+
+          return new Response(JSON.stringify({ success: true }), {
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        } catch (error) {
+          console.error('Gallery update error:', error);
+          return new Response(JSON.stringify({ error: error.message }), {
+            status: 500,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        }
+      }
+
+      if (request.method === 'DELETE') {
+        try {
+          const body = await request.json();
+          await env.DB.prepare('DELETE FROM gallery WHERE id = ?').bind(body.id).run();
+
+          return new Response(JSON.stringify({ success: true }), {
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        } catch (error) {
+          console.error('Gallery delete error:', error);
+          return new Response(JSON.stringify({ error: error.message }), {
+            status: 500,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        }
+      }
+    }
+
     // Image upload endpoint
     if (path === '/upload') {
       if (request.method !== 'POST') {

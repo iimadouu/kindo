@@ -144,6 +144,77 @@ async function deleteProductFromDB(id) {
     }
 }
 
+// Gallery API (D1 Database)
+async function loadGalleryFromDB() {
+    try {
+        const response = await fetch(`${WORKER_URL}/gallery`);
+        if (response.ok) {
+            const dbGallery = await response.json();
+            // Convert DB format to gallery array format
+            return dbGallery.map(g => ({
+                id: g.id,
+                image: g.image_url,
+                alt: g.title || '',
+                title: g.title || '',
+                description: g.description || '',
+                extraImages: g.extra_images ? JSON.parse(g.extra_images) : []
+            }));
+        }
+    } catch (error) {
+        console.error('Failed to load gallery from DB:', error);
+    }
+    return null;
+}
+
+async function saveGalleryToDB(galleryItem) {
+    try {
+        const method = galleryItem.id ? 'PUT' : 'POST';
+        const response = await fetch(`${WORKER_URL}/gallery`, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                id: galleryItem.id,
+                image_url: galleryItem.image,
+                title: galleryItem.title || null,
+                title_ar: null,
+                title_en: null,
+                description: galleryItem.description || null,
+                description_ar: null,
+                description_en: null,
+                extra_images: galleryItem.extraImages || []
+            })
+        });
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({}));
+            console.error('Failed to save gallery to DB:', response.status, error);
+            return false;
+        }
+        return true;
+    } catch (error) {
+        console.error('Failed to save gallery to DB:', error);
+        return false;
+    }
+}
+
+async function deleteGalleryFromDB(id) {
+    try {
+        const response = await fetch(`${WORKER_URL}/gallery`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+        });
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({}));
+            console.error('Failed to delete gallery from DB:', response.status, error);
+            return false;
+        }
+        return true;
+    } catch (error) {
+        console.error('Failed to delete gallery from DB:', error);
+        return false;
+    }
+}
+
 // Security: Check authentication
 function checkAuth() {
     const auth = sessionStorage.getItem('kindom_auth');
@@ -798,7 +869,14 @@ document.getElementById('productForm').addEventListener('submit', async (e) => {
 });
 
 // Load Gallery
-function loadGallery() {
+async function loadGallery() {
+    // Try to load from D1 first
+    const dbGallery = await loadGalleryFromDB();
+    if (dbGallery) {
+        gallery = dbGallery;
+        saveToStorage(); // Update localStorage as backup
+    }
+
     const galleryGrid = document.getElementById('galleryAdminGrid');
     galleryGrid.innerHTML = gallery.map(item => `
         <div class="gallery-admin-item">
@@ -860,13 +938,21 @@ function closeGalleryModal() {
     document.getElementById('galleryId').value = '';
 }
 
-function deleteGalleryItem(id) {
+async function deleteGalleryItem(id) {
     if (confirm('Êtes-vous sûr de vouloir supprimer cette image?')) {
+        // Delete from D1 first
+        const dbSuccess = await deleteGalleryFromDB(id);
+        if (dbSuccess) {
+            showNotification('Image supprimée avec succès!', 'success');
+        } else {
+            showNotification('Erreur lors de la suppression (LOCAL ONLY)', 'warning');
+        }
+        
+        // Always update local array as backup
         gallery = gallery.filter(item => item.id !== id);
         saveToStorage();
         loadGallery();
         loadDashboard();
-        showNotification('Image supprimée avec succès!', 'success');
     }
 }
 
@@ -965,7 +1051,14 @@ document.getElementById('galleryForm').addEventListener('submit', async (e) => {
             addActivity('add', `New gallery album added: ${title}`);
             showNotification('Album ajouté avec succès!', 'success');
         }
-        
+
+        // Save to D1
+        const galleryItem = galleryId ? gallery[index] : gallery[gallery.length - 1];
+        const dbSuccess = await saveGalleryToDB(galleryItem);
+        if (!dbSuccess) {
+            showNotification('Erreur lors de la sauvegarde (LOCAL ONLY)', 'warning');
+        }
+
         saveToStorage();
         loadGallery();
         loadDashboard();

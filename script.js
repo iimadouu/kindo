@@ -40,6 +40,28 @@ async function loadProductsFromDB() {
     return null;
 }
 
+// Load gallery from D1 database
+async function loadGalleryFromDB() {
+    try {
+        const response = await fetch(`${WORKER_URL}/gallery`);
+        if (response.ok) {
+            const dbGallery = await response.json();
+            // Convert DB format to galleryData format
+            return dbGallery.map(g => ({
+                id: g.id,
+                image: g.image_url,
+                alt: g.title || '',
+                title: g.title || '',
+                description: g.description || '',
+                extraImages: g.extra_images ? JSON.parse(g.extra_images) : []
+            }));
+        }
+    } catch (error) {
+        console.error('Failed to load gallery from DB:', error);
+    }
+    return null;
+}
+
 // Filter products by category (for footer links)
 function filterByCategory(category) {
     // Scroll to products section
@@ -856,7 +878,13 @@ async function initializeApp() {
     if (dbProducts) {
         productsData = dbProducts;
     }
-    
+
+    // Try to load gallery from D1 first
+    const dbGallery = await loadGalleryFromDB();
+    if (dbGallery) {
+        galleryData = dbGallery;
+    }
+
     renderTrendingProducts();
     renderProducts('cats');
     renderAccessories('cats');
