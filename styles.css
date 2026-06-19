@@ -739,31 +739,14 @@ section {
     font-weight: 700;
     margin-bottom: 10px;
     color: var(--text-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 10px;
-    min-height: 0;
-}
-
-.product-name-text {
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    line-height: 1.2;
-    min-width: 0;
+    line-height: 1.3;
 }
 
 .product-price {
     font-size: 18px;
     font-weight: 700;
     color: var(--primary-color);
-    white-space: nowrap;
-    flex-shrink: 0;
-    min-width: fit-content;
+    margin-bottom: 15px;
 }
 
 .product-description {
@@ -780,6 +763,10 @@ section {
     word-wrap: break-word;
     word-break: break-word;
     min-height: 4.5em;
+}
+
+.whatsapp-order-btn {
+    margin-top: auto;
 }
 
 .whatsapp-order-btn {
@@ -1760,29 +1747,29 @@ section {
         /* Make it responsive - will scale down on smaller screens */
         max-width: calc(50% - 10px);
         flex: 0 0 auto;
-        /* Fixed aspect ratio for consistent card shape */
-        aspect-ratio: 1;
+        /* Remove aspect ratio to let cards stretch naturally */
+        height: auto;
     }
 
     .product-image {
-        /* Image takes up top portion of card */
-        height: 45%;
+        /* Fixed height for image, card stretches for content */
+        height: 180px;
         object-fit: cover;
     }
 
     .product-info {
         /* Compact padding to fit more content */
-        padding: 8px 10px;
+        padding: 10px 12px;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
-        height: 55%;
+        /* Let content determine height */
+        height: auto;
     }
 
     .product-category {
         font-size: 9px;
         padding: 3px 8px;
-        margin-bottom: 4px;
+        margin-bottom: 6px;
     }
 
     .stock-badge {
@@ -1793,50 +1780,35 @@ section {
     }
 
     .product-name {
-        font-size: 12px;
-        margin-bottom: 2px;
-        line-height: 1.2;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 5px;
-        min-height: 0;
-    }
-
-    .product-name-text {
-        flex: 1;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        line-height: 1.2;
-        min-width: 0;
-    }
-
-    .product-price {
-        font-size: 12px;
-        font-weight: 700;
-        color: var(--primary-color);
-        white-space: nowrap;
-        flex-shrink: 0;
-        min-width: fit-content;
+        font-size: 13px;
+        margin-bottom: 6px;
+        line-height: 1.3;
+        /* Allow name to take needed space */
+        height: auto;
     }
 
     .product-description {
-        font-size: 10px;
-        -webkit-line-clamp: 2;
-        margin-bottom: 4px;
-        line-height: 1.1;
+        font-size: 11px;
+        margin-bottom: 6px;
+        line-height: 1.3;
+        /* Allow description to expand */
+        -webkit-line-clamp: 3;
+        height: auto;
+    }
+
+    .product-price {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 8px;
     }
 
     .whatsapp-order-btn {
-        font-size: 10px;
-        padding: 6px 10px;
+        font-size: 11px;
+        padding: 8px 12px;
         white-space: nowrap;
         width: 100%;
         text-align: center;
-        margin-top: auto;
     }
     
     .category-tabs {
