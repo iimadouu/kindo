@@ -374,7 +374,7 @@ function renderTrendingProducts() {
                 <span class="product-category">${product.category} - ${product.type === 'food' ? 'Food' : 'Accessory'}</span>
                 <h3 class="product-name">
                     <span class="product-name-text">${product.name}</span>
-                    <span class="product-price">${product.price} DZD</span>
+                    <span class="product-price">${product.price}</span>
                 </h3>
                 <p class="product-description">${product.description}</p>
                 <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}', ${product.id})">
@@ -421,7 +421,7 @@ function renderProducts(category, page = 1) {
                     <span class="product-category">${category}</span>
                     <h3 class="product-name">
                         <span class="product-name-text">${product.name}</span>
-                        <span class="product-price">${product.price} DZD</span>
+                        <span class="product-price">${product.price}</span>
                     </h3>
                     <p class="product-description">${product.description}</p>
                     <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}', ${product.id})">
@@ -501,7 +501,7 @@ function renderAccessories(category, page = 1) {
                     <span class="product-category">${category}</span>
                     <h3 class="product-name">
                         <span class="product-name-text">${product.name}</span>
-                        <span class="product-price">${product.price} DZD</span>
+                        <span class="product-price">${product.price}</span>
                     </h3>
                     <p class="product-description">${product.description}</p>
                     <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}', ${product.id})">
@@ -556,7 +556,7 @@ function showProductModal(productId) {
                 <h2>${product.name}</h2>
                 <p>${product.description}</p>
                 <div class="modal-body-footer">
-                    <span class="modal-price">${product.price} DZD</span>
+                    <span class="modal-price">${product.price}</span>
                     <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}', ${product.id})">
                         <i class="fab fa-whatsapp"></i> ${trans.orderWhatsApp}
                     </button>
@@ -952,7 +952,7 @@ function handleSearch(query) {
                         <span class="product-category">${product.category}</span>
                         <h3 class="product-name">
                             <span class="product-name-text">${product.name}</span>
-                            <span class="product-price">${product.price} DZD</span>
+                            <span class="product-price">${product.price}</span>
                         </h3>
                         <p class="product-description">${product.description}</p>
                         <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}', ${product.id})">
