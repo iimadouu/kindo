@@ -550,14 +550,14 @@ function showProductModal(productId) {
     
     if (product) {
         modalBody.innerHTML = `
-            <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 400px; object-fit: cover; border-radius: 20px 20px 0 0;">
-            <div style="padding: 40px;">
+            <img src="${product.image}" alt="${product.name}">
+            <div class="modal-body-content">
                 <span class="product-category">${product.category}</span>
-                <h2 style="font-size: 32px; margin: 15px 0;">${product.name}</h2>
-                <p style="font-size: 18px; color: #666; margin-bottom: 20px;">${product.description}</p>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
-                    <span style="font-size: 36px; font-weight: 800; color: var(--primary-color);">${product.price} DZD</span>
-                    <button class="whatsapp-order-btn" style="font-size: 18px; padding: 15px 30px;" onclick="orderViaWhatsApp('${product.name}', '${product.price}', ${product.id})">
+                <h2>${product.name}</h2>
+                <p>${product.description}</p>
+                <div class="modal-body-footer">
+                    <span class="modal-price">${product.price} DZD</span>
+                    <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}', ${product.id})">
                         <i class="fab fa-whatsapp"></i> ${trans.orderWhatsApp}
                     </button>
                 </div>
