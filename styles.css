@@ -1689,7 +1689,32 @@ section {
     }
     
     .product-image {
-        height: 180px;
+        aspect-ratio: 1;
+        height: auto;
+    }
+    
+    .product-info {
+        padding: 12px;
+    }
+    
+    .product-name {
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+    
+    .product-description {
+        font-size: 11px;
+        -webkit-line-clamp: 2;
+        margin-bottom: 8px;
+    }
+    
+    .product-price {
+        font-size: 14px;
+    }
+    
+    .whatsapp-order-btn {
+        font-size: 12px;
+        padding: 6px 12px;
     }
     
     .category-tabs {
