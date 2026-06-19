@@ -1679,13 +1679,17 @@ section {
     
     .products-grid {
         justify-content: center;
-        gap: 20px;
-        padding: 20px 0;
+        gap: 15px;
+        padding: 20px 10px;
     }
     
     .product-card {
-        flex: 0 0 100%;
-        max-width: 100%;
+        flex: 0 0 calc(50% - 8px);
+        max-width: calc(50% - 8px);
+    }
+    
+    .product-image {
+        height: 180px;
     }
     
     .category-tabs {
