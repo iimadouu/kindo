@@ -6,6 +6,14 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
+    // SEO: 301 redirect www to non-www (canonical URL)
+    const hostname = url.hostname;
+    if (hostname.startsWith('www.')) {
+      const nonWwwHostname = hostname.slice(4);
+      const redirectUrl = `${url.protocol}//${nonWwwHostname}${url.pathname}${url.search}`;
+      return Response.redirect(redirectUrl, 301);
+    }
+
     // Handle CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, {
