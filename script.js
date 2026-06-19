@@ -885,8 +885,79 @@ async function initializeApp() {
         galleryData = dbGallery;
     }
 
+    // Check for search parameter in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchQuery = urlParams.get('search');
+
+    if (searchQuery) {
+        handleSearch(searchQuery);
+    } else {
+        renderTrendingProducts();
+        renderProducts('cats');
+        renderAccessories('cats');
+        renderGallery();
+    }
+}
+
+// Search functionality
+function handleSearch(query) {
+    const searchTerm = query.toLowerCase();
+    const allProducts = Object.values(productsData).flat();
+    const filteredProducts = allProducts.filter(product =>
+        product.name.toLowerCase().includes(searchTerm) ||
+        product.description.toLowerCase().includes(searchTerm) ||
+        product.category.toLowerCase().includes(searchTerm)
+    );
+
+    if (filteredProducts.length === 0) {
+        // Show no results message
+        const productsGrid = document.getElementById('productsGrid');
+        if (productsGrid) {
+            productsGrid.innerHTML = `
+                <div style="text-align: center; padding: 3rem;">
+                    <h3 style="color: #666; margin-bottom: 1rem;">Aucun résultat pour "${query}"</h3>
+                    <p style="color: #999;">Essayez avec d'autres termes de recherche</p>
+                    <button onclick="window.location.href='index.html'" style="margin-top: 1rem; padding: 0.8rem 1.5rem; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        Retour à l'accueil
+                    </button>
+                </div>
+            `;
+        }
+    } else {
+        // Display search results
+        const productsGrid = document.getElementById('productsGrid');
+        if (productsGrid) {
+            const trans = translations[currentLang];
+            productsGrid.innerHTML = filteredProducts.map(product => `
+                <div class="product-card" data-id="${product.id}">
+                    <span class="stock-badge ${product.inStock ? 'in-stock' : 'out-of-stock'}">
+                        ${product.inStock ? trans.inStock : trans.outOfStock}
+                    </span>
+                    <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy">
+                    <div class="product-info">
+                        <span class="product-category">${product.category}</span>
+                        <h3 class="product-name">${product.name}</h3>
+                        <p class="product-description">${product.description}</p>
+                        <div class="product-footer">
+                            <span class="product-price">${product.price} DZD</span>
+                            <button class="whatsapp-order-btn" onclick="orderViaWhatsApp('${product.name}', '${product.price}', ${product.id})">
+                                <i class="fab fa-whatsapp"></i> ${trans.orderWhatsApp}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Scroll to products section
+        const productsSection = document.getElementById('products');
+        if (productsSection) {
+            productsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    // Still render other sections
     renderTrendingProducts();
-    renderProducts('cats');
     renderAccessories('cats');
     renderGallery();
 }
