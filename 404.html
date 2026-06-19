@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>404 - Page Non Trouvée | kindo</title>
-    <link rel="stylesheet" href="styles.css?v=6.2">
+    <link rel="stylesheet" href="styles.css?v=6.3">
     <style>
         * {
             margin: 0;
@@ -270,51 +270,7 @@
             }
         }
 
-        /* Search box */
-        .search-container {
-            margin: 2rem 0;
-            animation: fadeInUp 1s ease-out 0.9s both;
-        }
 
-        .search-box {
-            display: flex;
-            max-width: 500px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50px;
-            padding: 0.5rem;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .search-box input {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
-            padding: 1rem 1.5rem;
-            color: #333;
-            font-size: 1rem;
-            outline: none;
-        }
-
-        .search-box input::placeholder {
-            color: rgba(0, 0, 0, 0.5);
-        }
-
-        .search-box button {
-            background: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: #667eea;
-            font-weight: 600;
-        }
-
-        .search-box button:hover {
-            transform: scale(1.05);
-        }
 
         /* Responsive design */
         @media (max-width: 768px) {
@@ -362,20 +318,6 @@
                 font-size: 1.2rem;
             }
 
-            .search-box {
-                flex-direction: column;
-                border-radius: 20px;
-            }
-
-            .search-box input,
-            .search-box button {
-                width: 100%;
-                border-radius: 15px;
-            }
-
-            .search-box button {
-                margin-top: 0.5rem;
-            }
         }
 
         /* Loading animation for page */
@@ -440,14 +382,6 @@
             mais cette page semble s'être échappée !
         </p>
 
-        <!-- Search box -->
-        <div class="search-container">
-            <div class="search-box">
-                <input type="text" placeholder="Rechercher un produit..." id="searchInput">
-                <button onclick="searchProduct()">🔍</button>
-            </div>
-        </div>
-
         <!-- Action buttons -->
         <div class="error-buttons">
             <a href="index.html" class="error-btn error-btn-primary">
@@ -473,22 +407,6 @@
                 particlesContainer.appendChild(particle);
             }
         }
-
-        // Search functionality
-        function searchProduct() {
-            const searchTerm = document.getElementById('searchInput').value;
-            if (searchTerm) {
-                window.location.href = `index.html?search=${encodeURIComponent(searchTerm)}`;
-            }
-        }
-
-        // Handle enter key in search
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                searchProduct();
-            }
-        });
-
         // Initialize particles on load
         window.addEventListener('load', createParticles);
 
