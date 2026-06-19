@@ -651,16 +651,18 @@ section {
 }
 
 .products-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 30px;
     animation: fadeIn 0.6s ease;
+    /* Make all cards in a row the same height */
+    align-items: stretch;
 }
 
 .product-card {
-    flex: 0 0 300px;
-    max-width: 350px;
+    /* Remove flex properties, use grid instead */
+    width: 100%;
+    max-width: 100%;
 }
 
 @keyframes fadeIn {
@@ -1729,25 +1731,23 @@ section {
     .section-subtitle {
         font-size: 14px;
     }
-    
-    .products-grid {
-        justify-content: center;
-        gap: 15px;
-        padding: 20px 10px;
-    }
-    
+
     /* ========================================
        MOBILE PRODUCT CARD SETTINGS
        Edit these values to change card size
        ======================================== */
 
+    .products-grid {
+        /* Mobile: 2 columns with equal height */
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        padding: 10px;
+    }
+
     .product-card {
-        /* Card width - edit this value (e.g., 300px, 280px, 320px, 350px) */
-        width: 350px;
-        /* Make it responsive - will scale down on smaller screens */
-        max-width: calc(50% - 10px);
-        flex: 0 0 auto;
-        /* Remove aspect ratio to let cards stretch naturally */
+        /* Cards fill grid cells and stretch to match row height */
+        width: 100%;
+        max-width: 100%;
         height: auto;
     }
 
