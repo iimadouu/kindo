@@ -448,27 +448,27 @@ async function getPasswordHash() {
 
 // Verify admin password (used by login and password change)
 async function verifyAdminPassword(password) {
-    console.log('verifyAdminPassword called');
+    alert('DEBUG: verifyAdminPassword called');
     const hash = await getPasswordHash();
-    console.log('Hash from storage:', hash ? 'exists' : 'none');
+    alert(`DEBUG: Hash from storage: ${hash ? 'exists' : 'none'}`);
 
     if (hash && await secureAuth.verifyPassword(password, hash)) {
-        console.log('Password verified via hash');
+        alert('DEBUG: Password verified via hash');
         return true;
     }
 
     // Default password works until a hash is saved in D1
     const dbSettings = await loadSettingsFromDB();
-    console.log('DB settings:', dbSettings);
-    console.log('Password hash key exists:', !!dbSettings?.[PASSWORD_HASH_KEY]);
-    console.log('Using default password:', password === DEFAULT_ADMIN_PASSWORD);
+    alert(`DEBUG: DB settings loaded: ${dbSettings ? 'yes' : 'no'}`);
+    alert(`DEBUG: Password hash key exists: ${!!dbSettings?.[PASSWORD_HASH_KEY]}`);
+    alert(`DEBUG: Using default password: ${password === DEFAULT_ADMIN_PASSWORD}`);
 
     if (!dbSettings?.[PASSWORD_HASH_KEY] && password === DEFAULT_ADMIN_PASSWORD) {
-        console.log('Password verified via default');
+        alert('DEBUG: Password verified via default');
         return true;
     }
 
-    console.log('Password verification failed');
+    alert('DEBUG: Password verification failed');
     return false;
 }
 
@@ -515,7 +515,11 @@ loginForm.addEventListener('submit', async (e) => {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    console.log('Login attempt:', { username, passwordLength: password?.length });
+    alert(`DEBUG: Username="${username}", Password length=${password?.length}`);
+    alert(`DEBUG: Password="${password}"`);
+    alert(`DEBUG: Default password="${DEFAULT_ADMIN_PASSWORD}"`);
+    alert(`DEBUG: Username match: ${username === ADMIN_USERNAME}`);
+    alert(`DEBUG: Password match default: ${password === DEFAULT_ADMIN_PASSWORD}`);
 
     // Security: Validate input
     if (!username || !password) {
@@ -524,16 +528,16 @@ loginForm.addEventListener('submit', async (e) => {
     }
 
     // Check username and password
-    console.log('Checking credentials...');
+    alert('DEBUG: Checking credentials...');
     const passwordValid = await verifyAdminPassword(password);
-    console.log('Password valid:', passwordValid);
+    alert(`DEBUG: Password valid=${passwordValid}`);
 
     if (username === ADMIN_USERNAME && passwordValid) {
         // Success: Reset attempts
         loginAttempts = 0;
         loginLockout = false;
 
-        console.log('Login successful, setting session...');
+        alert('DEBUG: Login successful, setting session...');
 
         // Set session with encryption
         const sessionToken = btoa(JSON.stringify({
@@ -550,7 +554,7 @@ loginForm.addEventListener('submit', async (e) => {
         loadDashboard();
     } else {
         // Failed attempt
-        console.log('Login failed');
+        alert('DEBUG: Login failed');
         loginAttempts++;
 
         if (loginAttempts >= 5) {
