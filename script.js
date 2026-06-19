@@ -218,31 +218,14 @@ searchOverlay.addEventListener('click', (e) => {
 // Real-time search with product tags
 searchInput.addEventListener('input', (e) => {
     const query = e.target.value.toLowerCase().trim();
-    
+
     if (query.length < 2) {
         searchResults.innerHTML = '';
         return;
     }
-    
-    // Load products from localStorage first, then fall back to sample data
-    const storedProducts = localStorage.getItem('kindom_products');
-    let allProducts;
-    
-    if (storedProducts) {
-        const products = JSON.parse(storedProducts);
-        // Group products by category
-        allProducts = {};
-        products.forEach(p => {
-            if (!allProducts[p.category]) {
-                allProducts[p.category] = [];
-            }
-            allProducts[p.category].push(p);
-        });
-    } else {
-        allProducts = productsData;
-    }
-    
-    const flatProducts = Object.values(allProducts).flat();
+
+    // Use productsData which is loaded from DB
+    const flatProducts = Object.values(productsData).flat();
     const filtered = flatProducts.filter(product => {
         const name = product.name.toLowerCase();
         const description = product.description.toLowerCase();
@@ -270,6 +253,68 @@ searchInput.addEventListener('input', (e) => {
             </div>
         </div>
     `).join('');
+});
+
+// Search Modal functionality
+const searchModalInput = document.getElementById('searchModalInput');
+const searchModalResults = document.getElementById('searchModalResults');
+
+if (searchModalInput) {
+    searchModalInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+
+        if (query.length < 2) {
+            searchModalResults.innerHTML = '';
+            return;
+        }
+
+        // Use productsData which is loaded from DB
+        const flatProducts = Object.values(productsData).flat();
+        const filtered = flatProducts.filter(product => {
+            const name = product.name.toLowerCase();
+            const description = product.description.toLowerCase();
+            const category = product.category.toLowerCase();
+            const type = product.type.toLowerCase();
+
+            return name.includes(query) || description.includes(query) || category.includes(query) || type.includes(query);
+        });
+
+        if (filtered.length === 0) {
+            searchModalResults.innerHTML = '<div class="no-results">No products found</div>';
+            return;
+        }
+
+        searchModalResults.innerHTML = filtered.map(product => `
+            <div class="search-result-item" onclick="showProductModal(${product.id}); document.getElementById('searchModal').classList.remove('active');">
+                <img src="${product.image}" alt="${product.name}" loading="lazy">
+                <div class="search-result-info">
+                    <div class="search-result-name">${product.name}</div>
+                    <div class="search-result-meta">
+                        <span class="search-result-tag">${product.type === 'food' ? 'Food' : 'Accessory'}</span>
+                        <span class="search-result-tag">${product.category}</span>
+                        <span class="search-result-price">${product.price} DZD</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    });
+}
+
+// Filter chips functionality
+const filterChips = document.querySelectorAll('.filter-chip');
+filterChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+        // Remove active class from all chips
+        filterChips.forEach(c => c.classList.remove('active'));
+        // Add active class to clicked chip
+        chip.classList.add('active');
+
+        const filter = chip.getAttribute('data-filter');
+        if (searchModalInput) {
+            // Trigger search with filter
+            searchModalInput.dispatchEvent(new Event('input'));
+        }
+    });
 });
 
 // Pagination state
