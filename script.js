@@ -1,4 +1,22 @@
-// Sample Product Data (will be overridden by D1/localStorage if available)
+// Sample Product Data (fallback if DB fails)
+const sampleProductsData = {
+    cats: [
+        { id: 1, name: 'Premium Cat Food', category: 'cats', price: '2500', description: 'High-quality nutrition for your cat', image: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400', inStock: true, type: 'food' },
+        { id: 2, name: 'Cat Tower', category: 'cats', price: '8000', description: 'Multi-level cat climbing tower', image: 'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=400', inStock: true, type: 'accessory' }
+    ],
+    dogs: [
+        { id: 3, name: 'Dog Food Premium', category: 'dogs', price: '3000', description: 'Nutritious dog food for all breeds', image: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400', inStock: true, type: 'food' },
+        { id: 4, name: 'Dog Leash', category: 'dogs', price: '1500', description: 'Durable and comfortable dog leash', image: 'https://images.unsplash.com/photo-1601758124086-c8a0a9e8836a?w=400', inStock: true, type: 'accessory' }
+    ],
+    birds: [
+        { id: 5, name: 'Bird Seed Mix', category: 'birds', price: '800', description: 'Premium seed mix for pet birds', image: 'https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=400', inStock: true, type: 'food' }
+    ],
+    fish: [
+        { id: 6, name: 'Fish Food Flakes', category: 'fish', price: '600', description: 'Nutritious flakes for aquarium fish', image: 'https://images.unsplash.com/photo-1527834583-4e2526f4609b?w=400', inStock: true, type: 'food' }
+    ],
+    other: []
+};
+
 let productsData = {
     cats: [],
     dogs: [],
@@ -36,6 +54,10 @@ async function loadProductsFromDB() {
                 });
             });
             console.log('DB products grouped:', grouped);
+            
+            // Save to localStorage as fallback
+            localStorage.setItem('kindom_products', JSON.stringify(Object.values(grouped).flat()));
+            
             return grouped;
         } else {
             console.error('DB response not OK:', response.status);
@@ -43,7 +65,25 @@ async function loadProductsFromDB() {
     } catch (error) {
         console.error('Failed to load products from DB:', error);
     }
-    return null;
+    
+    // Fallback to localStorage or sample data
+    console.log('Using fallback data source');
+    const savedProducts = localStorage.getItem('kindom_products');
+    if (savedProducts) {
+        console.log('Loading products from localStorage');
+        const allProducts = JSON.parse(savedProducts);
+        const grouped = {
+            cats: allProducts.filter(p => p.category === 'cats'),
+            dogs: allProducts.filter(p => p.category === 'dogs'),
+            birds: allProducts.filter(p => p.category === 'birds'),
+            fish: allProducts.filter(p => p.category === 'fish'),
+            other: allProducts.filter(p => p.category === 'other')
+        };
+        return grouped;
+    }
+    
+    console.log('Using sample products data');
+    return sampleProductsData;
 }
 
 // Load gallery from D1 database
@@ -205,8 +245,15 @@ const searchResults = document.getElementById('searchResults');
 searchBtn.addEventListener('click', () => {
     console.log('Search button clicked');
     console.log('Current productsData:', productsData);
+    const flatProducts = Object.values(productsData).flat();
+    console.log('Total products count:', flatProducts.length);
     searchOverlay.classList.add('active');
     searchInput.focus();
+    
+    // Show loading message if no products are available
+    if (flatProducts.length === 0) {
+        searchResults.innerHTML = '<div class="no-results">Loading products...</div>';
+    }
 });
 
 searchClose.addEventListener('click', () => {
@@ -238,11 +285,19 @@ searchInput.addEventListener('input', (e) => {
     // Use productsData which is loaded from DB
     const flatProducts = Object.values(productsData).flat();
     console.log('Flat products count:', flatProducts.length);
+    
+    if (flatProducts.length === 0) {
+        console.log('No products available in productsData - might still be loading');
+        searchResults.innerHTML = '<div class="no-results">Loading products...</div>';
+        return;
+    }
+    
     const filtered = flatProducts.filter(product => {
-        const name = product.name.toLowerCase();
-        const description = product.description.toLowerCase();
-        const category = product.category.toLowerCase();
-        const type = product.type.toLowerCase();
+        if (!product) return false;
+        const name = (product.name || '').toLowerCase();
+        const description = (product.description || '').toLowerCase();
+        const category = (product.category || '').toLowerCase();
+        const type = (product.type || '').toLowerCase();
         
         return name.includes(query) || description.includes(query) || category.includes(query) || type.includes(query);
     });
@@ -267,76 +322,6 @@ searchInput.addEventListener('input', (e) => {
             </div>
         </div>
     `).join('');
-});
-
-// Search Modal functionality
-const searchModalInput = document.getElementById('searchModalInput');
-const searchModalResults = document.getElementById('searchModalResults');
-
-console.log('Search modal elements:', { searchModalInput, searchModalResults });
-
-if (searchModalInput) {
-    searchModalInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        console.log('Search modal input event fired. Query:', query);
-        console.log('productsData:', productsData);
-
-        if (query.length < 2) {
-            searchModalResults.innerHTML = '';
-            console.log('Query too short, clearing results');
-            return;
-        }
-
-        // Use productsData which is loaded from DB
-        const flatProducts = Object.values(productsData).flat();
-        console.log('Flat products count:', flatProducts.length);
-        const filtered = flatProducts.filter(product => {
-            const name = product.name.toLowerCase();
-            const description = product.description.toLowerCase();
-            const category = product.category.toLowerCase();
-            const type = product.type.toLowerCase();
-
-            return name.includes(query) || description.includes(query) || category.includes(query) || type.includes(query);
-        });
-
-        if (filtered.length === 0) {
-            searchModalResults.innerHTML = '<div class="no-results">No products found</div>';
-            console.log('No products found for query:', query);
-            return;
-        }
-
-        console.log('Found', filtered.length, 'products for query:', query);
-        searchModalResults.innerHTML = filtered.map(product => `
-            <div class="search-result-item" onclick="showProductModal(${product.id}); document.getElementById('searchModal').classList.remove('active');">
-                <img src="${product.image}" alt="${product.name}" loading="lazy">
-                <div class="search-result-info">
-                    <div class="search-result-name">${product.name}</div>
-                    <div class="search-result-meta">
-                        <span class="search-result-tag">${product.type === 'food' ? 'Food' : 'Accessory'}</span>
-                        <span class="search-result-tag">${product.category}</span>
-                        <span class="search-result-price">${product.price} DZD</span>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    });
-}
-
-// Filter chips functionality
-const filterChips = document.querySelectorAll('.filter-chip');
-filterChips.forEach(chip => {
-    chip.addEventListener('click', () => {
-        // Remove active class from all chips
-        filterChips.forEach(c => c.classList.remove('active'));
-        // Add active class to clicked chip
-        chip.classList.add('active');
-
-        const filter = chip.getAttribute('data-filter');
-        if (searchModalInput) {
-            // Trigger search with filter
-            searchModalInput.dispatchEvent(new Event('input'));
-        }
-    });
 });
 
 // Pagination state
@@ -941,14 +926,17 @@ document.querySelectorAll('.product-card, .gallery-item, .info-card').forEach(el
 // Initialize
 async function initializeApp() {
     console.log('Initializing app...');
-    // Try to load products from D1 first
+    // Try to load products from D1 first (with fallbacks)
     const dbProducts = await loadProductsFromDB();
-    console.log('DB products loaded:', dbProducts);
+    console.log('Products loaded:', dbProducts);
     if (dbProducts) {
         productsData = dbProducts;
-        console.log('productsData set from DB:', productsData);
+        console.log('productsData set:', productsData);
+        const flatProducts = Object.values(productsData).flat();
+        console.log('Total products loaded:', flatProducts.length);
     } else {
-        console.log('No DB products, using empty productsData');
+        console.log('No products available, using sample data');
+        productsData = sampleProductsData;
     }
 
     // Try to load gallery from D1 first
@@ -971,6 +959,12 @@ async function initializeApp() {
     }
 
     console.log('App initialization complete. Final productsData:', productsData);
+    
+    // Clear any loading messages in search results
+    const searchResultsElement = document.getElementById('searchResults');
+    if (searchResultsElement && searchResultsElement.innerHTML.includes('Loading products')) {
+        searchResultsElement.innerHTML = '';
+    }
 }
 
 // Search functionality
