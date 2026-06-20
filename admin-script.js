@@ -158,7 +158,7 @@ async function loadGalleryFromDB() {
                 const item = {
                     id: g.id,
                     image: g.image_url,
-                    alt: g.title || '',
+                    alt: g.alt_text || '',
                     title: g.title || '',
                     description: g.description || '',
                     extraImages: []
@@ -231,19 +231,19 @@ async function saveGalleryToDB(galleryItem) {
 
         if (!response.ok) {
             console.error('Failed to save gallery to DB:', response.status, responseData);
-            return false;
+            return { success: false };
         }
 
         if (!responseData.success) {
             console.error('API returned success:false:', responseData);
-            return false;
+            return { success: false };
         }
 
         console.log('Gallery saved to DB successfully with ID:', responseData.last_row_id);
-        return true;
+        return { success: true, id: responseData.last_row_id };
     } catch (error) {
         console.error('Failed to save gallery to DB:', error);
-        return false;
+        return { success: false };
     }
 }
 
@@ -1028,6 +1028,22 @@ function addExtraImageField() {
     container.appendChild(div);
 }
 
+function addExtraImageInput(imageUrl) {
+    const container = document.getElementById('extraImagesContainer');
+    const div = document.createElement('div');
+    div.className = 'extra-image-input-group';
+    div.style.display = 'flex';
+    div.style.gap = '10px';
+    div.style.marginTop = '10px';
+    div.innerHTML = `
+        <input type="url" class="form-input extra-image-url" value="${imageUrl}" placeholder="Image URL" required>
+        <button type="button" class="btn-danger" style="padding: 10px; border-radius: 8px; border: none; cursor: pointer; color: white;" onclick="this.parentElement.remove()">
+            <i class="fas fa-trash"></i>
+        </button>
+    `;
+    container.appendChild(div);
+}
+
 // Save Gallery Item
 document.getElementById('galleryForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -1063,10 +1079,19 @@ document.getElementById('galleryForm').addEventListener('submit', async (e) => {
         }
         
         // Gather and upload extra images
-        const extraImagesInputs = document.querySelectorAll('.extra-image-file');
+        const extraImagesFileInputs = document.querySelectorAll('.extra-image-file');
+        const extraImagesUrlInputs = document.querySelectorAll('.extra-image-url');
         const extraImages = [];
-        
-        for (const input of extraImagesInputs) {
+
+        // Handle existing URL inputs (from edit mode)
+        extraImagesUrlInputs.forEach(input => {
+            if (input.value && isValidURL(input.value)) {
+                extraImages.push(input.value);
+            }
+        });
+
+        // Handle file inputs (new uploads)
+        for (const input of extraImagesFileInputs) {
             if (input.files[0]) {
                 const extraImageUrl = await uploadImageToR2(input.files[0], 'gallery');
                 extraImages.push(extraImageUrl);
@@ -1090,12 +1115,16 @@ document.getElementById('galleryForm').addEventListener('submit', async (e) => {
                     extraImages: extraImages
                 };
                 addActivity('edit', `Gallery album updated: ${title}`);
-                showNotification('Album mis à jour avec succès!', 'success');
+            } else {
+                console.error('Gallery item not found for editing, id:', galleryId);
+                showNotification('Erreur: Album non trouvé pour modification', 'warning');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Update Album';
+                return;
             }
         } else {
-            // Add new gallery item
+            // Add new gallery item (id will be assigned by DB on save)
             const galleryData = {
-                id: Date.now(),
                 title: title,
                 description: description,
                 image: imageUrl,
@@ -1104,15 +1133,18 @@ document.getElementById('galleryForm').addEventListener('submit', async (e) => {
             };
             gallery.push(galleryData);
             addActivity('add', `New gallery album added: ${title}`);
-            showNotification('Album ajouté avec succès!', 'success');
         }
 
         // Save to D1
-        const galleryItem = galleryId ? gallery[index] : gallery[gallery.length - 1];
-        const dbSuccess = await saveGalleryToDB(galleryItem);
-        if (!dbSuccess) {
+        const galleryItem = galleryId ? gallery[gallery.findIndex(g => g.id == galleryId)] : gallery[gallery.length - 1];
+        const dbResult = await saveGalleryToDB(galleryItem);
+        if (!dbResult.success) {
             showNotification('Erreur lors de la sauvegarde (LOCAL ONLY)', 'warning');
         } else {
+            // Update local item with DB-generated ID for new items
+            if (!galleryId && dbResult.id) {
+                gallery[gallery.length - 1].id = dbResult.id;
+            }
             console.log('Gallery saved to DB successfully, reloading from DB...');
             // Force reload from database to get the correct ID and data
             await loadGallery();
