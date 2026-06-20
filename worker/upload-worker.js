@@ -263,6 +263,17 @@ export default {
           const body = await request.json();
           console.log('Gallery POST request received:', body);
 
+          if (!env.DB) {
+            console.error('Database binding not available');
+            return new Response(JSON.stringify({ error: 'Database binding not available' }), {
+              status: 500,
+              headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+              },
+            });
+          }
+
           // Handle extra_images - ensure it's a valid JSON string or null
           let extraImagesValue = null;
           if (body.extra_images) {
@@ -287,6 +298,7 @@ export default {
             }
           }
 
+          console.log('Attempting database insert...');
           const result = await env.DB.prepare(
             'INSERT INTO gallery (image_url, title, title_ar, title_en, description, description_ar, description_en, alt_text, category, display_order, extra_images) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
           ).bind(
@@ -304,6 +316,12 @@ export default {
           ).run();
 
           console.log('Gallery insert result:', result);
+          console.log('Insert success:', result.success);
+          console.log('Last row ID:', result.meta.last_row_id);
+
+          if (!result.success) {
+            throw new Error(`Database insert failed: ${result.error}`);
+          }
 
           return new Response(JSON.stringify({ success: true, last_row_id: result.meta.last_row_id }), {
             headers: {
@@ -313,7 +331,7 @@ export default {
           });
         } catch (error) {
           console.error('Gallery create error:', error);
-          return new Response(JSON.stringify({ error: error.message }), {
+          return new Response(JSON.stringify({ error: error.message, details: error.stack }), {
             status: 500,
             headers: {
               'Content-Type': 'application/json',
