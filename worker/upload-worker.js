@@ -262,16 +262,19 @@ export default {
         try {
           const body = await request.json();
           await env.DB.prepare(
-            'INSERT INTO gallery (image_url, title, title_ar, title_en, description, description_ar, description_en, extra_images) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+            'INSERT INTO gallery (image_url, title, title_ar, title_en, description, description_ar, description_en, alt_text, category, display_order, extra_images) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
           ).bind(
             body.image_url,
-            body.title || null,
+            body.title || 'Untitled',
             body.title_ar || null,
             body.title_en || null,
             body.description || null,
             body.description_ar || null,
             body.description_en || null,
-            body.extra_images ? JSON.stringify(body.extra_images) : null
+            body.alt_text || body.title || 'Gallery Image',
+            body.category || null,
+            body.display_order || 0,
+            body.extra_images || null
           ).run();
 
           return new Response(JSON.stringify({ success: true }), {
@@ -296,16 +299,19 @@ export default {
         try {
           const body = await request.json();
           await env.DB.prepare(
-            'UPDATE gallery SET image_url = ?, title = ?, title_ar = ?, title_en = ?, description = ?, description_ar = ?, description_en = ?, extra_images = ? WHERE id = ?'
+            'UPDATE gallery SET image_url = ?, title = ?, title_ar = ?, title_en = ?, description = ?, description_ar = ?, description_en = ?, alt_text = ?, category = ?, display_order = ?, extra_images = ? WHERE id = ?'
           ).bind(
             body.image_url,
-            body.title || null,
+            body.title || 'Untitled',
             body.title_ar || null,
             body.title_en || null,
             body.description || null,
             body.description_ar || null,
             body.description_en || null,
-            body.extra_images ? JSON.stringify(body.extra_images) : null,
+            body.alt_text || body.title || 'Gallery Image',
+            body.category || null,
+            body.display_order || 0,
+            body.extra_images || null,
             body.id
           ).run();
 

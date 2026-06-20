@@ -175,13 +175,16 @@ async function saveGalleryToDB(galleryItem) {
             body: JSON.stringify({
                 id: galleryItem.id,
                 image_url: galleryItem.image,
-                title: galleryItem.title || null,
+                title: galleryItem.title || 'Untitled',
                 title_ar: null,
                 title_en: null,
                 description: galleryItem.description || null,
                 description_ar: null,
                 description_en: null,
-                extra_images: galleryItem.extraImages || []
+                alt_text: galleryItem.alt || galleryItem.title || 'Gallery Image',
+                category: galleryItem.category || null,
+                display_order: galleryItem.displayOrder || 0,
+                extra_images: galleryItem.extraImages && galleryItem.extraImages.length > 0 ? JSON.stringify(galleryItem.extraImages) : null
             })
         });
         if (!response.ok) {

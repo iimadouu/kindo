@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS gallery (
     alt_text TEXT NOT NULL,
     category TEXT,
     display_order INTEGER DEFAULT 0,
+    extra_images TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
