@@ -261,6 +261,29 @@ export default {
       if (request.method === 'POST') {
         try {
           const body = await request.json();
+
+          // Handle extra_images - ensure it's a valid JSON string or null
+          let extraImagesValue = null;
+          if (body.extra_images) {
+            if (typeof body.extra_images === 'string') {
+              // It's already a string, validate it's JSON
+              try {
+                JSON.parse(body.extra_images); // Validate it's valid JSON
+                extraImagesValue = body.extra_images;
+              } catch (e) {
+                console.error('Invalid JSON in extra_images:', body.extra_images);
+                extraImagesValue = null;
+              }
+            } else if (Array.isArray(body.extra_images)) {
+              // It's an array, stringify it
+              extraImagesValue = JSON.stringify(body.extra_images);
+            } else {
+              // Invalid format, convert to null
+              console.error('Invalid extra_images format:', typeof body.extra_images);
+              extraImagesValue = null;
+            }
+          }
+
           await env.DB.prepare(
             'INSERT INTO gallery (image_url, title, title_ar, title_en, description, description_ar, description_en, alt_text, category, display_order, extra_images) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
           ).bind(
@@ -274,7 +297,7 @@ export default {
             body.alt_text || body.title || 'Gallery Image',
             body.category || null,
             body.display_order || 0,
-            body.extra_images || null
+            extraImagesValue
           ).run();
 
           return new Response(JSON.stringify({ success: true }), {
@@ -298,6 +321,29 @@ export default {
       if (request.method === 'PUT') {
         try {
           const body = await request.json();
+
+          // Handle extra_images - ensure it's a valid JSON string or null
+          let extraImagesValue = null;
+          if (body.extra_images) {
+            if (typeof body.extra_images === 'string') {
+              // It's already a string, validate it's JSON
+              try {
+                JSON.parse(body.extra_images); // Validate it's valid JSON
+                extraImagesValue = body.extra_images;
+              } catch (e) {
+                console.error('Invalid JSON in extra_images:', body.extra_images);
+                extraImagesValue = null;
+              }
+            } else if (Array.isArray(body.extra_images)) {
+              // It's an array, stringify it
+              extraImagesValue = JSON.stringify(body.extra_images);
+            } else {
+              // Invalid format, convert to null
+              console.error('Invalid extra_images format:', typeof body.extra_images);
+              extraImagesValue = null;
+            }
+          }
+
           await env.DB.prepare(
             'UPDATE gallery SET image_url = ?, title = ?, title_ar = ?, title_en = ?, description = ?, description_ar = ?, description_en = ?, alt_text = ?, category = ?, display_order = ?, extra_images = ? WHERE id = ?'
           ).bind(
@@ -311,7 +357,7 @@ export default {
             body.alt_text || body.title || 'Gallery Image',
             body.category || null,
             body.display_order || 0,
-            body.extra_images || null,
+            extraImagesValue,
             body.id
           ).run();
 

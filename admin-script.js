@@ -169,6 +169,23 @@ async function loadGalleryFromDB() {
 async function saveGalleryToDB(galleryItem) {
     try {
         const method = galleryItem.id ? 'PUT' : 'POST';
+
+        // Ensure extraImages is an array and properly JSON stringified
+        let extraImagesValue = null;
+        if (galleryItem.extraImages) {
+            // Convert to array if it's a string
+            const imagesArray = Array.isArray(galleryItem.extraImages) ? galleryItem.extraImages : [];
+            if (imagesArray.length > 0) {
+                extraImagesValue = JSON.stringify(imagesArray);
+            }
+        }
+
+        console.log('Sending to API:', {
+            extraImages: galleryItem.extraImages,
+            extraImagesValue: extraImagesValue,
+            isArray: Array.isArray(galleryItem.extraImages)
+        });
+
         const response = await fetch(`${WORKER_URL}/gallery`, {
             method: method,
             headers: { 'Content-Type': 'application/json' },
@@ -184,7 +201,7 @@ async function saveGalleryToDB(galleryItem) {
                 alt_text: galleryItem.alt || galleryItem.title || 'Gallery Image',
                 category: galleryItem.category || null,
                 display_order: galleryItem.displayOrder || 0,
-                extra_images: galleryItem.extraImages && galleryItem.extraImages.length > 0 ? JSON.stringify(galleryItem.extraImages) : null
+                extra_images: extraImagesValue
             })
         });
         if (!response.ok) {
