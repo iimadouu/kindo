@@ -25,6 +25,37 @@ export default {
       });
     }
 
+    // Health check / test endpoint
+    if (path === '/test') {
+      if (!env.DB) {
+        return new Response(JSON.stringify({ status: 'error', message: 'Database binding not found' }), {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+        });
+      }
+
+      try {
+        const result = await env.DB.prepare('SELECT 1 as test').first();
+        return new Response(JSON.stringify({ status: 'ok', message: 'Database binding working', result }), {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+        });
+      } catch (error) {
+        return new Response(JSON.stringify({ status: 'error', message: error.message }), {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+        });
+      }
+    }
+
     // Settings API endpoints
     if (path === '/settings') {
       if (!env.DB) {
@@ -298,26 +329,20 @@ export default {
             }
           }
 
-          console.log('Attempting database insert...');
+          console.log('Attempting database insert with simplified columns...');
           const result = await env.DB.prepare(
-            'INSERT INTO gallery (image_url, title, title_ar, title_en, description, description_ar, description_en, alt_text, category, display_order, extra_images) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            'INSERT INTO gallery (image_url, title, description, alt_text) VALUES (?, ?, ?, ?)'
           ).bind(
             body.image_url,
             body.title || 'Untitled',
-            body.title_ar || null,
-            body.title_en || null,
             body.description || null,
-            body.description_ar || null,
-            body.description_en || null,
-            body.alt_text || body.title || 'Gallery Image',
-            body.category || null,
-            body.display_order || 0,
-            extraImagesValue
+            body.alt_text || body.title || 'Gallery Image'
           ).run();
 
           console.log('Gallery insert result:', result);
           console.log('Insert success:', result.success);
           console.log('Last row ID:', result.meta.last_row_id);
+          console.log('Changes:', result.meta.changes);
 
           if (!result.success) {
             throw new Error(`Database insert failed: ${result.error}`);
