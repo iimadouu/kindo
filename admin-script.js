@@ -423,7 +423,7 @@ async function uploadImageToR2(file, folder = 'products') {
 
 // Admin credentials — password hash is stored in Cloudflare D1 (settings table)
 const ADMIN_USERNAME = 'admin';
-const DEFAULT_ADMIN_PASSWORD = 'admin123';
+const DEFAULT_ADMIN_PASSWORD = 'kindo123store123';
 const PASSWORD_HASH_KEY = 'admin_password_hash';
 
 // Get stored password hash (local cache)
@@ -448,27 +448,18 @@ async function getPasswordHash() {
 
 // Verify admin password (used by login and password change)
 async function verifyAdminPassword(password) {
-    alert('DEBUG: verifyAdminPassword called');
     const hash = await getPasswordHash();
-    alert(`DEBUG: Hash from storage: ${hash ? 'exists' : 'none'}`);
 
     if (hash && await secureAuth.verifyPassword(password, hash)) {
-        alert('DEBUG: Password verified via hash');
         return true;
     }
 
     // Default password works until a hash is saved in D1
     const dbSettings = await loadSettingsFromDB();
-    alert(`DEBUG: DB settings loaded: ${dbSettings ? 'yes' : 'no'}`);
-    alert(`DEBUG: Password hash key exists: ${!!dbSettings?.[PASSWORD_HASH_KEY]}`);
-    alert(`DEBUG: Using default password: ${password === DEFAULT_ADMIN_PASSWORD}`);
-
     if (!dbSettings?.[PASSWORD_HASH_KEY] && password === DEFAULT_ADMIN_PASSWORD) {
-        alert('DEBUG: Password verified via default');
         return true;
     }
 
-    alert('DEBUG: Password verification failed');
     return false;
 }
 
@@ -515,12 +506,6 @@ loginForm.addEventListener('submit', async (e) => {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    alert(`DEBUG: Username="${username}", Password length=${password?.length}`);
-    alert(`DEBUG: Password="${password}"`);
-    alert(`DEBUG: Default password="${DEFAULT_ADMIN_PASSWORD}"`);
-    alert(`DEBUG: Username match: ${username === ADMIN_USERNAME}`);
-    alert(`DEBUG: Password match default: ${password === DEFAULT_ADMIN_PASSWORD}`);
-
     // Security: Validate input
     if (!username || !password) {
         alert('Veuillez remplir tous les champs.');
@@ -528,16 +513,10 @@ loginForm.addEventListener('submit', async (e) => {
     }
 
     // Check username and password
-    alert('DEBUG: Checking credentials...');
-    const passwordValid = await verifyAdminPassword(password);
-    alert(`DEBUG: Password valid=${passwordValid}`);
-
-    if (username === ADMIN_USERNAME && passwordValid) {
+    if (username === ADMIN_USERNAME && await verifyAdminPassword(password)) {
         // Success: Reset attempts
         loginAttempts = 0;
         loginLockout = false;
-
-        alert('DEBUG: Login successful, setting session...');
 
         // Set session with encryption
         const sessionToken = btoa(JSON.stringify({
@@ -554,7 +533,6 @@ loginForm.addEventListener('submit', async (e) => {
         loadDashboard();
     } else {
         // Failed attempt
-        alert('DEBUG: Login failed');
         loginAttempts++;
 
         if (loginAttempts >= 5) {
