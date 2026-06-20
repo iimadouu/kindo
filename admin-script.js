@@ -148,17 +148,37 @@ async function deleteProductFromDB(id) {
 async function loadGalleryFromDB() {
     try {
         const response = await fetch(`${WORKER_URL}/gallery`);
+        console.log('Gallery fetch response status:', response.status);
         if (response.ok) {
             const dbGallery = await response.json();
+            console.log('Gallery data from DB:', dbGallery);
             // Convert DB format to gallery array format
-            return dbGallery.map(g => ({
-                id: g.id,
-                image: g.image_url,
-                alt: g.title || '',
-                title: g.title || '',
-                description: g.description || '',
-                extraImages: g.extra_images ? JSON.parse(g.extra_images) : []
-            }));
+            return dbGallery.map(g => {
+                console.log('Processing gallery item:', g);
+                const item = {
+                    id: g.id,
+                    image: g.image_url,
+                    alt: g.title || '',
+                    title: g.title || '',
+                    description: g.description || '',
+                    extraImages: []
+                };
+
+                // Parse extra_images if it exists
+                if (g.extra_images) {
+                    try {
+                        item.extraImages = JSON.parse(g.extra_images);
+                        console.log('Parsed extraImages for item:', g.id, item.extraImages);
+                    } catch (e) {
+                        console.error('Failed to parse extra_images for item:', g.id, e);
+                        item.extraImages = [];
+                    }
+                }
+
+                return item;
+            });
+        } else {
+            console.error('Gallery fetch failed with status:', response.status);
         }
     } catch (error) {
         console.error('Failed to load gallery from DB:', error);
@@ -890,11 +910,15 @@ document.getElementById('productForm').addEventListener('submit', async (e) => {
 
 // Load Gallery
 async function loadGallery() {
+    console.log('Loading gallery from database...');
     // Try to load from D1 first
     const dbGallery = await loadGalleryFromDB();
     if (dbGallery) {
+        console.log('Gallery loaded from DB:', dbGallery);
         gallery = dbGallery;
         saveToStorage(); // Update localStorage as backup
+    } else {
+        console.log('Failed to load from DB, using localStorage');
     }
 
     const galleryGrid = document.getElementById('galleryAdminGrid');
@@ -1077,10 +1101,13 @@ document.getElementById('galleryForm').addEventListener('submit', async (e) => {
         const dbSuccess = await saveGalleryToDB(galleryItem);
         if (!dbSuccess) {
             showNotification('Erreur lors de la sauvegarde (LOCAL ONLY)', 'warning');
+        } else {
+            console.log('Gallery saved to DB successfully, reloading from DB...');
+            // Force reload from database to get the correct ID and data
+            await loadGallery();
         }
 
         saveToStorage();
-        loadGallery();
         loadDashboard();
         closeGalleryModal();
     } catch (error) {
