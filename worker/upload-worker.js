@@ -329,26 +329,32 @@ export default {
             }
           }
 
-          console.log('Attempting database insert with simplified columns...');
+          console.log('Attempting database insert with essential columns...');
           const result = await env.DB.prepare(
-            'INSERT INTO gallery (image_url, title, description, alt_text) VALUES (?, ?, ?, ?)'
+            'INSERT INTO gallery (image_url, title, description, alt_text, category, extra_images) VALUES (?, ?, ?, ?, ?, ?)'
           ).bind(
             body.image_url,
             body.title || 'Untitled',
             body.description || null,
-            body.alt_text || body.title || 'Gallery Image'
+            body.alt_text || body.title || 'Gallery Image',
+            body.category || null,
+            extraImagesValue
           ).run();
 
           console.log('Gallery insert result:', result);
           console.log('Insert success:', result.success);
-          console.log('Last row ID:', result.meta.last_row_id);
-          console.log('Changes:', result.meta.changes);
+          console.log('Last row ID:', result.meta?.last_row_id);
+          console.log('Changes:', result.meta?.changes);
+          console.log('Full meta:', result.meta);
 
           if (!result.success) {
             throw new Error(`Database insert failed: ${result.error}`);
           }
 
-          return new Response(JSON.stringify({ success: true, last_row_id: result.meta.last_row_id }), {
+          const lastRowId = result.meta?.last_row_id || null;
+          console.log('Returning last_row_id:', lastRowId);
+
+          return new Response(JSON.stringify({ success: true, last_row_id: lastRowId }), {
             headers: {
               'Content-Type': 'application/json',
               'Access-Control-Allow-Origin': '*',
