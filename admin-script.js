@@ -224,11 +224,22 @@ async function saveGalleryToDB(galleryItem) {
                 extra_images: extraImagesValue
             })
         });
+
+        console.log('API response status:', response.status);
+        const responseData = await response.json();
+        console.log('API response data:', responseData);
+
         if (!response.ok) {
-            const error = await response.json().catch(() => ({}));
-            console.error('Failed to save gallery to DB:', response.status, error);
+            console.error('Failed to save gallery to DB:', response.status, responseData);
             return false;
         }
+
+        if (!responseData.success) {
+            console.error('API returned success:false:', responseData);
+            return false;
+        }
+
+        console.log('Gallery saved to DB successfully with ID:', responseData.last_row_id);
         return true;
     } catch (error) {
         console.error('Failed to save gallery to DB:', error);
@@ -1105,6 +1116,7 @@ document.getElementById('galleryForm').addEventListener('submit', async (e) => {
             console.log('Gallery saved to DB successfully, reloading from DB...');
             // Force reload from database to get the correct ID and data
             await loadGallery();
+            showNotification('Album sauvegardé avec succès!', 'success');
         }
 
         saveToStorage();

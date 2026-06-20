@@ -261,6 +261,7 @@ export default {
       if (request.method === 'POST') {
         try {
           const body = await request.json();
+          console.log('Gallery POST request received:', body);
 
           // Handle extra_images - ensure it's a valid JSON string or null
           let extraImagesValue = null;
@@ -270,6 +271,7 @@ export default {
               try {
                 JSON.parse(body.extra_images); // Validate it's valid JSON
                 extraImagesValue = body.extra_images;
+                console.log('Extra images validated as JSON string');
               } catch (e) {
                 console.error('Invalid JSON in extra_images:', body.extra_images);
                 extraImagesValue = null;
@@ -277,6 +279,7 @@ export default {
             } else if (Array.isArray(body.extra_images)) {
               // It's an array, stringify it
               extraImagesValue = JSON.stringify(body.extra_images);
+              console.log('Extra images converted from array to JSON string');
             } else {
               // Invalid format, convert to null
               console.error('Invalid extra_images format:', typeof body.extra_images);
@@ -284,7 +287,7 @@ export default {
             }
           }
 
-          await env.DB.prepare(
+          const result = await env.DB.prepare(
             'INSERT INTO gallery (image_url, title, title_ar, title_en, description, description_ar, description_en, alt_text, category, display_order, extra_images) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
           ).bind(
             body.image_url,
@@ -300,7 +303,9 @@ export default {
             extraImagesValue
           ).run();
 
-          return new Response(JSON.stringify({ success: true }), {
+          console.log('Gallery insert result:', result);
+
+          return new Response(JSON.stringify({ success: true, last_row_id: result.meta.last_row_id }), {
             headers: {
               'Content-Type': 'application/json',
               'Access-Control-Allow-Origin': '*',
